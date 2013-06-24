@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using ABC.PInvoke;
+using Whathecode.System.Extensions;
 
 
 namespace ABC.Windows
@@ -25,7 +26,7 @@ namespace ABC.Windows
 			{ User32.WindowState.Hide, WindowState.Hidden }
 		};
 
-		internal readonly IntPtr Handle;		
+		internal readonly IntPtr Handle;
 
 
 		/// <summary>
@@ -262,7 +263,7 @@ namespace ABC.Windows
 				return false;
 			}
 
-			return Handle == otherWindow.Handle;
+			return Equals( other );
 		}
 
 		public bool Equals( WindowInfo other )
@@ -288,21 +289,4 @@ namespace ABC.Windows
 				GetTitle(), processName, GetWindowState(), GetClassName() );
 		}
 	}
-    public static class Extensions
-    {
-        /// <summary>
-        ///   Returns a selected value when the source is not null; null otherwise.
-        /// </summary>
-        /// <typeparam name = "T">Type of the source object.</typeparam>
-        /// <typeparam name = "TInner">Type of the object which the selector returns.</typeparam>
-        /// <param name = "source">The source for this extension method.</param>
-        /// <param name = "selector">A function which given the source object, returns a selected value.</param>
-        /// <returns>The selected value when source is not null; null otherwise.</returns>
-        public static TInner IfNotNull<T, TInner>(this T source, Func<T, TInner> selector)
-            where T : class
-        {
-            return source != null ? selector(source) : default(TInner);
-        }
-    }
-
 }

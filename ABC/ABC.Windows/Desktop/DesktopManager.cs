@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
+using Whathecode.System.Extensions;
+
 
 namespace ABC.Windows.Desktop
 {
@@ -29,22 +31,22 @@ namespace ABC.Windows.Desktop
 	public class DesktopManager
 	{
 		internal readonly List<VirtualDesktop> AvailableDesktops = new List<VirtualDesktop>();
+		internal readonly Stack<Window> WindowClipboard = new Stack<Window>();
+
 		readonly Func<WindowInfo, bool> _windowFilter;
 		readonly Func<WindowInfo, DesktopManager, List<WindowInfo>> _hideBehavior;
+		readonly List<WindowInfo> _invalidWindows = new List<WindowInfo>();
 
-		readonly VirtualDesktop _startupDesktop;
-		internal readonly Stack<Window> WindowClipboard = new Stack<Window>();
-        internal readonly List<WindowInfo> Cache = new List<WindowInfo>(); 
-
+		// ReSharper disable NotAccessedField.Local
 		readonly MonitorVdmPipeServer _monitorServer;
-        readonly WindowMonitor _windowMonitor;
+		// ReSharper restore NotAccessedField.Local
+		readonly WindowMonitor _windowMonitor;
 
-	    public VirtualDesktop StartupDesktop {
-            get { return _startupDesktop; }
-	    }
-        public VirtualDesktop CurrentDesktop { get; private set; }
+		public VirtualDesktop StartupDesktop { get; private set; }
+		public VirtualDesktop CurrentDesktop { get; private set; }
 
-	    /// <summary>
+
+		/// <summary>
 		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
 		///   This desktop is accessible through the <see cref="CurrentDesktop" /> property.
 		/// </summary>
@@ -64,45 +66,25 @@ namespace ABC.Windows.Desktop
 			_windowFilter = settings.CreateWindowFilter();
 			_hideBehavior = settings.CreateHideBehavior();
 
-			_startupDesktop = new VirtualDesktop( GetNewWindows() )
-			    {
-			        Folder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
-			    };
-	        CurrentDesktop = _startupDesktop;
-			AvailableDesktops.Add( CurrentDesktop );
+			// Initialize startup desktop.
+			StartupDesktop = new VirtualDesktop( GetNewWindows() )
+			{
+				Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop )
+			};
+			CurrentDesktop = StartupDesktop;
+			AvailableDesktops.Add( CurrentDesktop );			
+
+			// Initialize window monitor.
+			_windowMonitor =  new WindowMonitor();
+			_windowMonitor.WindowActivated += ( window, fullscreen ) => UpdateWindowAssociations();
+			_windowMonitor.WindowDestroyed += pointer => UpdateWindowAssociations();
+			Task.Factory.StartNew( () => _windowMonitor.Start() );
 
 			_monitorServer = new MonitorVdmPipeServer( this );
-
-            _windowMonitor =  new WindowMonitor();
-            _windowMonitor.WindowActivated += windowMonitor_WindowActivated;
-            //_windowMonitor.WindowCreated += windowMonitor_WindowCreated;
-            _windowMonitor.WindowDestroyed += windowMonitor_WindowDestroyed;
-
-	        Task.Factory.StartNew(() => _windowMonitor.Start());
-	        Task.Factory.StartNew(UpdateWindowAssociations);
 		}
 
-        #region WindowMonitor event handlers
-        private void windowMonitor_WindowDestroyed(IntPtr oldWindowHandle)
-        {
-            UpdateWindowAssociations();
-        }
-        private void windowMonitor_WindowActivated(WindowInfo window, bool fullscreen)
-        {
-            UpdateWindowAssociations();
-        }
-        #endregion
 
-
-        /// <summary>
-        /// Updates the desktop folder
-        /// </summary>
-        private void ChangeDesktopFolder(string path)
-        {
-            DesktopFolderSwitcher.ChangeDesktopFolder(path);
-        }
-
-        /// <summary>
+		/// <summary>
 		///   Create an empty virtual desktop with no windows assigned to it.
 		/// </summary>
 		/// <returns>The newly created virtual desktop.</returns>
@@ -114,32 +96,27 @@ namespace ABC.Windows.Desktop
 			return newDesktop;
 		}
 
-        /// <summary>
-        ///   Create an empty virtual desktop with no windows assigned to it.
-        /// </summary>
-        /// <returns>The newly created virtual desktop.</returns>
-        public VirtualDesktop CreateEmptyDesktop(string folder)
-        {
-            var newDesktop = new VirtualDesktop{Folder = folder};
-            AvailableDesktops.Add(newDesktop);
+		/// <summary>
+		///   Create an empty virtual desktop with no windows assigned to it.
+		/// </summary>
+		/// <returns>The newly created virtual desktop.</returns>
+		public VirtualDesktop CreateEmptyDesktop( string folder )
+		{
+			var newDesktop = new VirtualDesktop { Folder = folder };
+			AvailableDesktops.Add( newDesktop );
 
-            return newDesktop;
-        }
+			return newDesktop;
+		}
 
-        /// <summary>
-        /// Creates a new desktop from a stored session
-        /// </summary>
-        /// <param name="session">The newly created virtual desktop></param>
-        /// <returns></returns>
+		/// <summary>
+		///   Creates a new desktop from a stored session.
+		/// </summary>
+		/// <param name="session">The newly created virtual desktop.</param>
 		public VirtualDesktop CreateDesktopFromSession( StoredSession session )
 		{
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
-			// TODO: Batch these 'hide window' operations together using RepositionWindowInfo?
-            foreach (var w in session.OpenWindows)
-            {
-                _startupDesktop.RemoveWindow(w.Info);
-            }
+			StartupDesktop.RemoveWindows( session.OpenWindows.ToList() );
 
 			var restored = new VirtualDesktop( session );
 			AvailableDesktops.Add( restored );
@@ -152,14 +129,17 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void UpdateWindowAssociations()
 		{
-			List<Window> newWindows = GetNewWindows();
-			List<Window> toRemove = CurrentDesktop.Windows.Where( w => !IsValidWindow( w.Info ) ).ToList();
+			// Update window associations for the currently open desktop.
+			CurrentDesktop.AddWindows( GetNewWindows() );
+			CurrentDesktop.RemoveWindows( CurrentDesktop.Windows.Where( w => !IsValidWindow( w.Info ) ).ToList() );
+			CurrentDesktop.Windows.ForEach( w => w.Update() );
 
-			CurrentDesktop.UpdateWindowAssociations( newWindows, toRemove );
-
-            var toRemoveFromCache = Cache.Where(w => w.IsDestroyed());
-            foreach (var w in toRemoveFromCache.ToList())
-                Cache.Remove(w);
+			// Remove destroyed windows from places where they are cached.
+			var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
+			foreach ( var w in destroyedWindows )
+			{
+				_invalidWindows.Remove( w );
+			}
 		}
 
 		/// <summary>
@@ -173,53 +153,49 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-		    CurrentDesktop.Icons = DesktopIconManager.SaveDestopIcons();
-
-			UpdateWindowAssociations();
+			CurrentDesktop.Icons = DesktopIconManager.SaveDestopIcons();
 
 			// Hide windows and show those from the new desktop.
+			UpdateWindowAssociations();
 			CurrentDesktop.Hide( w => _hideBehavior( w, this ) );
 			desktop.Show();
 
+			// Update desktop icons.
+			if ( desktop.Folder != null )
+			{
+				DesktopFolderSwitcher.ChangeDesktopFolder( desktop.Folder );
+			}
+			if ( desktop.Icons != null )
+			{
+				DesktopIconManager.ArrangeDesktopIcons( desktop.Icons );
+			}
+
 			CurrentDesktop = desktop;
-
-
-            if(desktop.Folder != null)
-                ChangeDesktopFolder(desktop.Folder);
-
-            if(desktop.Icons !=null)
-                DesktopIconManager.ArrangeDesktopIcons(desktop.Icons);
-
 		}
 
 		/// <summary>
-		///   Merges two desktops together and returns the new desktop.
+		///   Merges all windows from one desktop with those from another, and removes the original desktop.
+		///   You can't merge the <see cref="StartupDesktop"/> with another desktop.
 		/// </summary>
 		/// <returns>A new virtual desktop which has windows of both passed desktops assigned to it.</returns>
-		public VirtualDesktop Merge( VirtualDesktop desktop1, VirtualDesktop desktop2 )
+		public void Merge( VirtualDesktop from, VirtualDesktop to )
 		{
-			AvailableDesktops.Remove( desktop1 );
-			AvailableDesktops.Remove( desktop2 );
-			var newDesktop = new VirtualDesktop( desktop1.Windows.Concat( desktop2.Windows ).Select( w => new Window( w.Info ) ) );
-			AvailableDesktops.Add( newDesktop );
+			Contract.Requires( from != null && to != null && from != to );
 
-			return newDesktop;
+			if ( from == StartupDesktop )
+			{
+				throw new ArgumentException( "Can't remove the startup desktop.", "from" );
+			}
+			if ( from == CurrentDesktop )
+			{
+				throw new ArgumentException( "The passed desktop can't be removed since it's the current desktop.", "from" );
+			}
+
+			AvailableDesktops.Remove( from );
+			to.AddWindows( from.Windows.ToList() );
 		}
 
-        /// <summary>
-        /// Deletes the active desktop and moved all windows to the startup desktop
-        /// </summary>
-	    public void Delete(VirtualDesktop desktop)
-        {
-            if (desktop == null) return;
-            //UpdateWindowAssociations();
-            foreach (var window in desktop.Windows)
-                _startupDesktop.AddWindow(window);
-            AvailableDesktops.Remove(desktop);
-            SwitchToDesktop(_startupDesktop);
-        }
-
-	    /// <summary>
+		/// <summary>
 		///   Closes the virtual desktop manager by restoring all windows.
 		/// </summary>
 		public void Close()
@@ -231,40 +207,45 @@ namespace ABC.Windows.Desktop
 			WindowManager.RepositionWindows( showWindows.ToList(), true );
 		}
 
-        /// <summary>
-        /// Check whether the WindowInfo object represents a valid Window
-        /// </summary>
-        /// <param name="window"></param>
-        /// <returns>True if valid, false if unvalid</returns>
+		/// <summary>
+		///   Check whether the WindowInfo object represents a valid Window.
+		/// </summary>
+		/// <returns>True if valid, false if unvalid.</returns>
 		bool IsValidWindow( WindowInfo window )
 		{
 			return !window.IsDestroyed() && _windowFilter( window );
 		}
 
-        /// <summary>
-        /// Gets all newly created windows
-        /// </summary>
-        /// <returns> A list with all new windows</returns>
+		/// <summary>
+		///   Gets all newly created windows.
+		/// </summary>
+		/// <returns>A list with all new windows.</returns>
 		List<Window> GetNewWindows()
 		{
-		    var allWindows = WindowManager.GetWindows().Where(w => !Cache.Contains(w));
-			var validWindows =  allWindows.Except(
-					AvailableDesktops
-						.SelectMany( d => d.Windows )
-						.Concat( WindowClipboard )
-						.Select( w => w.Info ) )
-				        .Where( IsValidWindow )
-                        .Select( w => new Window( w ) );
-		    var notValid = allWindows.Except(validWindows.Select(w => w.Info)).ToList();
-            Cache.AddRange(notValid);
-		    return validWindows.ToList();
+			List<WindowInfo> newWindows = WindowManager.GetWindows().Except(
+				AvailableDesktops.SelectMany( d => d.Windows ).Concat( WindowClipboard )
+				.Select( w => w.Info )
+				.Concat( _invalidWindows ) ).ToList();
+
+			var validWindows = new List<Window>();
+			foreach ( var w in newWindows )
+			{
+				if ( IsValidWindow( w ) )
+				{
+					validWindows.Add( new Window( w ) );
+				}
+				else
+				{
+					_invalidWindows.Add( w );
+				}
+			}
+			return validWindows;
 		}
 
 		/// <summary>
 		///   Cut a given window from the currently open desktop and store it in a clipboard.
 		///   TODO: What if a window from a different desktop is passed? Should this be supported?
 		/// </summary>
-		/// <param name = "window"></param>
 		public void CutWindow( WindowInfo window )
 		{
 			UpdateWindowAssociations(); // Newly added windows might need to be cut too, so update associations first.
@@ -274,12 +255,9 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			var cutWindows = _hideBehavior( window, this );
-			foreach ( var w in cutWindows )
-			{
-				WindowClipboard.Push( new Window( w ) );
-				CurrentDesktop.RemoveWindow( w );
-			}
+			var cutWindows = _hideBehavior( window, this ).Select( w => new Window( w ) ).ToList();
+			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
+			CurrentDesktop.RemoveWindows( cutWindows );
 		}
 
 		/// <summary>
@@ -287,10 +265,8 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void PasteWindows()
 		{
-			while ( WindowClipboard.Count > 0 )
-			{
-				CurrentDesktop.AddWindow( WindowClipboard.Pop() );
-			}
+			CurrentDesktop.AddWindows( WindowClipboard.ToList() );
+			WindowClipboard.Clear();
 		}
 	}
 }

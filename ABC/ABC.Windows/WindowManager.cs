@@ -14,7 +14,7 @@ namespace ABC.Windows
 	{
 		enum ErrorCode
 		{
-			AccessDenied = 0x5,
+			AccessDenied = PInvoke.ErrorCode.AccessDenied,
 			InvalidWindowHandle = 0x00000578,
 			InvalidMultipleWindowPositionStructure = 0x0000057D
 		}
@@ -161,7 +161,7 @@ namespace ABC.Windows
 					// Handle possible errors.
 					if ( windowsPositionInfo == IntPtr.Zero )
 					{
-						ErrorCode error = (ErrorCode)Marshal.GetLastWin32Error();
+						var error = (ErrorCode)Marshal.GetLastWin32Error();
 						switch ( error )
 						{
 							case ErrorCode.InvalidWindowHandle:
@@ -189,7 +189,7 @@ namespace ABC.Windows
 						// All windows are hidden and there is no more active window.
 						// This causes a bug next time a window is shown which doesn't show up on the taskbar. Another window is shown on the taskbar, but not made visible.
 						// To prevent this, activate the start bar.
-						WindowInfo startBar = GetWindows().Where( w => w.GetClassName() == "Shell_TrayWnd" ).FirstOrDefault();
+						WindowInfo startBar = GetWindows().FirstOrDefault( w => w.GetClassName() == "Shell_TrayWnd" );
 						if ( startBar != null )
 						{
 							startBar.Focus();

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
+
 namespace ABC.Windows.Desktop
 {
 	/// <summary>
@@ -34,13 +35,41 @@ namespace ABC.Windows.Desktop
 		public Window( WindowInfo info )
 		{
 			Info = info;
+
+			// TODO: This constructor only makes sense when called on windows from a currently visible desktop. Verify this, and attempt to enforce this.
 			Update();
 		}
 
 
-		public void Update()
+		internal void Update()
 		{
 			Visible = Info.IsVisible();
+		}
+
+		public override bool Equals( object obj )
+		{
+			var other = obj as Window;
+			if ( other == null )
+			{
+				return false;
+			}
+
+			return Equals( other );
+		}
+
+		protected bool Equals( Window other )
+		{
+			if ( ReferenceEquals( null, other ) )
+			{
+				return false;
+			}
+
+			return ReferenceEquals( this, other ) || Info.Equals( other.Info );
+		}
+
+		public override int GetHashCode()
+		{
+			return Info.GetHashCode();
 		}
 	}
 }

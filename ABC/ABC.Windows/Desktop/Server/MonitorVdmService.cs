@@ -47,17 +47,19 @@ namespace ABC.Windows.Desktop.Server
 
 		public void CutWindows( List<WindowInfo> windows )
 		{
+			List<Window> toCut = windows.Select( w => new Window( w ) ).ToList();
+
 			// Cut the passed window from all desktops.
 			// TODO: This will cause problems once windows are allowed to be on multiple desktops.
 			foreach ( WindowInfo window in windows )
 			{
 				_desktopManager.AvailableDesktops
 					.Where( d => d.Windows.Any( w => w.Info.Equals( window ) ) )
-					.ForEach( d => d.RemoveWindow( window ) );
+					.ForEach( d => d.RemoveWindows( toCut ) );
 			}
 
 			// Add windows to the clipboard.
-			windows.ForEach( w => _desktopManager.WindowClipboard.Push( new Window( w ) ) );
+			toCut.ForEach( w => _desktopManager.WindowClipboard.Push( w ) );
 		}
 
 		public override object InitializeLifetimeService()

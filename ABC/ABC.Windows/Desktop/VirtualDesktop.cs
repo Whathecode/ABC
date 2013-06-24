@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Whathecode.System.Extensions;
 
+
 namespace ABC.Windows.Desktop
 {
 	/// <summary>
@@ -33,11 +34,14 @@ namespace ABC.Windows.Desktop
 			get { return _windows.AsReadOnly(); }
 		}
 
-        public string Folder { get; set; }
+		public bool IsVisible { get; private set; }
 
-        public List<DesktopIcon> Icons { get; set; }
+		public string Folder { get; set; }
 
-	    /// <summary>
+		public List<DesktopIcon> Icons { get; set; }
+
+
+		/// <summary>
 		///   Create an empty virtual desktop.
 		/// </summary>
 		internal VirtualDesktop() {}
@@ -49,6 +53,7 @@ namespace ABC.Windows.Desktop
 		internal VirtualDesktop( IEnumerable<Window> initialWindows )
 		{
 			_windows.AddRange( initialWindows );
+			IsVisible = true;
 		}
 
 		/// <summary>
@@ -60,43 +65,41 @@ namespace ABC.Windows.Desktop
 			_windows.AddRange( session.OpenWindows );
 		}
 
+
 		/// <summary>
-		///   Adds the passed new windows and removes windows which are no longer open from the list.
+		///   Adds the passed new windows and shows them in case the desktop is visible.
 		/// </summary>
-		/// <param name = "newWindows">Newly opened windows on this virtual desktop.</param>
-		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
-		internal void UpdateWindowAssociations( List<Window> newWindows, List<Window> toRemove )
+		/// <param name = "newWindows">New windows associated to this virtual desktop.</param>
+		internal void AddWindows( List<Window> newWindows )
 		{
-			toRemove.ForEach( w => _windows.Remove( w ) );
-			_windows.AddRange( newWindows );
-			_windows.ForEach( w => w.Update() );
+			foreach ( var w in newWindows.Where( w => !_windows.Contains( w ) ) )
+			{
+				_windows.Add( w );
+			}
+
+			// Make sure to show the newly added windows in case they were hidden.
+			if ( IsVisible && newWindows.Any() )
+			{
+				Show();
+			}
 		}
 
 		/// <summary>
-		///   Adds the passed window to the virtual desktop and activates it.
+		///   Remove windows which no longer belong to this desktop.
 		/// </summary>
-		/// <param name = "toAdd">The window to add.</param>
-		public void AddWindow( Window toAdd )
+		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
+		internal void RemoveWindows( List<Window> toRemove )
 		{
-			_windows.Add( toAdd );
-			if ( toAdd.Visible )
-			{
-				toAdd.Info.Show();
-			}
-		}	
+			toRemove.ForEach( w => _windows.Remove( w ) );
 
-		/// <summary>
-		///   Removes the passed window from the virtual desktop and hides it.
-		/// </summary>
-		/// <param name = "toRemove">The window to remove.</param>
-		public void RemoveWindow( WindowInfo toRemove )
-		{
-			Window window = _windows.FirstOrDefault( w => w.Info.Equals( toRemove ) );
-			if ( window != null )
+			if ( IsVisible && toRemove.Any() )
 			{
-				_windows.Remove( window );
+				// Hide windows.
+				var hideWindows = toRemove
+					.Where( w => !w.Info.IsDestroyed() )
+					.Select( w => new RepositionWindowInfo( w.Info ) { Visible = false } );
+				WindowManager.RepositionWindows( hideWindows.ToList() );
 			}
-			toRemove.Hide();
 		}
 
 		/// <summary>
@@ -104,19 +107,22 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		internal void Show()
 		{
+			IsVisible = true;
+
 			// Reposition windows.
 			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.
 			var allWindows = _windows.GroupBy( w => w.Info.IsTopmost() );
 			allWindows.ForEach( group =>
 			{
 				var showWindows = group
-					.Where( w => w.Visible )
+					.Where( w => w.Visible && !w.Info.IsVisible() )
 					.Select( w => new RepositionWindowInfo( w.Info ) { Visible = true } );
 				WindowManager.RepositionWindows( showWindows.ToList(), true );
 			} );
 
 			// Activate top window.
 			// TODO: Is the topmost window always the previous active one? Possibly a better check is needed.
+			// TODO: Which window to activate when desktops are merged?
 			Window first = _windows.FirstOrDefault( w => w.Visible );
 			if ( first != null )
 			{
@@ -129,6 +135,8 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		internal void Hide( Func<WindowInfo, List<WindowInfo>> hideBehavior )
 		{
+			IsVisible = false;
+
 			// Find z-order of the windows.
 			// TODO: Safeguard for infinite loop and possible destroyed windows.
 			// http://stackoverflow.com/q/12992201/590790
@@ -136,11 +144,11 @@ namespace ABC.Windows.Desktop
 			WindowInfo window = WindowManager.GetTopWindow();
 			while ( window != null )
 			{
-                Window match = _windows.FirstOrDefault(w => w.Info.Equals(window));
-                if (match != null)
-                {
-                    ordenedWindows.Add(match);
-                }
+				Window match = _windows.FirstOrDefault(w => w.Info.Equals(window));
+				if (match != null)
+				{
+					ordenedWindows.Add(match);
+				}
 				window = WindowManager.GetWindowBelow( window );
 			}
 			_windows = ordenedWindows;
@@ -161,6 +169,5 @@ namespace ABC.Windows.Desktop
 		{
 			return new StoredSession( this );
 		}
-
 	}
 }

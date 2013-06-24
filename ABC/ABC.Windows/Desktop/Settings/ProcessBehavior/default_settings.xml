@@ -10,6 +10,14 @@
     <Window ClassName="SysShadow" />
     <!-- Tooltips. -->
     <Window ClassName="tooltips_class32" />
+
+    <!-- TODO: What is this exactly? -->
+    <Window ClassName="IME" />
+    <Window ClassName="MSCTFIME UI" />
+    <Window ClassName="WorkerW" />
+    <!-- TODO: How unique are these class names? Do we need wildcard support? -->
+    <Window ClassName=".NET-BroadcastEventWindow.4.0.0.0.5c39d4.0" />
+    <Window ClassName="WindowsForms10.Window.0.app.0.5c39d4_r20_ad1" />
   </CommonIgnoreWindows>
 
 
@@ -30,18 +38,10 @@
       <!-- TODO: Get more information on these windows, what they are, and whether they should really be ignored. -->
       <Window ClassName="_SearchEditBoxFakeWindow" />
       <Window ClassName="AUTHUI.DLL: Shutdown Choices Message Window" />
-      <Window ClassName="IME" />
       <Window ClassName="Media Center SSO" />
-      <Window ClassName="MSCTFIME UI" />
+      <Window ClassName="PrintCacheLocalConnectionListenerHiddenWindow" />
+      <Window ClassName="PrintCacheListenerWindow_19A79E3F-0006-4175-AACD-6F5C69CC0D23" />
       <Window ClassName="TaskSwitcherWnd" />
-      <Window ClassName="WorkerW" />
-    </IgnoreWindows>
-  </Process>
-
-  <!-- Pen input. -->
-  <Process Name="wisptis" CompanyName="">
-    <IgnoreWindows>
-      <Window ClassName="wisptis_feedback_window" />
     </IgnoreWindows>
   </Process>
 
@@ -50,6 +50,9 @@
     <IgnoreWindows>
       <!-- Status bar. -->
       <Window ClassName="Chrome_WidgetWin_0" />
+
+      <!-- TODO: What is this? -->
+      <Window ClassName="Messaging" />
     </IgnoreWindows>
     <HideBehavior>
       <Default Hide="SelectedWindow" />
@@ -58,6 +61,13 @@
         <Window ClassName="Chrome_WidgetWin_0" Visible="True" />
       </Include>
     </HideBehavior>
+  </Process>
+
+  <!-- Visual Studio 2012. -->
+  <Process Name="devenv" CompanyName="Microsoft Corporation" Version="11.0">
+    <IgnoreWindows>
+      <Window ClassName="VsSolutionFileChangeTimerWindow" />
+    </IgnoreWindows>
   </Process>
 
   <!-- Asus function key visualizations. -->
