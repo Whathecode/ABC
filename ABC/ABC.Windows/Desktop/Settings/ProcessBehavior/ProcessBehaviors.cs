@@ -63,13 +63,13 @@ namespace Generated.ProcessBehaviors
 			switch ( selectedDesktops )
 			{
 				case ConsiderWindows.AllWindows:
-					return WindowManager.GetWindows().Select( w => new ABC.Windows.Desktop.Window( w ) );
+                    return WindowManager.GetWindows().Select(w => new ABC.Windows.Desktop.Window(w));
 				case ConsiderWindows.AllDesktopWindows:
 					return desktopManager.AvailableDesktops.SelectMany( d => d.Windows );
 				case ConsiderWindows.CurrentDesktopWindowsOnly:
 					return desktopManager.CurrentDesktop.Windows;
 				default:
-					return new ABC.Windows.Desktop.Window[] { };
+                    return new ABC.Windows.Desktop.Window[] { };
 			}
 		}		
 	}

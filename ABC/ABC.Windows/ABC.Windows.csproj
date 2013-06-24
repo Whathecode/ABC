@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ABC.Windows</RootNamespace>
-    <AssemblyName>ABC</AssemblyName>
+    <AssemblyName>ABC.Windows</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,6 +33,22 @@
     <Compile Include="DesktopFolderSwitcher.cs" />
     <Compile Include="DesktopIcon.cs" />
     <Compile Include="DesktopIconManager.cs" />
+    <Compile Include="Desktop\Debug\IMonitorVdmService.cs" />
+    <Compile Include="Desktop\Debug\Server\MonitorVdmServer.cs" />
+    <Compile Include="Desktop\Debug\Server\MonitorVdmService.cs" />
+    <Compile Include="Desktop\DesktopManager.cs" />
+    <Compile Include="Desktop\Settings\DefaultSettings.cs" />
+    <Compile Include="Desktop\Settings\ISettings.cs" />
+    <Compile Include="Desktop\Settings\LoadedSettings.cs" />
+    <Compile Include="Desktop\Settings\ProcessBehavior\ProcessBehaviors.cs">
+      <DependentUpon>ProcessBehaviors.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Desktop\Settings\ProcessBehavior\ProcessBehaviors.designer.cs">
+      <DependentUpon>ProcessBehaviors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Desktop\StoredSession.cs" />
+    <Compile Include="Desktop\VirtualDesktop.cs" />
+    <Compile Include="Desktop\Window.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KnownFolders.cs" />
     <Compile Include="NativeWindowEx.cs" />
@@ -47,7 +63,17 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Serialization" />
+    <Reference Include="TriAxis.RunSharp">
+      <HintPath>..\..\..\Virtual-Desktop-Manager-API\Libraries\Framework Class Library Extension\Any CPU\TriAxis.RunSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Whathecode.System">
+      <HintPath>..\..\..\Virtual-Desktop-Manager-API\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABC.PInvoke\ABC.PInvoke.csproj">
@@ -55,8 +81,16 @@
       <Name>ABC.PInvoke</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Desktop\" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\default_settings.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Desktop\Settings\ProcessBehavior\ProcessBehaviors.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

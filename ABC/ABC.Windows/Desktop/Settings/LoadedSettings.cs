@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Generated.ProcessBehaviors;
+using Whathecode.System.Linq;
 
 
 namespace ABC.Windows.Desktop.Settings
@@ -39,6 +40,7 @@ namespace ABC.Windows.Desktop.Settings
 		{
 			if ( loadDefaultSettings )
 			{
+                var streams = Assembly.GetExecutingAssembly().GetManifestResourceNames();
 				Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream( DefaultSettingsFile );
 				AddSettingsFile( settingsStream );
 			}
@@ -167,7 +169,7 @@ namespace ABC.Windows.Desktop.Settings
 
 				ProcessBehaviorsProcess processBehavior = matches.Count == 0
 					? null
-					: MaxBy(matches);
+                    : matches.MaxBy(p => p.Version == null ? 0 : p.Version.Length);
 				_windowProcessBehaviors[ window ] = processBehavior;
 
 				return processBehavior;
@@ -178,19 +180,5 @@ namespace ABC.Windows.Desktop.Settings
 				return null;
 			}
 		}
-
-	    private ProcessBehaviorsProcess MaxBy(List<ProcessBehaviorsProcess> matches)
-	    {
-	        ProcessBehaviorsProcess processMaxCount = null;
-	        foreach (var p in matches)
-	        {
-	            if (processMaxCount == null)
-	                processMaxCount = p;
-	            if (p.Version.Length > processMaxCount.Version.Length)
-	                processMaxCount = p;
-
-	            return processMaxCount;
-	        }
-	    }
 	}
 }
