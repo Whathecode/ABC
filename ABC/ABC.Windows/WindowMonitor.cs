@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using ABC.PInvoke;
 
@@ -73,7 +74,7 @@ namespace ABC.Windows
             }
             catch (Exception ex)
             {
-
+                Debug.WriteLine(ex);
             }
         }
     }

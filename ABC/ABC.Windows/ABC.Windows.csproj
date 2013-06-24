@@ -33,9 +33,9 @@
     <Compile Include="DesktopFolderSwitcher.cs" />
     <Compile Include="DesktopIcon.cs" />
     <Compile Include="DesktopIconManager.cs" />
-    <Compile Include="Desktop\Debug\IMonitorVdmService.cs" />
-    <Compile Include="Desktop\Debug\Server\MonitorVdmServer.cs" />
-    <Compile Include="Desktop\Debug\Server\MonitorVdmService.cs" />
+    <Compile Include="Desktop\Server\IMonitorVdmService.cs" />
+    <Compile Include="Desktop\Server\MonitorVdmServer.cs" />
+    <Compile Include="Desktop\Server\MonitorVdmService.cs" />
     <Compile Include="Desktop\DesktopManager.cs" />
     <Compile Include="Desktop\Settings\DefaultSettings.cs" />
     <Compile Include="Desktop\Settings\ISettings.cs" />

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
-using ABC.Windows.Desktop.Debug.Server;
+using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 
 namespace ABC.Windows.Desktop
@@ -36,7 +36,7 @@ namespace ABC.Windows.Desktop
 		internal readonly Stack<Window> WindowClipboard = new Stack<Window>();
         internal readonly List<WindowInfo> Cache = new List<WindowInfo>(); 
 
-		readonly MonitorVdmServer _monitorServer;
+		readonly MonitorVdmPipeServer _monitorServer;
         readonly WindowMonitor _windowMonitor;
 
 	    public VirtualDesktop StartupDesktop {
@@ -71,23 +71,23 @@ namespace ABC.Windows.Desktop
 	        CurrentDesktop = _startupDesktop;
 			AvailableDesktops.Add( CurrentDesktop );
 
-			_monitorServer = new MonitorVdmServer( this );
+			_monitorServer = new MonitorVdmPipeServer( this );
 
             _windowMonitor =  new WindowMonitor();
-            _windowMonitor.WindowActivated += _windowMonitor_WindowActivated;
-            //_windowMonitor.WindowCreated += _windowMonitor_WindowCreated;
-            _windowMonitor.WindowDestroyed += _windowMonitor_WindowDestroyed;
+            _windowMonitor.WindowActivated += windowMonitor_WindowActivated;
+            //_windowMonitor.WindowCreated += windowMonitor_WindowCreated;
+            _windowMonitor.WindowDestroyed += windowMonitor_WindowDestroyed;
 
 	        Task.Factory.StartNew(() => _windowMonitor.Start());
 	        Task.Factory.StartNew(UpdateWindowAssociations);
 		}
 
         #region WindowMonitor event handlers
-        private void _windowMonitor_WindowDestroyed(IntPtr oldWindowHandle)
+        private void windowMonitor_WindowDestroyed(IntPtr oldWindowHandle)
         {
             UpdateWindowAssociations();
         }
-        private void _windowMonitor_WindowActivated(WindowInfo window, bool fullscreen)
+        private void windowMonitor_WindowActivated(WindowInfo window, bool fullscreen)
         {
             UpdateWindowAssociations();
         }
