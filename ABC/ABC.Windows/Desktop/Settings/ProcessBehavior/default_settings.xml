@@ -43,6 +43,9 @@
       <Window ClassName="PrintCacheListenerWindow_19A79E3F-0006-4175-AACD-6F5C69CC0D23" />
       <Window ClassName="TaskSwitcherWnd" />
     </IgnoreWindows>
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+    </HideBehavior>
   </Process>
 
   <!-- Chrome. -->

@@ -1,6 +1,7 @@
 ﻿// TODO: Generating ProcessBehaviors with the correct namespace causes problems.
 // ReSharper disable CheckNamespace
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -84,7 +85,7 @@ namespace Generated.ProcessBehaviors
 				case ConsiderWindows.CurrentDesktopWindowsOnly:
 					return desktopManager.CurrentDesktop.Windows;
 				default:
-					return new Desktop.Window[] { };
+					throw new NotSupportedException();
 			}
 		}
 	}
