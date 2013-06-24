@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  id="ProcessBehaviors"
+  targetNamespace="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  xmlns="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
+  xmlns:pb="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  
+  <!-- Type which can uniquely identify one particular window of a process. -->
+  <xs:complexType name="Window">
+    <xs:attribute name="ClassName" type="xs:string" />
+    <xs:attribute name="Visible" default="Both">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="True" />
+          <xs:enumeration value="False" />
+          <xs:enumeration value="Both" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <!-- Type which lists a set of windows. -->
+  <xs:complexType name="WindowList">
+    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="Window" type="Window" />
+    </xs:sequence>    
+  </xs:complexType>
+
+  <!-- Type which determines the windows which should be considered during a window operation. -->
+  <xs:simpleType name="ConsiderWindows">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AllWindows" />
+      <xs:enumeration value="CurrentDesktopWindowsOnly" />
+      <xs:enumeration value="AllDesktopWindows" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  
+  <!-- List of processes with desired behaviors on how the Virtual Desktop Manager should handle its containing windows. -->
+  <xs:element name="ProcessBehaviors">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="CommonIgnoreWindows" type="WindowList" minOccurs="0" maxOccurs="1" />
+        
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+
+          <xs:element name="Process">
+            <xs:complexType>
+
+              <xs:sequence>
+                <!-- A list of windows which should be ignored entirely by the Virtual Desktop Manager. -->
+                <xs:element name="IgnoreWindows" type="WindowList" minOccurs="0" maxOccurs="1" />
+
+                <!-- Describes which windows should be cut when a window of this process is cut. -->
+                <xs:element name="HideBehavior" minOccurs="0" maxOccurs="1">
+                  <xs:complexType>
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                      <xs:choice>
+                        <!-- Default window selections. -->
+                        <xs:element name="Default">
+                          <xs:complexType>
+                            <xs:attribute name="Hide" use="required">
+                              <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                  <xs:enumeration value="SelectedWindow" />
+                                  <xs:enumeration value="AllProcessWindows" />
+                                </xs:restriction>
+                              </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="ConsiderWindows" type="ConsiderWindows" default="CurrentDesktopWindowsOnly" />
+                          </xs:complexType>
+                        </xs:element>
+
+                        <!-- Opt-in window selection. -->
+                        <xs:element name="Include">
+                          <xs:complexType>
+                            <xs:complexContent>
+                              <xs:extension base="WindowList">
+                                <xs:attribute name="ConsiderWindows" type="ConsiderWindows" default="CurrentDesktopWindowsOnly" />
+                              </xs:extension>
+                            </xs:complexContent>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:choice>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="CompanyName" type="xs:string" use="required" />
+              <xs:attribute name="Version" type="xs:string" />
+
+            </xs:complexType>
+
+          </xs:element>
+
+        </xs:sequence>        
+      </xs:sequence>
+    </xs:complexType>
+
+    <xs:unique name="UniqueProcess">
+      <xs:selector xpath="pb:Process" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@CompanyName" />
+      <xs:field xpath="@Version" />
+    </xs:unique>
+
+    <xs:unique name="UniqueNameVendor">
+      <xs:selector xpath="pb:Process" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@CompanyName" />
+    </xs:unique>
+
+  </xs:element>
+  
+</xs:schema>

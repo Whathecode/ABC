@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProcessBehaviors
+  xmlns="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatodo.at/whathecode/vdm-api ProcessBehaviors.xsd">
+
+  <!-- Common windows which need to be ignored in all applications. -->
+  <CommonIgnoreWindows>
+    <!-- Shadow of menus and tooltips. -->
+    <Window ClassName="SysShadow" />
+    <!-- Tooltips. -->
+    <Window ClassName="tooltips_class32" />
+  </CommonIgnoreWindows>
+
+
+  <!-- Default windows 7. -->
+  <Process Name="explorer" CompanyName="Microsoft Corporation">
+    <IgnoreWindows>
+      <!-- Start button. -->
+      <Window ClassName="Button" />
+      <!-- Start bar. -->
+      <Window ClassName="Shell_TrayWnd" />
+      <!-- Start menu. -->
+      <Window ClassName="DV2ControlHost" />
+      <!-- Start menu user picture. -->
+      <Window ClassName="Desktop User Picture" />
+      <!-- Desktop icons. -->
+      <Window ClassName="Progman" />
+
+      <!-- TODO: Get more information on these windows, what they are, and whether they should really be ignored. -->
+      <Window ClassName="_SearchEditBoxFakeWindow" />
+      <Window ClassName="AUTHUI.DLL: Shutdown Choices Message Window" />
+      <Window ClassName="IME" />
+      <Window ClassName="Media Center SSO" />
+      <Window ClassName="MSCTFIME UI" />
+      <Window ClassName="TaskSwitcherWnd" />
+      <Window ClassName="WorkerW" />
+    </IgnoreWindows>
+  </Process>
+
+  <!-- Pen input. -->
+  <Process Name="wisptis" CompanyName="">
+    <IgnoreWindows>
+      <Window ClassName="wisptis_feedback_window" />
+    </IgnoreWindows>
+  </Process>
+
+  <!-- Chrome. -->
+  <Process Name="chrome" CompanyName="Google Inc.">
+    <IgnoreWindows>
+      <!-- Status bar. -->
+      <Window ClassName="Chrome_WidgetWin_0" />
+    </IgnoreWindows>
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+      <!-- Also take into account the currently visible status bar. -->
+      <Include ConsiderWindows="AllWindows">
+        <Window ClassName="Chrome_WidgetWin_0" Visible="True" />
+      </Include>
+    </HideBehavior>
+  </Process>
+
+  <!-- Asus function key visualizations. -->
+  <Process Name="ATKOSD2" CompanyName="ASUSTek Computer Inc.">
+    <IgnoreWindows>
+      <Window ClassName="CNewOsd" />
+    </IgnoreWindows>
+  </Process>
+
+</ProcessBehaviors>
