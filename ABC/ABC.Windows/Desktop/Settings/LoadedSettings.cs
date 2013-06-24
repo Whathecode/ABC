@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Generated.ProcessBehaviors;
+using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
 
 
@@ -34,15 +35,43 @@ namespace ABC.Windows.Desktop.Settings
 	{
 		const string DefaultSettingsFile = "ABC.Windows.Desktop.Settings.ProcessBehavior.default_settings.xml";
 		ProcessBehaviors _settings;
+		readonly ProcessBehaviorsProcess _handleProcess = new ProcessBehaviorsProcess();
+		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
+		readonly Func<WindowInfo, bool> _windowManagerFilter;
 
 
-		public LoadedSettings( bool loadDefaultSettings = true )
+		/// <summary>
+		///   Create settings which can be loaded from separate setting files.
+		/// </summary>
+		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
+		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
+		public LoadedSettings( bool loadDefaultSettings = true, Func<WindowInfo, bool> customWindowFilter = null )
 		{
 			if ( loadDefaultSettings )
 			{
-                var streams = Assembly.GetExecutingAssembly().GetManifestResourceNames();
 				Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream( DefaultSettingsFile );
 				AddSettingsFile( settingsStream );
+			}
+
+			// Ignore windows created by the window manager itself when no filter is specified.
+			Process windowManagerProcess = Process.GetCurrentProcess();
+			if ( customWindowFilter == null )
+			{
+				_windowManagerFilter = w =>
+				{
+					Process process = w.GetProcess();
+					if ( process == null )
+					{
+						return false;
+					}
+
+					bool isWindowManager = process.Id == windowManagerProcess.Id;
+					return !isWindowManager;
+				};
+			}
+			else
+			{
+				_windowManagerFilter = customWindowFilter;
 			}
 		}
 
@@ -78,7 +107,7 @@ namespace ABC.Windows.Desktop.Settings
 				var same = _settings.Process.FirstOrDefault( p => newProcess.Equals( p ) );
 				if ( same != null )
 				{
-					_settings.Process.Remove( same );					
+					_settings.Process.Remove( same );
 				}
 				_settings.Process.Add( newProcess );
 			}
@@ -88,8 +117,8 @@ namespace ABC.Windows.Desktop.Settings
 		{
 			return w =>
 			{
-				// Common windows to filter.
-				if ( _settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w ) ) != null )
+				// Custom filter and common windows to filter.
+				if ( !_windowManagerFilter( w ) || _settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w ) ) != null )
 				{
 					return false;
 				}
@@ -97,14 +126,14 @@ namespace ABC.Windows.Desktop.Settings
 				// Process specific settings.
 				ProcessBehaviorsProcess process = GetProcessSettings( w );
 				return
-					process == null ||
+					process.ShouldHandleProcess() &&
 					process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w ) ) == null;
 			};
 		}
 
 		public Func<WindowInfo, DesktopManager, List<WindowInfo>> CreateHideBehavior()
 		{
-			return (w, m) =>
+			return ( w, m ) =>
 			{
 				ProcessBehaviorsProcess process = GetProcessSettings( w );
 				var windows = new List<WindowInfo>();
@@ -137,24 +166,18 @@ namespace ABC.Windows.Desktop.Settings
 			// See whether settings are cached.
 			if ( _accessDeniedWindows.Contains( window ) )
 			{
-				return null;
+				return _dontHandleProcess;
 			}
 			if ( _windowProcessBehaviors.ContainsKey( window ) )
 			{
 				return _windowProcessBehaviors[ window ];
 			}
-			
+
 			// Prevent cached settings from being kept in memory when windows are destroyed.
 			var deniedToRemove = _accessDeniedWindows.Where( w => w.IsDestroyed() ).ToArray();
-		    foreach (var windowInfo in deniedToRemove)
-		    {
-		        _accessDeniedWindows.Remove(windowInfo);
-		    }
+			deniedToRemove.ForEach( w => _accessDeniedWindows.Remove( w ) );
 			var processBehaviorsToRemove = _windowProcessBehaviors.Where( p => p.Key.IsDestroyed() ).ToArray();
-		    foreach (var keyValuePair in processBehaviorsToRemove)
-		    {
-		        _windowProcessBehaviors.Remove(keyValuePair.Key);
-		    }
+			processBehaviorsToRemove.ForEach( p => _windowProcessBehaviors.Remove( p.Key ) );
 
 			// Get settings.
 			Process process = window.GetProcess();
@@ -165,11 +188,11 @@ namespace ABC.Windows.Desktop.Settings
 				var matches = _settings.Process.Where( p =>
 					p.Name == process.ProcessName &&
 					p.CompanyName == versionInfo.CompanyName &&
-					( p.Version == null || versionInfo.FileVersion.StartsWith( p.Version ) ) ).ToList();
+					(p.Version == null || versionInfo.FileVersion.StartsWith( p.Version )) ).ToList();
 
 				ProcessBehaviorsProcess processBehavior = matches.Count == 0
-					? null
-                    : matches.MaxBy(p => p.Version == null ? 0 : p.Version.Length);
+					? _handleProcess
+					: matches.MaxBy( p => p.Version == null ? 0 : p.Version.Length );
 				_windowProcessBehaviors[ window ] = processBehavior;
 
 				return processBehavior;
@@ -177,7 +200,7 @@ namespace ABC.Windows.Desktop.Settings
 			catch ( Win32Exception )
 			{
 				_accessDeniedWindows.Add( window );
-				return null;
+				return _dontHandleProcess;
 			}
 		}
 	}
