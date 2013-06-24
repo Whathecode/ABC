@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace ABC.PInvoke
 {
-    public class Shell32
+    public static partial class Shell32
     {
         const string Dll = "shell32.dll";
 
@@ -24,5 +24,8 @@ namespace ABC.PInvoke
         /// </summary>
         [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
+
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern uint SHAppBarMessage(int dwMessage, ref Appbardata pData);
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="Desktop\StoredSession.cs" />
     <Compile Include="Desktop\VirtualDesktop.cs" />
     <Compile Include="Desktop\Window.cs" />
+    <Compile Include="DockingManager.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KnownFolders.cs" />
     <Compile Include="NativeWindowEx.cs" />
@@ -61,11 +62,15 @@
     <Compile Include="WindowState.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Serialization" />
     <Reference Include="TriAxis.RunSharp">
@@ -74,6 +79,7 @@
     <Reference Include="Whathecode.System">
       <HintPath>..\..\..\Virtual-Desktop-Manager-API\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABC.PInvoke\ABC.PInvoke.csproj">

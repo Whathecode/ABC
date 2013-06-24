@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using ABC.PInvoke;
 
-
 namespace ABC.Windows
 {
 	/// <summary>
@@ -199,5 +198,6 @@ namespace ABC.Windows
 				}
 			}
 		}
+
 	}
 }

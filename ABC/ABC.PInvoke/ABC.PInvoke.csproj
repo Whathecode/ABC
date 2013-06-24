@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DwmApi.cs" />
+    <Compile Include="DwmApi.Types.cs" />
+    <Compile Include="ShellMessages\AppBarMessages.cs" />
+    <Compile Include="ShellMessages\AppBarNotifications.cs" />
     <Compile Include="ErrorCode.cs" />
     <Compile Include="Kernel32.cs" />
     <Compile Include="MarshalHelper.cs" />
@@ -40,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Shell32.Types.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

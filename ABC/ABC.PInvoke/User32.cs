@@ -465,7 +465,7 @@ namespace ABC.PInvoke
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>he return value specifies the result of the message processing; it depends on the message sent.</returns>
-        [DllImport("user32.DLL", SetLastError = true)]
+        [DllImport(Dll, SetLastError = true)]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
         
         /// <summary>
@@ -474,7 +474,7 @@ namespace ABC.PInvoke
         /// <param name="lpszClass">The class name or a class atom created by a previous call to the RegisterClass or RegisterClassEx function. The atom must be in the low-order word of lpClassName; the high-order word must be zero.</param>
         /// <param name="lpszWindow">The window name (the window's title). If this parameter is NULL, all window names match.</param>
         /// <returns>If the function succeeds, the return value is a handle to the window that has the specified class name and window name. If the function fails, the return value is NULL. To get extended error information, call GetLastError.</returns>
-        [DllImport("user32.DLL")]
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr FindWindow(string lpszClass, string lpszWindow);
         
         /// <summary>
@@ -485,11 +485,36 @@ namespace ABC.PInvoke
         /// <param name="lpszClass">The class name or a class atom created by a previous call to the RegisterClass or RegisterClassEx function. The atom must be placed in the low-order word of lpszClass; the high-order word must be zero.</param>
         /// <param name="lpszWindow">The window name (the window's title). If this parameter is NULL, all window names match.</param>
         /// <returns>If the function succeeds, the return value is a handle to the window that has the specified class and window names. If the function fails, the return value is NULL. To get extended error information, call GetLastError.</returns>
-        [DllImport("user32.DLL")]
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-       
-        [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint dwProcessId);
+
+        /// <summary>
+        /// Retrieves the identifier of the thread that created the specified window and, optionally, the identifier of the process that created the window.
+        /// </summary>
+        /// <param name="windowHandle">A handle to the window.</param>
+        /// <param name="dwProcessId">A pointer to a variable that receives the process identifier. If this parameter is not NULL, GetWindowThreadProcessId copies the identifier of the process to the variable; otherwise, it does not.</param>
+        /// <returns>he return value is the identifier of the thread that created the window.</returns>
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern uint GetWindowThreadProcessId(IntPtr windowHandle, out uint dwProcessId);
+
+        /// <summary>
+        /// Changes an attribute of the specified window. The function also sets the 32-bit (long) value at the specified offset into the extra window memory. Note: this function has been superseded by the SetWindowLongPtr function. To write code that is compatible with both 32-bit and 64-bit versions of Windows, use the SetWindowLongPtr function.
+        /// </summary>
+        /// <param name="windowHandle">A handle to the window and, indirectly, the class to which the window belongs.</param>
+        /// <param name="index">The zero-based offset to the value to be set. Valid values are in the range zero through the number of bytes of extra window memory, minus the size of an integer. To set any other value, specify one of the following values.</param>
+        /// <param name="dwNewLong">The replacement value.</param>
+        /// <returns>If the function succeeds, the return value is the previous value of the specified 32-bit integer. If the function fails, the return value is zero. To get extended error information, call GetLastError.</returns>
+        public static IntPtr SetWindowLongPtr(IntPtr windowHandle, int index, uint dwNewLong)
+        {
+            // GetWindowLongPtr is only supported by Win64. By checking the pointer size the correct function can be called.
+            return IntPtr.Size == 8
+                       ? SetWindowLongPtr64(windowHandle, index, dwNewLong)
+                       : SetWindowLongPtr32(windowHandle, index, dwNewLong);
+        }
+        [DllImport(Dll, EntryPoint = "SetWindowLong", SetLastError = true)]
+        static extern IntPtr SetWindowLongPtr32(IntPtr windowHandle, int index, uint dwNewLong);
+        [DllImport(Dll, EntryPoint = "SetWindowLongPtr", SetLastError = true)]
+        static extern IntPtr SetWindowLongPtr64(IntPtr windowHandle, int index, uint dwNewLong);
 		#endregion // Window Functions.
 
 
