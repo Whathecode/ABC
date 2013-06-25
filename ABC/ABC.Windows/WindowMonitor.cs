@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 using ABC.PInvoke;
+using System.Threading.Tasks;
 
 namespace ABC.Windows
 {
@@ -21,14 +22,19 @@ namespace ABC.Windows
 
         public void Start()
         {
-            _hookWin = new NativeWindowEx();
-            _hookWin.CreateHandle(new CreateParams());
 
-            if (User32.RegisterShellHookWindow(_hookWin.Handle) == false)
-                throw new Exception("Win32 error");
+            Task.Factory.StartNew(() =>
+                {
+                    _hookWin = new NativeWindowEx();
+                    _hookWin.CreateHandle(new CreateParams());
 
-            _wmShellhookmessage = User32.RegisterWindowMessage("SHELLHOOK");
-            _hookWin.MessageRecieved += ShellWinProc;
+                    if (User32.RegisterShellHookWindow(_hookWin.Handle) == false)
+                        throw new Exception("Win32 error");
+
+                    _wmShellhookmessage = User32.RegisterWindowMessage("SHELLHOOK");
+                    _hookWin.MessageRecieved += ShellWinProc;
+                });
+
         }
 
         public void Stop()

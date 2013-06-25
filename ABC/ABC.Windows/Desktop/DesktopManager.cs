@@ -78,7 +78,7 @@ namespace ABC.Windows.Desktop
 			_windowMonitor =  new WindowMonitor();
 			_windowMonitor.WindowActivated += ( window, fullscreen ) => UpdateWindowAssociations();
 			_windowMonitor.WindowDestroyed += pointer => UpdateWindowAssociations();
-			Task.Factory.StartNew( () => _windowMonitor.Start() );
+		    _windowMonitor.Start();
 
 			_monitorServer = new MonitorVdmPipeServer( this );
 		}

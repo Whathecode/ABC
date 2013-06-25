@@ -16,9 +16,14 @@ namespace ABC.PInvoke
 
 		#region Window Functions.
 
-
+        /// <summary>
+        /// Sets the keyboard focus to the specified window. The window must be attached to the calling thread's message queue.
+        /// </summary>
+        /// <param name="hWnd">A handle to the window that will receive the keyboard input. If this parameter is NULL, keystrokes are ignored.</param>
+        /// <returns>If the function succeeds, the return value is the handle to the window that previously had the keyboard focus. If the hWnd parameter is invalid or the window is not attached to the calling thread's message queue, the return value is NULL. To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll")]
         public static extern IntPtr SetFocus(IntPtr hWnd);
+
 		/// <summary>
 		///   An application-defined callback function used with functions enumerating windows.
 		///   It receives window handles. The WNDENUMPROC type defines a pointer to this callback function.
