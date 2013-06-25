@@ -47,20 +47,22 @@ namespace ABC.PInvoke
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public class DwmBlurbehind
+        public struct DwmBlurbehind
         {
-            public uint dwFlags;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fEnable;
-            public IntPtr hRegionBlur;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fTransitionOnMaximized;
+            public CoreNativeMethods.DwmBlurBehindDwFlags dwFlags;
+            public bool Enabled;
+            public IntPtr BlurRegion;
+            public bool TransitionOnMaximized;
+        }
 
-            // ReSharper disable InconsistentNaming
-            public const uint DWM_BB_ENABLE = 0x00000001;
-            public const uint DWM_BB_BLURREGION = 0x00000002;
-            public const uint DWM_BB_TRANSITIONONMAXIMIZED = 0x00000004;
-            // ReSharper restore InconsistentNaming
+        public static class CoreNativeMethods
+        {
+            public enum DwmBlurBehindDwFlags
+            {
+                DwmBbEnable = 1,
+                DwmBbBlurRegion = 2,
+                DwmBbTransitionOnMaximized = 4
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]

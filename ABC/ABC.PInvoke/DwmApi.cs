@@ -13,7 +13,7 @@ namespace ABC.PInvoke
 
         [DllImport("dwmapi.dll", PreserveSig = false)]
         public static extern void DwmEnableBlurBehindWindow(
-            IntPtr hWnd, DwmBlurbehind pBlurBehind);
+            IntPtr hwnd, ref DwmBlurbehind blurBehind);
 
         [DllImport("dwmapi.dll", PreserveSig = false)]
         public static extern void DwmExtendFrameIntoClientArea(

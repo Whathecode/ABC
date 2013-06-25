@@ -16,6 +16,9 @@ namespace ABC.PInvoke
 
 		#region Window Functions.
 
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetFocus(IntPtr hWnd);
 		/// <summary>
 		///   An application-defined callback function used with functions enumerating windows.
 		///   It receives window handles. The WNDENUMPROC type defines a pointer to this callback function.
@@ -515,6 +518,10 @@ namespace ABC.PInvoke
         static extern IntPtr SetWindowLongPtr32(IntPtr windowHandle, int index, uint dwNewLong);
         [DllImport(Dll, EntryPoint = "SetWindowLongPtr", SetLastError = true)]
         static extern IntPtr SetWindowLongPtr64(IntPtr windowHandle, int index, uint dwNewLong);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
 		#endregion // Window Functions.
 
 
