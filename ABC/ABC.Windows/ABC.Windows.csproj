@@ -86,11 +86,11 @@
       <Name>ABC.PInvoke</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\default_settings.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\asus.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\chrome.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\visual_studio_2012.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_7.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Desktop\Settings\ProcessBehavior\ProcessBehaviors.xsd">

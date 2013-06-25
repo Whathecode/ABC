@@ -33,7 +33,7 @@ namespace ABC.Windows.Desktop.Settings
 	/// </license>
 	public class LoadedSettings : ISettings
 	{
-		const string DefaultSettingsFile = "ABC.Windows.Desktop.Settings.ProcessBehavior.default_settings.xml";
+		const string SettingsFiles = "ABC.Windows.Desktop.Settings.ProcessBehavior";
 		ProcessBehaviors _settings;
 		readonly ProcessBehaviorsProcess _handleProcess = new ProcessBehaviorsProcess();
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
@@ -49,8 +49,11 @@ namespace ABC.Windows.Desktop.Settings
 		{
 			if ( loadDefaultSettings )
 			{
-				Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream( DefaultSettingsFile );
-				AddSettingsFile( settingsStream );
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				assembly
+					.GetManifestResourceNames()
+				    .Where( name => name.StartsWith( SettingsFiles ) )
+					.ForEach( settingsFile => AddSettingsFile( assembly.GetManifestResourceStream( settingsFile ) ) );
 			}
 
 			// Ignore windows created by the window manager itself when no filter is specified.
