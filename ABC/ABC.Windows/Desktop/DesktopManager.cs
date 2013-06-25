@@ -265,6 +265,8 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void PasteWindows()
 		{
+			UpdateWindowAssociations();	// There might be newly added windows of which the z-order isn't known yet, so update associations first.
+
 			CurrentDesktop.AddWindows( WindowClipboard.ToList() );
 			WindowClipboard.Clear();
 		}

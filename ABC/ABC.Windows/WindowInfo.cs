@@ -43,15 +43,9 @@ namespace ABC.Windows
 			long pointer = info.GetInt64( "Handle" );
 
 			// The pointer is serialized as a 64 bit integer, but the system might be 32 bit.
-			if ( IntPtr.Size == 8 )
-			{
-				Handle = new IntPtr( pointer );
-			}
-			else
-			{
-				Handle = new IntPtr( (int)pointer );
-			}
+			Handle = IntPtr.Size == 8 ? new IntPtr( pointer ) : new IntPtr( (int)pointer );
 		}
+
 		public void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
 			info.AddValue( "Handle", Handle.ToInt64() );
@@ -263,7 +257,7 @@ namespace ABC.Windows
 				return false;
 			}
 
-			return Equals( other );
+			return Equals( otherWindow );
 		}
 
 		public bool Equals( WindowInfo other )

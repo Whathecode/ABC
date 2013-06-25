@@ -72,13 +72,12 @@ namespace ABC.Windows.Desktop
 		/// <param name = "newWindows">New windows associated to this virtual desktop.</param>
 		internal void AddWindows( List<Window> newWindows )
 		{
-			foreach ( var w in newWindows.Where( w => !_windows.Contains( w ) ) )
-			{
-				_windows.Add( w );
-			}
+			// Add added windows to the front of the list so they show up in front.
+			var toAdd = newWindows.Where( w => !_windows.Contains( w ) ).ToList();
+			_windows = toAdd.Concat( _windows ).ToList();
 
 			// Make sure to show the newly added windows in case they were hidden.
-			if ( IsVisible && newWindows.Any() )
+			if ( IsVisible && toAdd.Any( w => w.Visible && !w.Info.IsVisible() ) )
 			{
 				Show();
 			}
@@ -115,7 +114,7 @@ namespace ABC.Windows.Desktop
 			allWindows.ForEach( group =>
 			{
 				var showWindows = group
-					.Where( w => w.Visible && !w.Info.IsVisible() )
+					.Where( w => w.Visible )
 					.Select( w => new RepositionWindowInfo( w.Info ) { Visible = true } );
 				WindowManager.RepositionWindows( showWindows.ToList(), true );
 			} );
