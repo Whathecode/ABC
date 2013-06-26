@@ -51,7 +51,6 @@
     <Compile Include="DockingManager.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KnownFolders.cs" />
-    <Compile Include="NativeWindowEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositionWindowInfo.cs" />
     <Compile Include="Shell.cs" />

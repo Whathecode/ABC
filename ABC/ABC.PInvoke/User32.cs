@@ -13,7 +13,6 @@ namespace ABC.PInvoke
 	{
 		const string Dll = "user32.dll";
 
-
 		#region Window Functions.
 
         /// <summary>
@@ -529,7 +528,6 @@ namespace ABC.PInvoke
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 		#endregion // Window Functions.
 
-
 		#region Input Functions.
 
 		/// <summary>
@@ -587,5 +585,63 @@ namespace ABC.PInvoke
 		public static extern uint SendInput( uint inputCount, Input[] inputs, int structureSize );
 
 		#endregion // Input Functions.
-	}
+
+        #region Hooks
+        /// <summary>
+        /// Passes the hook information to the next hook procedure in the current hook chain. A hook procedure can call this function either before or after processing the hook information.
+        /// </summary>
+        /// <param name="hook">This parameter is ignored.</param>
+        /// <param name="hookCode">The hook code passed to the current hook procedure. The next hook procedure uses this code to determine how to process the hook information.</param>
+        /// <param name="wParam">The wParam value passed to the current hook procedure. The meaning of this parameter depends on the type of hook associated with the current hook chain.</param>
+        /// <param name="lParam">The lParam value passed to the current hook procedure. The meaning of this parameter depends on the type of hook associated with the current hook chain.</param>
+        /// <returns>This value is returned by the next hook procedure in the chain. The current hook procedure must also return this value. The meaning of the return value depends on the hook type. For more information, see the descriptions of the individual hook procedures.</returns>
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int CallNextHookEx(IntPtr hook, int hookCode, IntPtr wParam, IntPtr lParam);
+
+        /// <summary>
+        /// Installs an application-defined hook procedure into a hook chain. You would install a hook procedure to monitor the system for certain types of events. These events are associated either with a specific thread or with all threads in the same desktop as the calling thread.
+        /// </summary>
+        /// <param name="hook">The type of hook procedure to be installed. This parameter can be one of the following values.</param>
+        /// <param name="hookProcedure">A pointer to the hook procedure. If the dwThreadId parameter is zero or specifies the identifier of a thread created by a different process, the lpfn parameter must point to a hook procedure in a DLL. Otherwise, lpfn can point to a hook procedure in the code associated with the current process.</param>
+        /// <param name="instance">A handle to the DLL containing the hook procedure pointed to by the lpfn parameter. The hMod parameter must be set to NULL if the dwThreadId parameter specifies a thread created by the current process and if the hook procedure is within the code associated with the current process.</param>
+        /// <param name="threadId">he identifier of the thread with which the hook procedure is to be associated. For desktop apps, if this parameter is zero, the hook procedure is associated with all existing threads running in the same desktop as the calling thread. For Windows Store apps, see the Remarks section.</param>
+        /// <returns></returns>
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SetWindowsHookEx(int hook, Delegate hookProcedure, IntPtr instance, int threadId);
+
+        /// <summary>
+        /// Removes a hook procedure installed in a hook chain by the SetWindowsHookEx function.
+        /// </summary>
+        /// <param name="hookHandle">A handle to the hook to be removed. This parameter is a hook handle obtained by a previous call to SetWindowsHookEx.</param>
+        /// <returns>
+        /// If the function succeeds, the return value is nonzero.
+        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
+        /// </returns>
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool UnhookWindowsHookEx(IntPtr hookHandle);
+
+        /// <summary>
+        /// Frees a hot key previously registered by the calling thread.
+        /// </summary>
+        /// <param name="handle">A handle to the window associated with the hot key to be freed. This parameter should be NULL if the hot key is not associated with a window.</param>
+        /// <param name="id">The identifier of the hot key to be freed</param>
+        /// <returns>
+        /// If the function succeeds, the return value is nonzero.
+        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
+        /// </returns>
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool UnregisterHotKey(IntPtr handle, int id);
+
+        /// <summary>
+        /// Defines a system-wide hot key.
+        /// </summary>
+        /// <param name="handle">A handle to the window that will receive WM_HOTKEY messages generated by the hot key. If this parameter is NULL, WM_HOTKEY messages are posted to the message queue of the calling thread and must be processed in the message loop.</param>
+        /// <param name="id">The identifier of the hot key. If the hWnd parameter is NULL, then the hot key is associated with the current thread rather than with a particular window. If a hot key already exists with the same hWnd and id parameters, see Remarks for the action taken.</param>
+        /// <param name="accessKey">The keys that must be pressed in combination with the key specified by the uVirtKey parameter in order to generate the WM_HOTKEY message. The fsModifiers parameter can be a combination of the following values.</param>
+        /// <param name="keys">The virtual-key code of the hot key. See Virtual Key Codes.</param>
+        /// <returns></returns>
+        [DllImport(Dll, CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool RegisterHotKey(IntPtr handle, int id, uint accessKey, uint keys);
+        #endregion
+    }
 }

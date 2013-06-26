@@ -6,6 +6,18 @@ namespace ABC.PInvoke
 	public partial class User32
 	{
         /// <summary>
+        /// Contains information about a mouse event passed to a WH_MOUSE hook procedure, MouseProc.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MouseHookStruct
+        {
+            public Point pt;
+            public int hwnd;
+            public int wHitTestCode;
+            public int dwExtraInfo;
+        }
+
+        /// <summary>
         /// Specifies or receives the attributes of a list-view item. This structure has been updated to support a new mask value (LVIF_INDENT) that enables item indenting. This structure supersedes the LV_ITEM structure.
         /// </summary>
         [StructLayout(LayoutKind.Sequential)]

@@ -168,6 +168,9 @@ namespace ABC.Windows
 
                 Shell32.SHAppBarMessage((int)AppBarMessages.ABM_NEW, ref abd);
 
+
+                Shell32.SHAppBarMessage((int)AppBarMessages.ABM_ACTIVATE,ref abd); 
+
                 var source = HwndSource.FromHwnd(abd.hWnd);
                 if (source != null) source.AddHook(info.WndProc);
             }
