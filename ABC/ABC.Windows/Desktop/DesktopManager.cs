@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading.Tasks;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
@@ -184,11 +183,12 @@ namespace ABC.Windows.Desktop
 
 			if ( from == StartupDesktop )
 			{
-				throw new ArgumentException( "Can't remove the startup desktop.", "from" );
+				CloseAndThrow( new ArgumentException( "Can't remove the startup desktop.", "from" ) );
+				
 			}
 			if ( from == CurrentDesktop )
 			{
-				throw new ArgumentException( "The passed desktop can't be removed since it's the current desktop.", "from" );
+				CloseAndThrow( new ArgumentException( "The passed desktop can't be removed since it's the current desktop.", "from" ) );
 			}
 
 			AvailableDesktops.Remove( from );
@@ -205,6 +205,16 @@ namespace ABC.Windows.Desktop
 			// Show all cut windows again.
 			var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
 			WindowManager.RepositionWindows( showWindows.ToList(), true );
+		}
+
+		/// <summary>
+		///   Throw an exception, but close the VDM first so that no windows are lost.
+		/// </summary>
+		/// <param name = "exception">The exception to throw.</param>
+		void CloseAndThrow( Exception exception )
+		{
+			Close();
+			throw exception;
 		}
 
 		/// <summary>
