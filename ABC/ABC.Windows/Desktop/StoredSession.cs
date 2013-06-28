@@ -30,12 +30,11 @@ namespace ABC.Windows.Desktop
 		///   Holds all the windows open on the virtual desktop.
 		/// </summary>
 		[DataMember]
-		internal readonly ReadOnlyCollection<Window> OpenWindows;
+        internal readonly ReadOnlyCollection<WindowSnapshot> OpenWindows;
 
-
-		internal StoredSession( VirtualDesktop desktop )
+	    internal StoredSession( VirtualDesktop desktop )
 		{
-			OpenWindows = desktop.Windows;
+            OpenWindows = desktop.WindowSnapshots;
 		}
 	}
 }

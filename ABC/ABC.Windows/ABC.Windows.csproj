@@ -47,7 +47,7 @@
     </Compile>
     <Compile Include="Desktop\StoredSession.cs" />
     <Compile Include="Desktop\VirtualDesktop.cs" />
-    <Compile Include="Desktop\Window.cs" />
+    <Compile Include="Desktop\WindowSnapshot.cs" />
     <Compile Include="DockingManager.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KnownFolders.cs" />
@@ -92,6 +92,7 @@
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_7.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Desktop\Settings\ProcessBehavior\ProcessBehaviors.xsd">
       <SubType>Designer</SubType>
     </None>

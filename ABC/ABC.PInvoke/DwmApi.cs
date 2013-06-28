@@ -30,9 +30,8 @@ namespace ABC.PInvoke
             out int pcrColorization,
             [MarshalAs(UnmanagedType.Bool)]out bool pfOpaqueBlend);
 
-        [DllImport("dwmapi.dll", PreserveSig = false)]
-        public static extern IntPtr DwmRegisterThumbnail(
-            IntPtr dest, IntPtr source);
+        [DllImport("dwmapi.dll", SetLastError = true)]
+        public static extern int DwmRegisterThumbnail(IntPtr dest, IntPtr src, out IntPtr thumb);
 
         [DllImport("dwmapi.dll", PreserveSig = false)]
         public static extern void DwmUnregisterThumbnail(IntPtr hThumbnail);
@@ -43,7 +42,7 @@ namespace ABC.PInvoke
 
         [DllImport("dwmapi.dll", PreserveSig = false)]
         public static extern void DwmQueryThumbnailSourceSize(
-            IntPtr hThumbnail, out Psize size);
+            IntPtr hThumbnail, out Size size);
 
         [DllImport("dwmapi.dll", PreserveSig = true)]
         public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref int attrValue, int attrSize);

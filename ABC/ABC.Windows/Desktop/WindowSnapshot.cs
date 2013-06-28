@@ -4,7 +4,7 @@
 namespace ABC.Windows.Desktop
 {
 	/// <summary>
-	///   Represents a window and its state in a <see cref="VirtualDesktop" />.
+    /// An internal representation of a WindowInfo object.
 	/// </summary>
 	/// <author>Steven Jeuris</author>
 	/// <license>
@@ -23,7 +23,7 @@ namespace ABC.Windows.Desktop
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
 	[DataContract]
-	public class Window
+	public class WindowSnapshot
 	{
 		[DataMember]
 		internal readonly WindowInfo Info;
@@ -31,8 +31,7 @@ namespace ABC.Windows.Desktop
 		[DataMember]
 		internal bool Visible;
 
-
-		public Window( WindowInfo info )
+        public WindowSnapshot(WindowInfo info)
 		{
 			Info = info;
 
@@ -48,7 +47,7 @@ namespace ABC.Windows.Desktop
 
 		public override bool Equals( object obj )
 		{
-			var other = obj as Window;
+            var other = obj as WindowSnapshot;
 			if ( other == null )
 			{
 				return false;
@@ -57,7 +56,7 @@ namespace ABC.Windows.Desktop
 			return Equals( other );
 		}
 
-		protected bool Equals( Window other )
+        protected bool Equals(WindowSnapshot other)
 		{
 			if ( ReferenceEquals( null, other ) )
 			{

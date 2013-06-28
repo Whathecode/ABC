@@ -28,11 +28,16 @@ namespace ABC.Windows.Desktop
 	/// </license>
 	public class VirtualDesktop
 	{
-		List<Window> _windows = new List<Window>();
-		public ReadOnlyCollection<Window> Windows
+        List<WindowSnapshot> _windows = new List<WindowSnapshot>();
+		public ReadOnlyCollection<WindowInfo> Windows
 		{
-			get { return _windows.AsReadOnly(); }
+			get { return _windows.Select(w => w.Info).ToList().AsReadOnly(); }
 		}
+
+        internal ReadOnlyCollection<WindowSnapshot> WindowSnapshots
+        {
+            get { return _windows.AsReadOnly(); }
+        }
 
 		public bool IsVisible { get; private set; }
 
@@ -50,7 +55,7 @@ namespace ABC.Windows.Desktop
 		///   Create a virtual desktop which is initialized with a set of existing windows.
 		/// </summary>
 		/// <param name = "initialWindows">The windows which should belong to the new virtual desktop.</param>
-		internal VirtualDesktop( IEnumerable<Window> initialWindows )
+        internal VirtualDesktop(IEnumerable<WindowSnapshot> initialWindows)
 		{
 			_windows.AddRange( initialWindows );
 			IsVisible = true;
@@ -70,7 +75,7 @@ namespace ABC.Windows.Desktop
 		///   Adds the passed new windows and shows them in case the desktop is visible.
 		/// </summary>
 		/// <param name = "newWindows">New windows associated to this virtual desktop.</param>
-		internal void AddWindows( List<Window> newWindows )
+        internal void AddWindows(List<WindowSnapshot> newWindows)
 		{
 			// Add added windows to the front of the list so they show up in front.
 			var toAdd = newWindows.Where( w => !_windows.Contains( w ) ).ToList();
@@ -87,7 +92,7 @@ namespace ABC.Windows.Desktop
 		///   Remove windows which no longer belong to this desktop.
 		/// </summary>
 		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
-		internal void RemoveWindows( List<Window> toRemove )
+        internal void RemoveWindows(List<WindowSnapshot> toRemove)
 		{
 			toRemove.ForEach( w => _windows.Remove( w ) );
 
@@ -122,7 +127,7 @@ namespace ABC.Windows.Desktop
 			// Activate top window.
 			// TODO: Is the topmost window always the previous active one? Possibly a better check is needed.
 			// TODO: Which window to activate when desktops are merged?
-			Window first = _windows.FirstOrDefault( w => w.Visible );
+            WindowSnapshot first = _windows.FirstOrDefault(w => w.Visible);
 			if ( first != null )
 			{
 				first.Info.Focus();
@@ -139,11 +144,11 @@ namespace ABC.Windows.Desktop
 			// Find z-order of the windows.
 			// TODO: Safeguard for infinite loop and possible destroyed windows.
 			// http://stackoverflow.com/q/12992201/590790
-			var ordenedWindows = new List<Window>();
+			var ordenedWindows = new List<WindowSnapshot>();
 			WindowInfo window = WindowManager.GetTopWindow();
 			while ( window != null )
 			{
-				Window match = _windows.FirstOrDefault(w => w.Info.Equals(window));
+                WindowSnapshot match = _windows.FirstOrDefault(w => w.Info.Equals(window));
 				if (match != null)
 				{
 					ordenedWindows.Add(match);

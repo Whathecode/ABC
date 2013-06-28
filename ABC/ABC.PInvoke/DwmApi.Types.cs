@@ -7,7 +7,7 @@ namespace ABC.PInvoke
     {
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct Psize
+        public struct Size
         {
             public int x;
             public int y;

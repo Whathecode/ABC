@@ -24,5 +24,21 @@ namespace ABC.PInvoke
             public int right;
             public int bottom;
         }
+
+        /// <summary>
+        /// Get WindowLong constants
+        /// </summary>
+        public enum GetWindowLongConst
+        {
+            // ReSharper disable InconsistentNaming
+            GWL_WNDPROC = (-4),
+            GWL_HINSTANCE = (-6),
+            GWL_HWNDPARENT = (-8),
+            GWL_STYLE = (-16),
+            GWL_EXSTYLE = (-20),
+            GWL_USERDATA = (-21),
+            GWL_ID = (-12)
+            // ReSharper restore InconsistentNaming
+        }
     }
 }

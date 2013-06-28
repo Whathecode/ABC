@@ -30,7 +30,7 @@ namespace ABC.Windows.Desktop
 	public class DesktopManager
 	{
 		internal readonly List<VirtualDesktop> AvailableDesktops = new List<VirtualDesktop>();
-		internal readonly Stack<Window> WindowClipboard = new Stack<Window>();
+        internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
 		readonly Func<WindowInfo, bool> _windowFilter;
 		readonly Func<WindowInfo, DesktopManager, List<WindowInfo>> _hideBehavior;
@@ -45,7 +45,11 @@ namespace ABC.Windows.Desktop
 		public VirtualDesktop CurrentDesktop { get; private set; }
 
 
-		/// <summary>
+	    public List<VirtualDesktop> Desktops {
+            get { return AvailableDesktops; }
+	    }
+
+	    /// <summary>
 		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
 		///   This desktop is accessible through the <see cref="CurrentDesktop" /> property.
 		/// </summary>
@@ -80,6 +84,8 @@ namespace ABC.Windows.Desktop
 		    _windowMonitor.Start();
 
 			_monitorServer = new MonitorVdmPipeServer( this );
+
+            UpdateWindowAssociations();
 		}
 
 
@@ -91,7 +97,6 @@ namespace ABC.Windows.Desktop
 		{
 			var newDesktop = new VirtualDesktop();
 			AvailableDesktops.Add( newDesktop );
-
 			return newDesktop;
 		}
 
@@ -130,8 +135,8 @@ namespace ABC.Windows.Desktop
 		{
 			// Update window associations for the currently open desktop.
 			CurrentDesktop.AddWindows( GetNewWindows() );
-			CurrentDesktop.RemoveWindows( CurrentDesktop.Windows.Where( w => !IsValidWindow( w.Info ) ).ToList() );
-			CurrentDesktop.Windows.ForEach( w => w.Update() );
+            CurrentDesktop.RemoveWindows(CurrentDesktop.WindowSnapshots.Where(w => !IsValidWindow(w.Info)).ToList());
+            CurrentDesktop.WindowSnapshots.ForEach(w => w.Update());
 
 			// Remove destroyed windows from places where they are cached.
 			var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
@@ -192,7 +197,7 @@ namespace ABC.Windows.Desktop
 			}
 
 			AvailableDesktops.Remove( from );
-			to.AddWindows( from.Windows.ToList() );
+            to.AddWindows(from.WindowSnapshots.ToList());
 		}
 
 		/// <summary>
@@ -230,19 +235,19 @@ namespace ABC.Windows.Desktop
 		///   Gets all newly created windows.
 		/// </summary>
 		/// <returns>A list with all new windows.</returns>
-		List<Window> GetNewWindows()
+        List<WindowSnapshot> GetNewWindows()
 		{
 			List<WindowInfo> newWindows = WindowManager.GetWindows().Except(
-				AvailableDesktops.SelectMany( d => d.Windows ).Concat( WindowClipboard )
+                AvailableDesktops.SelectMany(d => d.WindowSnapshots).Concat(WindowClipboard)
 				.Select( w => w.Info )
 				.Concat( _invalidWindows ) ).ToList();
 
-			var validWindows = new List<Window>();
+            var validWindows = new List<WindowSnapshot>();
 			foreach ( var w in newWindows )
 			{
 				if ( IsValidWindow( w ) )
 				{
-					validWindows.Add( new Window( w ) );
+                    validWindows.Add(new WindowSnapshot(w));
 				}
 				else
 				{
@@ -265,7 +270,7 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			var cutWindows = _hideBehavior( window, this ).Select( w => new Window( w ) ).ToList();
+            var cutWindows = _hideBehavior(window, this).Select(w => new WindowSnapshot(w)).ToList();
 			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
 			CurrentDesktop.RemoveWindows( cutWindows );
 		}

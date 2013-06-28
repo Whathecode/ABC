@@ -74,16 +74,16 @@ namespace Generated.ProcessBehaviors
 
 	public static class CutHelper
 	{
-		public static IEnumerable<Desktop.Window> WindowsToSearchIn( DesktopManager desktopManager, ConsiderWindows selectedDesktops )
+        public static IEnumerable<Desktop.WindowSnapshot> WindowsToSearchIn(DesktopManager desktopManager, ConsiderWindows selectedDesktops)
 		{
 			switch ( selectedDesktops )
 			{
 				case ConsiderWindows.AllWindows:
-					return WindowManager.GetWindows().Select( w => new Desktop.Window( w ) );
+                    return WindowManager.GetWindows().Select(w => new Desktop.WindowSnapshot(w));
 				case ConsiderWindows.AllDesktopWindows:
-					return desktopManager.AvailableDesktops.SelectMany( d => d.Windows );
+                    return desktopManager.AvailableDesktops.SelectMany(d => d.WindowSnapshots);
 				case ConsiderWindows.CurrentDesktopWindowsOnly:
-					return desktopManager.CurrentDesktop.Windows;
+                    return desktopManager.CurrentDesktop.WindowSnapshots;
 				default:
 					throw new NotSupportedException();
 			}
