@@ -72,16 +72,16 @@ namespace Generated.ProcessBehaviors
 
 	public static class CutHelper
 	{
-		public static IEnumerable<WindowSnapshot> WindowsToSearchIn(DesktopManager desktopManager, ConsiderWindows selectedDesktops)
+		public static IEnumerable<WindowInfo> WindowsToSearchIn( DesktopManager desktopManager, ConsiderWindows selectedDesktops )
 		{
 			switch ( selectedDesktops )
 			{
 				case ConsiderWindows.AllWindows:
-					return WindowManager.GetWindows().Select( w => new WindowSnapshot( w ) );
+					return WindowManager.GetWindows();
 				case ConsiderWindows.AllDesktopWindows:
-					return desktopManager.Desktops.SelectMany( d => d.WindowSnapshots );
+					return desktopManager.Desktops.SelectMany( d => d.WindowSnapshots.Select( w => w.Info ) );
 				case ConsiderWindows.CurrentDesktopWindowsOnly:
-					return desktopManager.CurrentDesktop.WindowSnapshots;
+					return desktopManager.CurrentDesktop.WindowSnapshots.Select( w => w.Info );
 				default:
 					throw new NotSupportedException();
 			}
@@ -113,15 +113,15 @@ namespace Generated.ProcessBehaviors
 					{
 						var searchWindows = CutHelper.WindowsToSearchIn( desktopManager, ConsiderWindows );
 
-						var processWindows = searchWindows.Where( dw =>
+						var processWindows = searchWindows.Where( w =>
 						{
 							Process cutProcess = windowInfo.GetProcess();
-							Process otherProcess = dw.Info.GetProcess();
+							Process otherProcess = w.GetProcess();
 							return
 								cutProcess != null && otherProcess != null &&
 							cutProcess.Id == otherProcess.Id;
 						} );
-						windows.AddRange( processWindows.Select( pw => pw.Info ) );
+						windows.AddRange( processWindows );
 						break;
 					}
 			}
@@ -138,7 +138,7 @@ namespace Generated.ProcessBehaviors
 		public IEnumerable<WindowInfo> ToCut( WindowInfo windowInfo, DesktopManager desktopManager )
 		{
 			var searchWindows = CutHelper.WindowsToSearchIn( desktopManager, ConsiderWindows );
-			return searchWindows.Where( s => Window.Any( w => w.Equals( s.Info ) ) ).Select( w => w.Info );
+			return searchWindows.Where( s => Window.Any( w => w.Equals( s ) ) );
 		}
 	}
 
