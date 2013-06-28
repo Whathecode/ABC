@@ -1,15 +1,13 @@
-﻿// TODO: Generating ProcessBehaviors with the correct namespace causes problems.
-// ReSharper disable CheckNamespace
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ABC.Windows;
 using ABC.Windows.Desktop;
-using Desktop = ABC.Windows.Desktop;
 
 
+// TODO: Generating ProcessBehaviors with the correct namespace causes problems.
+// ReSharper disable CheckNamespace
 namespace Generated.ProcessBehaviors
 // ReSharper restore CheckNamespace
 {
@@ -74,16 +72,16 @@ namespace Generated.ProcessBehaviors
 
 	public static class CutHelper
 	{
-        public static IEnumerable<Desktop.WindowSnapshot> WindowsToSearchIn(DesktopManager desktopManager, ConsiderWindows selectedDesktops)
+		public static IEnumerable<WindowSnapshot> WindowsToSearchIn(DesktopManager desktopManager, ConsiderWindows selectedDesktops)
 		{
 			switch ( selectedDesktops )
 			{
 				case ConsiderWindows.AllWindows:
-                    return WindowManager.GetWindows().Select(w => new Desktop.WindowSnapshot(w));
+					return WindowManager.GetWindows().Select( w => new WindowSnapshot( w ) );
 				case ConsiderWindows.AllDesktopWindows:
-                    return desktopManager.AvailableDesktops.SelectMany(d => d.WindowSnapshots);
+					return desktopManager.Desktops.SelectMany( d => d.WindowSnapshots );
 				case ConsiderWindows.CurrentDesktopWindowsOnly:
-                    return desktopManager.CurrentDesktop.WindowSnapshots;
+					return desktopManager.CurrentDesktop.WindowSnapshots;
 				default:
 					throw new NotSupportedException();
 			}
