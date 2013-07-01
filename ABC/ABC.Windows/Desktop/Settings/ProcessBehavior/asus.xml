@@ -11,4 +11,11 @@
     </IgnoreWindows>
   </Process>
 
+  <!-- Asus Splendid Video Enhancement Technology. Window is never shown. -->
+  <Process Name="ACMON" CompanyName="ASUS">
+    <IgnoreWindows>
+      <Window ClassName="ACMON" />
+    </IgnoreWindows>
+  </Process>
+
 </ProcessBehaviors>
