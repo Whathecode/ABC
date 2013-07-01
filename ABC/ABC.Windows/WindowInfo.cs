@@ -62,14 +62,24 @@ namespace ABC.Windows
         {
             var windows = new List<WindowInfo>();
             User32.EnumChildWindows(Handle,
-                                    (handle, lparam) =>
-                                        {
-                                            windows.Add(new WindowInfo(handle));
-                                            return true;
-                                        },
-                                    IntPtr.Zero);
+                    (handle, lparam) =>
+                        {
+                            windows.Add(new WindowInfo(handle));
+                            return true;
+                        },
+                    IntPtr.Zero);
 
             return windows;
+        }
+
+        /// <summary>
+        ///   Get the owner window of the window if any.
+        /// </summary>
+        /// <returns>The <see cref="WindowInfo" /> instance of the owner window or null if no owner window is present.</returns>
+        public WindowInfo GetOwnerWindow()
+        {
+            IntPtr ownerHandle = User32.GetWindow( Handle, User32.WindowRelationship.Owner );
+            return ownerHandle == IntPtr.Zero ? null : new WindowInfo( ownerHandle );
         }
 
         /// <summary>
@@ -84,6 +94,14 @@ namespace ABC.Windows
             }
 
             return buffer.ToString();
+        }
+
+        /// <summary>
+        ///   Determines whether the window is a dialog box.
+        /// </summary>
+        public bool IsDialogBox()
+        {
+            return GetClassName() == "#32770";
         }
 
         private Process _process;
@@ -204,7 +222,6 @@ namespace ABC.Windows
         /// <summary>
         ///   Determines whether or not the window is set to be topmost, in which case it always stays on top of any other non-topmost windows.
         /// </summary>
-        /// <returns></returns>
         public bool IsTopmost()
         {
             int extraOptions = (int) User32.GetWindowLongPtr(Handle, (int) User32.GetWindowLongOptions.ExtendedStyles);
@@ -245,11 +262,13 @@ namespace ABC.Windows
         }
 
         /// <summary>
-        ///   Switches focus to the specified window and brings it to the foreground.
+        ///   Brings the thread that created the specified window into the foreground and activates the window.
+        ///   Keyboard input is directed to the window, and various visual cues are changed for the user.
+        ///   The system assigns a slightly higher priority to the thread that created the foreground window than it does to other threads.
         /// </summary>
-        public void Focus()
+        public void SetForegroundWindow()
         {
-            User32.SwitchToThisWindow(Handle, false);
+            User32.SetForegroundWindow( Handle );
         }
 
         public override bool Equals(object other)

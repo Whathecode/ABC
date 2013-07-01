@@ -184,7 +184,8 @@ namespace ABC.Windows
 				if ( !errorEncountered )
 				{
 					succeeded = User32.EndDeferWindowPos( windowsPositionInfo );
-					if ( succeeded && User32.GetActiveWindow() == IntPtr.Zero )
+					// TODO: Calling Focus seemed to be causing problems as well, and the below mentioned bug hasn't been seen anymore. What changed?
+					/*if ( succeeded && User32.GetActiveWindow() == IntPtr.Zero )
 					{
 						// All windows are hidden and there is no more active window.
 						// This causes a bug next time a window is shown which doesn't show up on the taskbar. Another window is shown on the taskbar, but not made visible.
@@ -194,7 +195,7 @@ namespace ABC.Windows
 						{
 							startBar.Focus();
 						}
-					}
+					}*/
 				}
 			}
 		}

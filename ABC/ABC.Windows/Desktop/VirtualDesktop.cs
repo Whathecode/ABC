@@ -28,16 +28,16 @@ namespace ABC.Windows.Desktop
 	/// </license>
 	public class VirtualDesktop
 	{
-        List<WindowSnapshot> _windows = new List<WindowSnapshot>();
+		List<WindowSnapshot> _windows = new List<WindowSnapshot>();
 		public ReadOnlyCollection<WindowInfo> Windows
 		{
-			get { return _windows.Select(w => w.Info).ToList().AsReadOnly(); }
+			get { return _windows.Select( w => w.Info ).ToList().AsReadOnly(); }
 		}
 
-        internal ReadOnlyCollection<WindowSnapshot> WindowSnapshots
-        {
-            get { return _windows.AsReadOnly(); }
-        }
+		internal ReadOnlyCollection<WindowSnapshot> WindowSnapshots
+		{
+			get { return _windows.AsReadOnly(); }
+		}
 
 		public bool IsVisible { get; private set; }
 
@@ -50,16 +50,6 @@ namespace ABC.Windows.Desktop
 		///   Create an empty virtual desktop.
 		/// </summary>
 		internal VirtualDesktop() {}
-
-		/// <summary>
-		///   Create a virtual desktop which is initialized with a set of existing windows.
-		/// </summary>
-		/// <param name = "initialWindows">The windows which should belong to the new virtual desktop.</param>
-        internal VirtualDesktop(IEnumerable<WindowSnapshot> initialWindows)
-		{
-			_windows.AddRange( initialWindows );
-			IsVisible = true;
-		}
 
 		/// <summary>
 		///   Create a virtual desktop from a previously stored session.
@@ -75,11 +65,12 @@ namespace ABC.Windows.Desktop
 		///   Adds the passed new windows and shows them in case the desktop is visible.
 		/// </summary>
 		/// <param name = "newWindows">New windows associated to this virtual desktop.</param>
-        internal void AddWindows(List<WindowSnapshot> newWindows)
+		internal void AddWindows( List<WindowSnapshot> newWindows )
 		{
 			// Add added windows to the front of the list so they show up in front.
 			var toAdd = newWindows.Where( w => !_windows.Contains( w ) ).ToList();
-			_windows = toAdd.Concat( _windows ).ToList();
+			toAdd = OrderWindowsByZOrder( toAdd );
+			_windows = toAdd.Concat( OrderWindowsByZOrder( _windows ) ).ToList();
 
 			// Make sure to show the newly added windows in case they were hidden.
 			if ( IsVisible && toAdd.Any( w => w.Visible && !w.Info.IsVisible() ) )
@@ -92,7 +83,7 @@ namespace ABC.Windows.Desktop
 		///   Remove windows which no longer belong to this desktop.
 		/// </summary>
 		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
-        internal void RemoveWindows(List<WindowSnapshot> toRemove)
+		internal void RemoveWindows( List<WindowSnapshot> toRemove )
 		{
 			toRemove.ForEach( w => _windows.Remove( w ) );
 
@@ -110,27 +101,25 @@ namespace ABC.Windows.Desktop
 		///   Show all windows associated with this virtual desktop.
 		/// </summary>
 		internal void Show()
-		{
+		{	
 			IsVisible = true;
 
 			// Reposition windows.
-			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.
-			var allWindows = _windows.GroupBy( w => w.Info.IsTopmost() );
+			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.						
+			var allWindows = _windows.GroupBy( w => w.Info.IsTopmost() );			
 			allWindows.ForEach( group =>
 			{
-				var showWindows = group
-					.Where( w => w.Visible )
-					.Select( w => new RepositionWindowInfo( w.Info ) { Visible = true } );
+				var showWindows = group.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
 				WindowManager.RepositionWindows( showWindows.ToList(), true );
 			} );
 
 			// Activate top window.
 			// TODO: Is the topmost window always the previous active one? Possibly a better check is needed.
 			// TODO: Which window to activate when desktops are merged?
-            WindowSnapshot first = _windows.FirstOrDefault(w => w.Visible);
+			WindowSnapshot first = _windows.FirstOrDefault( w => w.Visible );
 			if ( first != null )
 			{
-				first.Info.Focus();
+				first.Info.SetForegroundWindow();
 			}
 		}
 
@@ -141,21 +130,7 @@ namespace ABC.Windows.Desktop
 		{
 			IsVisible = false;
 
-			// Find z-order of the windows.
-			// TODO: Safeguard for infinite loop and possible destroyed windows.
-			// http://stackoverflow.com/q/12992201/590790
-			var ordenedWindows = new List<WindowSnapshot>();
-			WindowInfo window = WindowManager.GetTopWindow();
-			while ( window != null )
-			{
-                WindowSnapshot match = _windows.FirstOrDefault(w => w.Info.Equals(window));
-				if (match != null)
-				{
-					ordenedWindows.Add(match);
-				}
-				window = WindowManager.GetWindowBelow( window );
-			}
-			_windows = ordenedWindows;
+			_windows = OrderWindowsByZOrder( _windows );
 
 			// Find windows to hide using process specific hide behaviors.
 			var toHide = _windows.Where( w => w.Visible ).SelectMany( w => hideBehavior( w.Info ) );
@@ -163,6 +138,29 @@ namespace ABC.Windows.Desktop
 			// Hide windows.
 			var hideWindows = toHide.Select( w => new RepositionWindowInfo( w ) { Visible = false } );
 			WindowManager.RepositionWindows( hideWindows.ToList() );
+		}
+
+		/// <summary>
+		///    Find z-order of all passed windows.
+		/// </summary>
+		/// <returns>A new list containing all the passed windows, but ordered according to their z-order, most on top first.</returns>
+		static List<WindowSnapshot> OrderWindowsByZOrder( List<WindowSnapshot> toOrder )
+		{
+			// TODO: Safeguard for infinite loop and possible destroyed windows.
+			// http://stackoverflow.com/q/12992201/590790
+			var ordenedWindows = new List<WindowSnapshot>();
+			WindowInfo window = WindowManager.GetTopWindow();
+			while ( window != null )
+			{
+				WindowSnapshot match = toOrder.FirstOrDefault( w => w.Info.Equals( window ) );
+				if ( match != null )
+				{
+					ordenedWindows.Add( match );
+				}
+				window = WindowManager.GetWindowBelow( window );
+			}
+
+			return ordenedWindows;
 		}
 
 		/// <summary>

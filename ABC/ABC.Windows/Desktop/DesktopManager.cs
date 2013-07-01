@@ -71,12 +71,15 @@ namespace ABC.Windows.Desktop
 			_hideBehavior = settings.CreateHideBehavior();
 
 			// Initialize startup desktop.
-			StartupDesktop = new VirtualDesktop( GetNewWindows() )
+			StartupDesktop = new VirtualDesktop
 			{
 				Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop )
 			};
+			StartupDesktop.AddWindows( GetNewWindows() );
+			StartupDesktop.Show();	// The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
+
 			CurrentDesktop = StartupDesktop;
-			_desktops.Add( CurrentDesktop );			
+			_desktops.Add( CurrentDesktop );
 
 			// Initialize window monitor.
 			_windowMonitor =  new WindowMonitor();
@@ -234,7 +237,7 @@ namespace ABC.Windows.Desktop
 		}
 
 		/// <summary>
-		///   Gets all newly created windows.
+		///   Gets all newly created windows, not handled by the desktop manager yet.
 		/// </summary>
 		/// <returns>A list with all new windows.</returns>
 		List<WindowSnapshot> GetNewWindows()
