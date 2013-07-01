@@ -184,18 +184,17 @@ namespace ABC.Windows
 				if ( !errorEncountered )
 				{
 					succeeded = User32.EndDeferWindowPos( windowsPositionInfo );
-					// TODO: Calling Focus seemed to be causing problems as well, and the below mentioned bug hasn't been seen anymore. What changed?
-					/*if ( succeeded && User32.GetActiveWindow() == IntPtr.Zero )
+					if ( succeeded && User32.GetActiveWindow() == IntPtr.Zero )
 					{
 						// All windows are hidden and there is no more active window.
 						// This causes a bug next time a window is shown which doesn't show up on the taskbar. Another window is shown on the taskbar, but not made visible.
-						// To prevent this, activate the start bar.
+						// To prevent this, make the start bar the foreground window.
 						WindowInfo startBar = GetWindows().FirstOrDefault( w => w.GetClassName() == "Shell_TrayWnd" );
 						if ( startBar != null )
 						{
-							startBar.Focus();
+							startBar.SetForegroundWindow();
 						}
-					}*/
+					}
 				}
 			}
 		}
