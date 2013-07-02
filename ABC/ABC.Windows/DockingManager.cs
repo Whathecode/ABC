@@ -10,18 +10,19 @@ using Size = System.Windows.Size;
 
 namespace ABC.Windows
 {
+    public enum DockPosition
+    {
+        Left,
+        Top,
+        Right,
+        Bottom,
+        None
+    }
 	public class DockingManager
 	{
 		static readonly Dictionary<Window, RegisterInfo> RegisteredWindowInfo = new Dictionary<Window, RegisterInfo>();
 
-		public enum DockPosition
-		{
-			Left,
-			Top,
-			Right,
-			Bottom,
-			None
-		}
+		
 		static RegisterInfo GetRegisterInfo( Window appbarWindow )
 		{
 			RegisterInfo reg;
@@ -51,8 +52,10 @@ namespace ABC.Windows
 		{
 			RegisterInfo info = GetRegisterInfo( appbarWindow );
 
-			appbarWindow.WindowStyle = info.OriginalStyle;
-			appbarWindow.ResizeMode = info.OriginalResizeMode;
+            appbarWindow.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            appbarWindow.ResizeMode = ResizeMode.CanResizeWithGrip;
+            appbarWindow.Width = 800;
+            appbarWindow.Height = 600;
 
 			var rect = new Rect( info.OriginalPosition.X, info.OriginalPosition.Y,
 			                     info.OriginalSize.Width, info.OriginalSize.Height );
