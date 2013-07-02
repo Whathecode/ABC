@@ -3,150 +3,154 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using ABC.PInvoke;
-using System.Windows.Controls;
+
 
 namespace ABC.Windows
 {
-    public abstract class Taskbar:Window
-    {
+	public abstract class Taskbar : Window
+	{
+		#region Abstract Methods
 
-        #region Abstract Methods
+		/// <summary>
+		/// Udating the DockPosition will cause the taskbar to update its position on the
+		/// windows Desktop. The UpdateBorders, UpdateInterface and UpdateSize need to be handled by
+		/// the main window.
+		/// </summary>
+		protected abstract void UpdateBorders();
 
-        /// <summary>
-        /// Udating the DockPosition will cause the taskbar to update its position on the
-        /// windows Desktop. The UpdateBorders, UpdateInterface and UpdateSize need to be handled by
-        /// the main window.
-        /// </summary>
-        protected abstract void UpdateBorders();
-        protected abstract void UpdateInterface();
+		protected abstract void UpdateInterface();
 
-        public abstract int VerticalModeSize { get; set; }
-        public abstract int HorizontalModeSize { get; set; }
-        #endregion
+		public abstract int VerticalModeSize { get; set; }
+		public abstract int HorizontalModeSize { get; set; }
 
-        private bool _isHorizontal;
+		#endregion
 
-        private DockPosition _dockPosition;
-        public DockPosition DockPosition
-        {
-            get { return _dockPosition; }
-            set
-            {
-                _dockPosition = value;
 
-                if (_dockPosition != DockPosition.None)
-                {
-                    _isHorizontal = IsHorizontal(_dockPosition);
-                    if (_isHorizontal)
-                        Height = HorizontalModeSize;
-                    else
-                        Width = VerticalModeSize;
-                }
-                DockingManager.DockWindow(this,_dockPosition,AutoHide);
-                UpdateBorders();
-                UpdateInterface();
+		bool _isHorizontal;
 
-            }
-        }
+		DockPosition _dockPosition;
 
-        public bool AutoHide { get; set; }
+		public DockPosition DockPosition
+		{
+			get { return _dockPosition; }
+			set
+			{
+				_dockPosition = value;
 
-        protected Taskbar()
-        {
-            Loaded += Taskbar_Loaded;
+				if ( _dockPosition != DockPosition.None )
+				{
+					_isHorizontal = IsHorizontal( _dockPosition );
+					if ( _isHorizontal )
+						Height = HorizontalModeSize;
+					else
+						Width = VerticalModeSize;
+				}
+				DockingManager.DockWindow( this, _dockPosition, AutoHide );
+				UpdateBorders();
+				UpdateInterface();
+			}
+		}
 
-            ShowInTaskbar = false;
-        }
+		public bool AutoHide { get; set; }
 
-        private static bool IsHorizontal(DockPosition pos)
-        {
-            return pos == DockPosition.Top || pos == DockPosition.Bottom || pos == DockPosition.None;
-        }
-        private void Taskbar_Loaded(object sender, RoutedEventArgs e)
-        {
-            InitializeTaskbarStyle();
-        }
+		protected Taskbar()
+		{
+			Loaded += Taskbar_Loaded;
 
-        /// <summary>
-        /// Glass is enabled in when the souce window is initialized
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
+			ShowInTaskbar = false;
+		}
 
-            var canRenderInGlass = false;
+		static bool IsHorizontal( DockPosition pos )
+		{
+			return pos == DockPosition.Top || pos == DockPosition.Bottom || pos == DockPosition.None;
+		}
 
-            DwmApi.DwmIsCompositionEnabled(ref canRenderInGlass);
+		void Taskbar_Loaded( object sender, RoutedEventArgs e )
+		{
+			InitializeTaskbarStyle();
+		}
 
-            if (canRenderInGlass)
-                InitializeGlass();
-        }
+		/// <summary>
+		/// Glass is enabled in when the souce window is initialized
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnSourceInitialized( EventArgs e )
+		{
+			base.OnSourceInitialized( e );
 
-        /// <summary>
-        /// Uses DwmApi to render the entire window in Aero glass
-        /// </summary>
-        private void InitializeGlass()
-        {
-            var bb = new DwmApi.DwmBlurbehind
-                {
-                    dwFlags = ( int ) DwmApi.DwmBlurBehindDwFlags.DwmBbEnable,
-                    fEnable = true
-                };
+			var canRenderInGlass = false;
 
-            Background = Brushes.Transparent;
-            ResizeMode = ResizeMode.NoResize;
-            WindowStyle = WindowStyle.None;
+			DwmApi.DwmIsCompositionEnabled( ref canRenderInGlass );
 
-            var hwnd = new WindowInteropHelper( this ).Handle;
+			if ( canRenderInGlass )
+				InitializeGlass();
+		}
 
-            var hwndSource = HwndSource.FromHwnd(hwnd);
-            if ( hwndSource != null )
-                if ( hwndSource.CompositionTarget != null )
-                    hwndSource.CompositionTarget.BackgroundColor = Colors.Transparent;
+		/// <summary>
+		/// Uses DwmApi to render the entire window in Aero glass
+		/// </summary>
+		void InitializeGlass()
+		{
+			var bb = new DwmApi.DwmBlurbehind
+			{
+				dwFlags = (int)DwmApi.DwmBlurBehindDwFlags.DwmBbEnable,
+				fEnable = true
+			};
 
-            DwmApi.DwmEnableBlurBehindWindow( hwnd, ref bb );
+			Background = Brushes.Transparent;
+			ResizeMode = ResizeMode.NoResize;
+			WindowStyle = WindowStyle.None;
 
-            var dwmncrpDisabled = 2;
-            DwmApi.DwmSetWindowAttribute(hwnd, DwmApi.DwmWindowAttribute.DWMWA_NCRENDERING_POLICY, ref dwmncrpDisabled,
-                                         sizeof ( int ));
-            Topmost = true;
+			var hwnd = new WindowInteropHelper( this ).Handle;
 
-            Focus();
-        }
-        private void InitializeTaskbarStyle()
-        {
-            var source = HwndSource.FromHwnd(new WindowInteropHelper( this ).Handle);
-            if (source != null) source.AddHook(WndProc);
+			var hwndSource = HwndSource.FromHwnd( hwnd );
+			if ( hwndSource != null )
+				if ( hwndSource.CompositionTarget != null )
+					hwndSource.CompositionTarget.BackgroundColor = Colors.Transparent;
 
-            if (source == null) return;
-            var exStyle = ( int ) User32.GetWindowLongPtr(source.Handle, ( int ) Shell32.GetWindowLongConst.GWL_EXSTYLE);
+			DwmApi.DwmEnableBlurBehindWindow( hwnd, ref bb );
 
-            exStyle |= ( int ) User32.ExtendedWindowStyles.ToolWindow;
+			var dwmncrpDisabled = 2;
+			DwmApi.DwmSetWindowAttribute( hwnd, DwmApi.DwmWindowAttribute.DWMWA_NCRENDERING_POLICY, ref dwmncrpDisabled,
+			                              sizeof( int ) );
+			Topmost = true;
 
-            User32.SetWindowLongPtr(source.Handle, ( int ) Shell32.GetWindowLongConst.GWL_EXSTYLE, ( uint ) exStyle);
+			Focus();
+		}
 
-            DockPosition = DockPosition.Left;
-        }
+		void InitializeTaskbarStyle()
+		{
+			var source = HwndSource.FromHwnd( new WindowInteropHelper( this ).Handle );
+			if ( source != null ) source.AddHook( WndProc );
 
-        /// <summary>
-        /// Hooks into the Windows Message Processor to keep the window active
-        /// </summary>
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            var returnvalue = IntPtr.Zero;
-            if (msg == ( int ) WindowMessage.WM_NCACTIVATE)
-            {
-                returnvalue = User32.DefWindowProc( hwnd, ( int ) WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ),
-                                                   new IntPtr( -1 ) );
-                handled = true;
-            }
-            if (msg == ( int ) WindowMessage.WM_ACTIVATE)
-            {
-                returnvalue = User32.DefWindowProc( hwnd, ( int ) WindowMessage.WM_ACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
-                handled = true;
-            }
-            return returnvalue;
-        }
-    }
+			if ( source == null ) return;
+			var exStyle = (int)User32.GetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE );
+
+			exStyle |= (int)User32.ExtendedWindowStyles.ToolWindow;
+
+			User32.SetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE, (uint)exStyle );
+
+			DockPosition = DockPosition.Left;
+		}
+
+		/// <summary>
+		/// Hooks into the Windows Message Processor to keep the window active
+		/// </summary>
+		IntPtr WndProc( IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled )
+		{
+			var returnvalue = IntPtr.Zero;
+			if ( msg == (int)WindowMessage.WM_NCACTIVATE )
+			{
+				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ),
+				                                    new IntPtr( -1 ) );
+				handled = true;
+			}
+			if ( msg == (int)WindowMessage.WM_ACTIVATE )
+			{
+				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_ACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
+				handled = true;
+			}
+			return returnvalue;
+		}
+	}
 }
