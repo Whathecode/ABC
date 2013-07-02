@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="DwmApi.cs" />
     <Compile Include="DwmApi.Types.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HookType.cs" />
     <Compile Include="NativeWindowEx.cs" />
     <Compile Include="ErrorCode.cs" />
