@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using ABC.PInvoke;
 
+
 namespace ABC.Windows
 {
 	/// <summary>
@@ -23,7 +24,7 @@ namespace ABC.Windows
 		///   Enumerates all top-level windows on the screen.
 		/// </summary>
 		public static List<WindowInfo> GetWindows()
-		{			
+		{
 			var windows = new List<WindowInfo>();
 			bool success = User32.EnumWindows(
 				( handle, lparam ) =>
@@ -144,7 +145,7 @@ namespace ABC.Windows
 					{
 						commands |= User32.DeferWindowPosCommands.NoMove;
 					}
-					if ( changeVisibility || (i == 0 || !changeZOrder) )
+					if ( changeVisibility || ( i == 0 || !changeZOrder ) )
 					{
 						commands |= User32.DeferWindowPosCommands.NoZOrder;
 						commands |= User32.DeferWindowPosCommands.NoOwnerZOrder;
@@ -198,6 +199,5 @@ namespace ABC.Windows
 				}
 			}
 		}
-
 	}
 }

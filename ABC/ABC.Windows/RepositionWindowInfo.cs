@@ -1,5 +1,6 @@
 ﻿using ABC.PInvoke;
 
+
 namespace ABC.Windows
 {
 	/// <summary>
@@ -51,7 +52,7 @@ namespace ABC.Windows
 			var placement = new User32.WindowPlacement();
 			User32.GetWindowPlacement( toPosition.Handle, ref placement );
 
-			User32.Rectangle position = placement.NormalPosition;
+			WinDef.Rectangle position = placement.NormalPosition;
 			_originalX = position.Left;
 			X = _originalX;
 			_originalY = position.Top;

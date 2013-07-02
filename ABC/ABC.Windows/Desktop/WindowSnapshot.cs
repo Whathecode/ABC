@@ -4,7 +4,7 @@
 namespace ABC.Windows.Desktop
 {
 	/// <summary>
-    /// An internal representation of a WindowInfo object.
+	/// An internal representation of a WindowInfo object.
 	/// </summary>
 	/// <author>Steven Jeuris</author>
 	/// <license>
@@ -31,7 +31,7 @@ namespace ABC.Windows.Desktop
 		[DataMember]
 		internal bool Visible;
 
-        public WindowSnapshot(WindowInfo info)
+		public WindowSnapshot( WindowInfo info )
 		{
 			Info = info;
 
@@ -47,7 +47,7 @@ namespace ABC.Windows.Desktop
 
 		public override bool Equals( object obj )
 		{
-            var other = obj as WindowSnapshot;
+			var other = obj as WindowSnapshot;
 			if ( other == null )
 			{
 				return false;
@@ -56,7 +56,7 @@ namespace ABC.Windows.Desktop
 			return Equals( other );
 		}
 
-        protected bool Equals(WindowSnapshot other)
+		protected bool Equals( WindowSnapshot other )
 		{
 			if ( ReferenceEquals( null, other ) )
 			{

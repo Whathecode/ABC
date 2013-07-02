@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
+
 namespace ABC.PInvoke
 {
 	/// <summary>

@@ -34,8 +34,6 @@
     <Compile Include="DwmApi.Types.cs" />
     <Compile Include="HookType.cs" />
     <Compile Include="NativeWindowEx.cs" />
-    <Compile Include="ShellMessages\AppBarMessages.cs" />
-    <Compile Include="ShellMessages\AppBarNotifications.cs" />
     <Compile Include="ErrorCode.cs" />
     <Compile Include="Kernel32.cs" />
     <Compile Include="MarshalHelper.cs" />
@@ -43,6 +41,7 @@
     <Compile Include="Shell32.cs" />
     <Compile Include="User32.cs" />
     <Compile Include="User32.Types.cs" />
+    <Compile Include="WinDef.cs" />
     <Compile Include="WindowMessage.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -28,7 +28,7 @@ namespace ABC.Windows.Desktop
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
 	public class DesktopManager
-	{		
+	{
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
 		readonly Func<WindowInfo, bool> _windowFilter;
@@ -44,6 +44,7 @@ namespace ABC.Windows.Desktop
 		public VirtualDesktop CurrentDesktop { get; private set; }
 
 		readonly List<VirtualDesktop> _desktops = new List<VirtualDesktop>();
+
 		public IReadOnlyCollection<VirtualDesktop> Desktops
 		{
 			get { return _desktops; }
@@ -76,13 +77,13 @@ namespace ABC.Windows.Desktop
 				Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop )
 			};
 			StartupDesktop.AddWindows( GetNewWindows() );
-			StartupDesktop.Show();	// The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
+			StartupDesktop.Show(); // The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
 
 			CurrentDesktop = StartupDesktop;
 			_desktops.Add( CurrentDesktop );
 
 			// Initialize window monitor.
-			_windowMonitor =  new WindowMonitor();
+			_windowMonitor = new WindowMonitor();
 			_windowMonitor.WindowActivated += ( window, fullscreen ) => UpdateWindowAssociations();
 			_windowMonitor.WindowDestroyed += pointer => UpdateWindowAssociations();
 			_windowMonitor.Start();
@@ -194,7 +195,6 @@ namespace ABC.Windows.Desktop
 			if ( from == StartupDesktop )
 			{
 				CloseAndThrow( new ArgumentException( "Can't remove the startup desktop.", "from" ) );
-				
 			}
 			if ( from == CurrentDesktop )
 			{
@@ -244,8 +244,8 @@ namespace ABC.Windows.Desktop
 		{
 			List<WindowInfo> newWindows = WindowManager.GetWindows().Except(
 				_desktops.SelectMany( d => d.WindowSnapshots ).Concat( WindowClipboard )
-				.Select( w => w.Info )
-				.Concat( _invalidWindows ) ).ToList();
+				         .Select( w => w.Info )
+				         .Concat( _invalidWindows ) ).ToList();
 
 			var validWindows = new List<WindowSnapshot>();
 			foreach ( var w in newWindows )
@@ -285,7 +285,7 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void PasteWindows()
 		{
-			UpdateWindowAssociations();	// There might be newly added windows of which the z-order isn't known yet, so update associations first.
+			UpdateWindowAssociations(); // There might be newly added windows of which the z-order isn't known yet, so update associations first.
 
 			CurrentDesktop.AddWindows( WindowClipboard.ToList() );
 			WindowClipboard.Clear();

@@ -4,84 +4,85 @@ using System.Windows.Forms;
 using ABC.PInvoke;
 using System.Threading.Tasks;
 
+
 namespace ABC.Windows
 {
-    public class WindowMonitor
-    {
-        #region Events
-        public event ShellEvents.WindowCreatedEventHandler WindowCreated;
-        public event ShellEvents.WindowDestroyedEventHandler WindowDestroyed;
-        public event ShellEvents.WindowActivatedEventHandler WindowActivated;
-        #endregion
+	public class WindowMonitor
+	{
+		#region Events
 
-        private const int RshUnregister = 0;
+		public event ShellEvents.WindowCreatedEventHandler WindowCreated;
+		public event ShellEvents.WindowDestroyedEventHandler WindowDestroyed;
+		public event ShellEvents.WindowActivatedEventHandler WindowActivated;
 
-        private static int _wmShellhookmessage;
-        private static NativeWindowEx _hookWin;
+		#endregion
 
 
-        public void Start()
-        {
+		const int RshUnregister = 0;
 
-            Task.Factory.StartNew(() =>
-                {
-                    _hookWin = new NativeWindowEx();
-                    _hookWin.CreateHandle(new CreateParams());
+		static int _wmShellhookmessage;
+		static NativeWindowEx _hookWin;
 
-                    if (User32.RegisterShellHookWindow(_hookWin.Handle) == false)
-                        throw new Exception("Win32 error");
 
-                    _wmShellhookmessage = User32.RegisterWindowMessage("SHELLHOOK");
-                    _hookWin.MessageRecieved += ShellWinProc;
-                });
+		public void Start()
+		{
+			Task.Factory.StartNew( () =>
+			{
+				_hookWin = new NativeWindowEx();
+				_hookWin.CreateHandle( new CreateParams() );
 
-        }
+				if ( User32.RegisterShellHookWindow( _hookWin.Handle ) == false )
+					throw new Exception( "Win32 error" );
 
-        public void Stop()
-        {
-            Shell32.RegisterShellHook(_hookWin.Handle, RshUnregister);
-        }
+				_wmShellhookmessage = User32.RegisterWindowMessage( "SHELLHOOK" );
+				_hookWin.MessageRecieved += ShellWinProc;
+			} );
+		}
 
-        private void ShellWinProc(ref Message m)
-        {
-            try
-            {
-                if (m.Msg != _wmShellhookmessage) return;
-                switch ((ShellMessages) m.WParam)
-                {
-                    case ShellMessages.HSHELL_WINDOWCREATED:
-                        if (WindowCreated != null)
-                        {
-                            WindowCreated(new WindowInfo(m.LParam));
-                        }
-                        break;
-                    case ShellMessages.HSHELL_WINDOWDESTROYED:
-                        if (WindowDestroyed != null)
-                        {
-                            WindowDestroyed(m.LParam);
-                        }
-                        break;
-                    case ShellMessages.HSHELL_WINDOWACTIVATED:
-                        if (WindowActivated != null)
-                        {
-                            WindowActivated(new WindowInfo(m.LParam), false);
-                        }
+		public void Stop()
+		{
+			Shell32.RegisterShellHook( _hookWin.Handle, RshUnregister );
+		}
 
-                        break;
-                    case ShellMessages.HSHELL_RUDEAPPACTIVATED:
-                        if (WindowActivated != null)
-                        {
-                            WindowActivated(new WindowInfo(m.LParam), false);
-                        }
+		void ShellWinProc( ref Message m )
+		{
+			try
+			{
+				if ( m.Msg != _wmShellhookmessage ) return;
+				switch ( (ShellMessages)m.WParam )
+				{
+					case ShellMessages.HSHELL_WINDOWCREATED:
+						if ( WindowCreated != null )
+						{
+							WindowCreated( new WindowInfo( m.LParam ) );
+						}
+						break;
+					case ShellMessages.HSHELL_WINDOWDESTROYED:
+						if ( WindowDestroyed != null )
+						{
+							WindowDestroyed( m.LParam );
+						}
+						break;
+					case ShellMessages.HSHELL_WINDOWACTIVATED:
+						if ( WindowActivated != null )
+						{
+							WindowActivated( new WindowInfo( m.LParam ), false );
+						}
 
-                        break;
+						break;
+					case ShellMessages.HSHELL_RUDEAPPACTIVATED:
+						if ( WindowActivated != null )
+						{
+							WindowActivated( new WindowInfo( m.LParam ), false );
+						}
 
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-        }
-    }
+						break;
+				}
+			}
+			catch ( Exception ex )
+			{
+				Debug.WriteLine( ex );
+			}
+		}
+	}
 }

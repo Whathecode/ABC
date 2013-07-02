@@ -23,18 +23,18 @@ namespace ABC.Windows.Desktop
 	///   You should have received a copy of the GNU General Public License
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
-	[DataContract]	
+	[DataContract]
 	public class StoredSession
 	{
 		/// <summary>
 		///   Holds all the windows open on the virtual desktop.
 		/// </summary>
 		[DataMember]
-        internal readonly ReadOnlyCollection<WindowSnapshot> OpenWindows;
+		internal readonly ReadOnlyCollection<WindowSnapshot> OpenWindows;
 
-	    internal StoredSession( VirtualDesktop desktop )
+		internal StoredSession( VirtualDesktop desktop )
 		{
-            OpenWindows = desktop.WindowSnapshots;
+			OpenWindows = desktop.WindowSnapshots;
 		}
 	}
 }

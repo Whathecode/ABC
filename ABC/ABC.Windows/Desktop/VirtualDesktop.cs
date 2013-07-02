@@ -29,6 +29,7 @@ namespace ABC.Windows.Desktop
 	public class VirtualDesktop
 	{
 		List<WindowSnapshot> _windows = new List<WindowSnapshot>();
+
 		public ReadOnlyCollection<WindowInfo> Windows
 		{
 			get { return _windows.Select( w => w.Info ).ToList().AsReadOnly(); }
@@ -101,12 +102,12 @@ namespace ABC.Windows.Desktop
 		///   Show all windows associated with this virtual desktop.
 		/// </summary>
 		internal void Show()
-		{	
+		{
 			IsVisible = true;
 
 			// Reposition windows.
 			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.						
-			var allWindows = _windows.GroupBy( w => w.Info.IsTopmost() );			
+			var allWindows = _windows.GroupBy( w => w.Info.IsTopmost() );
 			allWindows.ForEach( group =>
 			{
 				var showWindows = group.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
