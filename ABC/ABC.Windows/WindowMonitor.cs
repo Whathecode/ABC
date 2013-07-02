@@ -41,7 +41,7 @@ namespace ABC.Windows
 
 		public void Stop()
 		{
-			Shell32.RegisterShellHook( _hookWin.Handle, RshUnregister );
+			//Shell32.RegisterShellHook( _hookWin.Handle, RshUnregister );
 		}
 
 		void ShellWinProc( ref Message m )

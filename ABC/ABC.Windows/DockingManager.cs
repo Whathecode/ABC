@@ -8,14 +8,13 @@ using ABC.PInvoke;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
 
-
 namespace ABC.Windows
 {
 	public class DockingManager
 	{
 		static readonly Dictionary<Window, RegisterInfo> RegisteredWindowInfo = new Dictionary<Window, RegisterInfo>();
 
-		public enum AppBarPosition
+		public enum DockPosition
 		{
 			Left,
 			Top,
@@ -23,32 +22,6 @@ namespace ABC.Windows
 			Bottom,
 			None
 		}
-
-		class RegisterInfo
-		{
-			public int CallbackId { get; set; }
-			public bool IsRegistered { get; set; }
-			public Window Window { private get; set; }
-			public AppBarPosition Edge { get; set; }
-			public WindowStyle OriginalStyle { get; set; }
-			public Point OriginalPosition { get; set; }
-			public Size OriginalSize { get; set; }
-			public ResizeMode OriginalResizeMode { get; set; }
-
-			public IntPtr WndProc( IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled )
-			{
-				if ( msg == CallbackId )
-				{
-					if ( wParam.ToInt32() == (int)Shell32.AppBarNotifications.ABN_POSCHANGED )
-					{
-						SetPostion( Edge, Window );
-						handled = true;
-					}
-				}
-				return IntPtr.Zero;
-			}
-		}
-
 		static RegisterInfo GetRegisterInfo( Window appbarWindow )
 		{
 			RegisterInfo reg;
@@ -63,7 +36,7 @@ namespace ABC.Windows
 					CallbackId = 0,
 					Window = appbarWindow,
 					IsRegistered = false,
-					Edge = AppBarPosition.Top,
+					Edge = DockPosition.Top,
 					OriginalStyle = appbarWindow.WindowStyle,
 					OriginalPosition = new Point( appbarWindow.Left, appbarWindow.Top ),
 					OriginalSize = new Size( appbarWindow.ActualWidth, appbarWindow.ActualHeight ),
@@ -97,18 +70,18 @@ namespace ABC.Windows
 			appbarWindow.Left = rect.Left;
 		}
 
-		static void SetPostion( AppBarPosition edge, Window appbarWindow )
+		static void SetPostion( DockPosition edge, Window appbarWindow, bool isAutoHide )
 		{
 			var barData = new Shell32.Appbardata();
 			barData.cbSize = Marshal.SizeOf( barData );
 			barData.hWnd = new WindowInteropHelper( appbarWindow ).Handle;
 			barData.uEdge = (int)edge;
 
-			if ( barData.uEdge == (int)AppBarPosition.Left || barData.uEdge == (int)AppBarPosition.Right )
+			if ( barData.uEdge == (int)DockPosition.Left || barData.uEdge == (int)DockPosition.Right )
 			{
 				barData.rc.Top = 0;
 				barData.rc.Bottom = (int)SystemParameters.PrimaryScreenHeight;
-				if ( barData.uEdge == (int)AppBarPosition.Left )
+				if ( barData.uEdge == (int)DockPosition.Left )
 				{
 					barData.rc.Left = 0;
 					barData.rc.Right = (int)Math.Round( appbarWindow.ActualWidth );
@@ -123,7 +96,7 @@ namespace ABC.Windows
 			{
 				barData.rc.Left = 0;
 				barData.rc.Right = (int)SystemParameters.PrimaryScreenWidth;
-				if ( barData.uEdge == (int)AppBarPosition.Top )
+				if ( barData.uEdge == (int)DockPosition.Top )
 				{
 					barData.rc.Top = 0;
 					barData.rc.Bottom = (int)Math.Round( appbarWindow.ActualHeight );
@@ -136,7 +109,10 @@ namespace ABC.Windows
 			}
 
 			Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_QUERYPOS, ref barData );
-			Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_SETPOS, ref barData );
+            if (isAutoHide)
+                Shell32.SHAppBarMessage((int)Shell32.AppBarMessages.ABM_SETAUTOHIDEBAR, ref barData);    
+            else
+			    Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_SETPOS, ref barData );
 
 			var rect = new Rect( barData.rc.Left, barData.rc.Top,
 			                     barData.rc.Right - barData.rc.Left, barData.rc.Bottom - barData.rc.Top );
@@ -145,16 +121,17 @@ namespace ABC.Windows
 			                                     new ResizeDelegate( DoResize ), appbarWindow, rect );
 		}
 
-		public static void DockWindow( Window appbarWindow, AppBarPosition edge )
+		public static void DockWindow( Window appbarWindow, DockPosition edge, bool autoHide )
 		{
 			var info = GetRegisterInfo( appbarWindow );
 			info.Edge = edge;
+		    info.AutoHide = autoHide;
 
 			var abd = new Shell32.Appbardata();
 			abd.cbSize = Marshal.SizeOf( abd );
 			abd.hWnd = new WindowInteropHelper( appbarWindow ).Handle;
 
-			if ( edge == AppBarPosition.None )
+			if ( edge == DockPosition.None )
 			{
 				if ( info.IsRegistered )
 				{
@@ -184,7 +161,33 @@ namespace ABC.Windows
 			appbarWindow.ResizeMode = ResizeMode.NoResize;
 			appbarWindow.Topmost = true;
 
-			SetPostion( info.Edge, appbarWindow );
+			SetPostion( info.Edge, appbarWindow, autoHide );
 		}
+
+        internal class RegisterInfo
+        {
+            public int CallbackId { get; set; }
+            public bool IsRegistered { get; set; }
+            public Window Window { private get; set; }
+            public DockPosition Edge { get; set; }
+            public WindowStyle OriginalStyle { get; set; }
+            public Point OriginalPosition { get; set; }
+            public Size OriginalSize { get; set; }
+            public ResizeMode OriginalResizeMode { get; set; }
+            public bool AutoHide { get; set; }
+
+            public IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+            {
+                if (msg == CallbackId)
+                {
+                    if (wParam.ToInt32() == (int)Shell32.AppBarNotifications.ABN_POSCHANGED)
+                    {
+                        SetPostion(Edge, Window, AutoHide);
+                        handled = true;
+                    }
+                }
+                return IntPtr.Zero;
+            }
+        }
 	}
 }
