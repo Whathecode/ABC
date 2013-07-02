@@ -48,56 +48,59 @@ namespace ABC.PInvoke
 		[DllImport( Dll, PreserveSig = false )]
 		public static extern void DwmUpdateThumbnailProperties( IntPtr thumbnailHandle, ref ThumbnailProperties properties );
 
-        /// <summary>
-        /// Enables the blur effect on a specified window.
-        /// </summary>
-        /// <param name="windowHandle">The handle to the window on which the blur behind data is applied.</param>
-        /// <param name="blurBehind">A pointer to a DWM_BLURBEHIND structure that provides blur behind data.</param>
-        [DllImport(Dll, PreserveSig = false)]
-        public static extern void DwmEnableBlurBehindWindow(IntPtr windowHandle, ref DwmBlurbehind blurBehind);
+		/// <summary>
+		/// Enables the blur effect on a specified window.
+		/// </summary>
+		/// <param name="windowHandle">The handle to the window on which the blur behind data is applied.</param>
+		/// <param name="blurBehind">A pointer to a DWM_BLURBEHIND structure that provides blur behind data.</param>
+		[DllImport( Dll, PreserveSig = false )]
+		public static extern void DwmEnableBlurBehindWindow( IntPtr windowHandle, ref DwmBlurbehind blurBehind );
 
-        #endregion // Window thumbnails.
+		#endregion // Window thumbnails.
 
-        #region Window Glass
-        /// <summary>
-        /// Sets the value of non-client rendering attributes for a window.
-        /// </summary>
-        /// <param name="windowHandle">The handle to the window that will receive the attributes.</param>
-        /// <param name="atrribute">A single DWMWINDOWATTRIBUTE flag to apply to the window. This parameter specifies the attribute and the pvAttribute parameter points to the value of that attribute.</param>
-        /// <param name="attributeValue">A pointer to the value of the attribute specified in the dwAttribute parameter. Different DWMWINDOWATTRIBUTE flags require different value types.</param>
-        /// <param name="attributeSize">The size, in bytes, of the value type pointed to by the pvAttribute parameter.</param>
-        [DllImport(Dll, PreserveSig = false)]
-        public static extern void DwmSetWindowAttribute(IntPtr windowHandle, DwmWindowAttribute atrribute, ref int attributeValue, int attributeSize);
 
-        /// <summary>
-        /// Extends the window frame into the client area.
-        /// </summary>
-        /// <param name="windowHandle">The handle to the window in which the frame will be extended into the client area.</param>
-        /// <param name="margins">A pointer to a MARGINS structure that describes the margins to use when extending the frame into the client area.</param>
-        [DllImport(Dll, PreserveSig = false)]
-        public static extern void DwmExtendFrameIntoClientArea(IntPtr windowHandle, ref Margins margins);
+		#region Window Glass
 
-        /// <summary>
-        /// Obtains a value that indicates whether Desktop Window Manager (DWM) composition is enabled. Applications can listen for composition state changes by handling the WM_DWMCOMPOSITIONCHANGED notification.
-        /// </summary>
-        /// <param name="enabled">A pointer to a value that, when this function returns successfully, receives TRUE if DWM composition is enabled; otherwise, FALSE.</param>
-        [DllImport(Dll, PreserveSig = false)]
-        public static extern void DwmIsCompositionEnabled(ref bool enabled);
+		/// <summary>
+		/// Sets the value of non-client rendering attributes for a window.
+		/// </summary>
+		/// <param name="windowHandle">The handle to the window that will receive the attributes.</param>
+		/// <param name="atrribute">A single DWMWINDOWATTRIBUTE flag to apply to the window. This parameter specifies the attribute and the pvAttribute parameter points to the value of that attribute.</param>
+		/// <param name="attributeValue">A pointer to the value of the attribute specified in the dwAttribute parameter. Different DWMWINDOWATTRIBUTE flags require different value types.</param>
+		/// <param name="attributeSize">The size, in bytes, of the value type pointed to by the pvAttribute parameter.</param>
+		[DllImport( Dll, PreserveSig = false )]
+		public static extern void DwmSetWindowAttribute( IntPtr windowHandle, DwmWindowAttribute atrribute, ref int attributeValue, int attributeSize );
 
-        /// <summary>
-        /// Enables or disables Desktop Window Manager (DWM) composition.
-        /// </summary>
-        /// <param name="enabled">True to enable DWM composition; false to disable composition.</param>
-        [DllImport(Dll, PreserveSig = false)]
-        public static extern void DwmEnableComposition(bool enabled);
+		/// <summary>
+		/// Extends the window frame into the client area.
+		/// </summary>
+		/// <param name="windowHandle">The handle to the window in which the frame will be extended into the client area.</param>
+		/// <param name="margins">A pointer to a MARGINS structure that describes the margins to use when extending the frame into the client area.</param>
+		[DllImport( Dll, PreserveSig = false )]
+		public static extern void DwmExtendFrameIntoClientArea( IntPtr windowHandle, ref Margins margins );
 
-        /// <summary>
-        /// Retrieves the current color used for Desktop Window Manager (DWM) glass composition. This value is based on the current color scheme and can be modified by the user. Applications can listen for color changes by handling the WM_DWMCOLORIZATIONCOLORCHANGED notification.
-        /// </summary>
-        /// <param name="color">A pointer to a value that, when this function returns successfully, receives the current color used for glass composition. The color format of the value is 0xAARRGGBB.</param>
-        /// <param name="isOpaque">A pointer to a value that, when this function returns successfully, indicates whether the color is an opaque blend. TRUE if the color is an opaque blend; otherwise, FALSE.</param>
-        [DllImport(Dll, PreserveSig = false)]
-        public static extern void DwmGetColorizationColor(out int color,  [MarshalAs(UnmanagedType.Bool)]out bool isOpaque);
-        #endregion
-    }
+		/// <summary>
+		/// Obtains a value that indicates whether Desktop Window Manager (DWM) composition is enabled. Applications can listen for composition state changes by handling the WM_DWMCOMPOSITIONCHANGED notification.
+		/// </summary>
+		/// <param name="enabled">A pointer to a value that, when this function returns successfully, receives TRUE if DWM composition is enabled; otherwise, FALSE.</param>
+		[DllImport( Dll, PreserveSig = false )]
+		public static extern void DwmIsCompositionEnabled( ref bool enabled );
+
+		/// <summary>
+		/// Enables or disables Desktop Window Manager (DWM) composition.
+		/// </summary>
+		/// <param name="enabled">True to enable DWM composition; false to disable composition.</param>
+		[DllImport( Dll, PreserveSig = false )]
+		public static extern void DwmEnableComposition( bool enabled );
+
+		/// <summary>
+		/// Retrieves the current color used for Desktop Window Manager (DWM) glass composition. This value is based on the current color scheme and can be modified by the user. Applications can listen for color changes by handling the WM_DWMCOLORIZATIONCOLORCHANGED notification.
+		/// </summary>
+		/// <param name="color">A pointer to a value that, when this function returns successfully, receives the current color used for glass composition. The color format of the value is 0xAARRGGBB.</param>
+		/// <param name="isOpaque">A pointer to a value that, when this function returns successfully, indicates whether the color is an opaque blend. TRUE if the color is an opaque blend; otherwise, FALSE.</param>
+		[DllImport( Dll, PreserveSig = false )]
+		public static extern void DwmGetColorizationColor( out int color, [MarshalAs( UnmanagedType.Bool )] out bool isOpaque );
+
+		#endregion
+	}
 }

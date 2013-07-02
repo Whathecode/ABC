@@ -8,6 +8,7 @@ using ABC.PInvoke;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
 
+
 namespace ABC.Windows
 {
 	public class DockingManager
@@ -22,6 +23,7 @@ namespace ABC.Windows
 			Bottom,
 			None
 		}
+
 		static RegisterInfo GetRegisterInfo( Window appbarWindow )
 		{
 			RegisterInfo reg;
@@ -109,10 +111,10 @@ namespace ABC.Windows
 			}
 
 			Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_QUERYPOS, ref barData );
-            if (isAutoHide)
-                Shell32.SHAppBarMessage((int)Shell32.AppBarMessages.ABM_SETAUTOHIDEBAR, ref barData);    
-            else
-			    Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_SETPOS, ref barData );
+			if ( isAutoHide )
+				Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_SETAUTOHIDEBAR, ref barData );
+			else
+				Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_SETPOS, ref barData );
 
 			var rect = new Rect( barData.rc.Left, barData.rc.Top,
 			                     barData.rc.Right - barData.rc.Left, barData.rc.Bottom - barData.rc.Top );
@@ -125,7 +127,7 @@ namespace ABC.Windows
 		{
 			var info = GetRegisterInfo( appbarWindow );
 			info.Edge = edge;
-		    info.AutoHide = autoHide;
+			info.AutoHide = autoHide;
 
 			var abd = new Shell32.Appbardata();
 			abd.cbSize = Marshal.SizeOf( abd );
@@ -164,30 +166,30 @@ namespace ABC.Windows
 			SetPostion( info.Edge, appbarWindow, autoHide );
 		}
 
-        internal class RegisterInfo
-        {
-            public int CallbackId { get; set; }
-            public bool IsRegistered { get; set; }
-            public Window Window { private get; set; }
-            public DockPosition Edge { get; set; }
-            public WindowStyle OriginalStyle { get; set; }
-            public Point OriginalPosition { get; set; }
-            public Size OriginalSize { get; set; }
-            public ResizeMode OriginalResizeMode { get; set; }
-            public bool AutoHide { get; set; }
+		internal class RegisterInfo
+		{
+			public int CallbackId { get; set; }
+			public bool IsRegistered { get; set; }
+			public Window Window { private get; set; }
+			public DockPosition Edge { get; set; }
+			public WindowStyle OriginalStyle { get; set; }
+			public Point OriginalPosition { get; set; }
+			public Size OriginalSize { get; set; }
+			public ResizeMode OriginalResizeMode { get; set; }
+			public bool AutoHide { get; set; }
 
-            public IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-            {
-                if (msg == CallbackId)
-                {
-                    if (wParam.ToInt32() == (int)Shell32.AppBarNotifications.ABN_POSCHANGED)
-                    {
-                        SetPostion(Edge, Window, AutoHide);
-                        handled = true;
-                    }
-                }
-                return IntPtr.Zero;
-            }
-        }
+			public IntPtr WndProc( IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled )
+			{
+				if ( msg == CallbackId )
+				{
+					if ( wParam.ToInt32() == (int)Shell32.AppBarNotifications.ABN_POSCHANGED )
+					{
+						SetPostion( Edge, Window, AutoHide );
+						handled = true;
+					}
+				}
+				return IntPtr.Zero;
+			}
+		}
 	}
 }

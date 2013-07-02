@@ -26,64 +26,66 @@ namespace ABC.PInvoke
 			public const uint DWM_TNP_VISIBLE = 0x00000008;
 			public const uint DWM_TNP_SOURCECLIENTAREAONLY = 0x00000010;
 		}
-        [Flags]
-        public enum DwmBlurBehindOptions
-        {
-            DWM_BB_ENABLE = 0x00000001,
-            DWM_BB_BLURREGION = 0x00000002,
-            DWM_BB_TRANSITIONONMAXIMIZED = 0x00000004
-        }
 
-        [Flags]
-        public enum DwmWindowAttribute
-        {
-            DWMWA_NCRENDERING_ENABLED = 1,
-            DWMWA_NCRENDERING_POLICY,
-            DWMWA_TRANSITIONS_FORCEDISABLED,
-            DWMWA_ALLOW_NCPAINT,
-            DWMWA_CAPTION_BUTTON_BOUNDS,
-            DWMWA_NONCLIENT_RTL_LAYOUT,
-            DWMWA_FORCE_ICONIC_REPRESENTATION,
-            DWMWA_FLIP3D_POLICY,
-            DWMWA_EXTENDED_FRAME_BOUNDS,
-            DWMWA_HAS_ICONIC_BITMAP,
-            DWMWA_DISALLOW_PEEK,
-            DWMWA_EXCLUDED_FROM_PEEK,
-            DWMWA_LAST
-        }
+		[Flags]
+		public enum DwmBlurBehindOptions
+		{
+			DWM_BB_ENABLE = 0x00000001,
+			DWM_BB_BLURREGION = 0x00000002,
+			DWM_BB_TRANSITIONONMAXIMIZED = 0x00000004
+		}
 
-        [Flags]
-        public enum DwmncRenderingPolicy : uint
-        {
-            UseWindowStyle,
-            Disabled,
-            Enabled,
-            Last
-        }
-        [Flags]
-        public enum DwmBlurBehindDwFlags
-        {
-            DwmBbEnable = 1,
-            DwmBbBlurRegion = 2,
-            DwmBbTransitionOnMaximized = 4
-        }
+		[Flags]
+		public enum DwmWindowAttribute
+		{
+			DWMWA_NCRENDERING_ENABLED = 1,
+			DWMWA_NCRENDERING_POLICY,
+			DWMWA_TRANSITIONS_FORCEDISABLED,
+			DWMWA_ALLOW_NCPAINT,
+			DWMWA_CAPTION_BUTTON_BOUNDS,
+			DWMWA_NONCLIENT_RTL_LAYOUT,
+			DWMWA_FORCE_ICONIC_REPRESENTATION,
+			DWMWA_FLIP3D_POLICY,
+			DWMWA_EXTENDED_FRAME_BOUNDS,
+			DWMWA_HAS_ICONIC_BITMAP,
+			DWMWA_DISALLOW_PEEK,
+			DWMWA_EXCLUDED_FROM_PEEK,
+			DWMWA_LAST
+		}
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct DwmBlurbehind
-        {
-            public int dwFlags;
-            public bool fEnable;
-            public IntPtr hRgnBlur;
-            public bool fTransitionOnMaximized;
-        }
+		[Flags]
+		public enum DwmncRenderingPolicy : uint
+		{
+			UseWindowStyle,
+			Disabled,
+			Enabled,
+			Last
+		}
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Margins
-        {
-            public int cxLeftWidth;
-            public int cxRightWidth;
-            public int cyTopHeight;
-            public int cyBottomHeight;
-        } 
+		[Flags]
+		public enum DwmBlurBehindDwFlags
+		{
+			DwmBbEnable = 1,
+			DwmBbBlurRegion = 2,
+			DwmBbTransitionOnMaximized = 4
+		}
+
+		[StructLayout( LayoutKind.Sequential )]
+		public struct DwmBlurbehind
+		{
+			public int dwFlags;
+			public bool fEnable;
+			public IntPtr hRgnBlur;
+			public bool fTransitionOnMaximized;
+		}
+
+		[StructLayout( LayoutKind.Sequential )]
+		public struct Margins
+		{
+			public int cxLeftWidth;
+			public int cxRightWidth;
+			public int cyTopHeight;
+			public int cyBottomHeight;
+		}
 	}
 }
