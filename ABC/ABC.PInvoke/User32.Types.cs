@@ -60,6 +60,23 @@ namespace ABC.PInvoke
 		#region Window types
 
 		/// <summary>
+		///   TODO: Incomplete list. Is this the complete one?: http://msdn.microsoft.com/en-us/library/windows/desktop/ff468922(v=vs.85).aspx
+		/// </summary>
+		public enum WindowNotification : uint
+		{
+			/// <summary>
+			///   Sent as a signal that a window or an application should terminate. A window receives this message through its WindowProc function.
+			///   If an application processes this message, it should return zero.
+			/// </summary>
+			/// <remarks>
+			///   An application can prompt the user for confirmation, prior to destroying a window,
+			///   by processing the <see cref="Close" /> message and calling the DestroyWindow function only if the user confirms the choice.
+			///   By default, the DefWindowProc function calls the DestroyWindow function to destroy the window.
+			/// </remarks>
+			Close = 0x0010
+		}
+
+		/// <summary>
 		///   Contains information about the placement of a window on the screen.
 		/// </summary>
 		/// <remarks>

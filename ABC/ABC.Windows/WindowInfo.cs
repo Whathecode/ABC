@@ -201,6 +201,11 @@ namespace ABC.Windows
 			User32.ShowWindowAsync( Handle, User32.WindowState.Hide );
 		}
 
+		public void Close()
+		{
+			User32.SendMessage( Handle, (uint)User32.WindowNotification.Close, IntPtr.Zero, IntPtr.Zero );
+		}
+
 		/// <summary>
 		///   Verifies whether this window has been destroyed or not.
 		/// </summary>

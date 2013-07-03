@@ -21,7 +21,7 @@ namespace ABC.Windows
 			vHandle = User32.FindWindowEx( vHandle, IntPtr.Zero, "SHELLDLL_DefView", null );
 			vHandle = User32.FindWindowEx( vHandle, IntPtr.Zero, "SysListView32", "FolderView" );
 
-			var vItemCount = (int)User32.SendMessage( vHandle, User32.LVM_GETITEMCOUNT, 0, 0 );
+			var vItemCount = (int)User32.SendMessage( vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero );
 			var icons = new List<DesktopIcon>();
 
 			uint vProcessId;
@@ -46,10 +46,10 @@ namespace ABC.Windows
 					uint vNumberOfBytesRead = 0;
 
 					Kernel32.WriteProcessMemory( vProcess, vPointer, Marshal.UnsafeAddrOfPinnedArrayElement( vItem, 0 ), Marshal.SizeOf( typeof( User32.Lvitem ) ), ref vNumberOfBytesRead );
-					User32.SendMessage( vHandle, User32.LVM_GETITEMW, j, vPointer.ToInt32() );
+					User32.SendMessage( vHandle, User32.LVM_GETITEMW, new IntPtr( j ), new IntPtr( vPointer.ToInt32() ) );
 					Kernel32.ReadProcessMemory( vProcess, (IntPtr)( (int)vPointer + Marshal.SizeOf( typeof( User32.Lvitem ) ) ), Marshal.UnsafeAddrOfPinnedArrayElement( vBuffer, 0 ),
 					                            vBuffer.Length, ref vNumberOfBytesRead );
-					User32.SendMessage( vHandle, User32.LVM_GETITEMPOSITION, j, vPointer.ToInt32() );
+					User32.SendMessage( vHandle, User32.LVM_GETITEMPOSITION, new IntPtr( j ), new IntPtr( vPointer.ToInt32() ) );
 					var vPoint = new Point[1];
 					Kernel32.ReadProcessMemory( vProcess, vPointer, Marshal.UnsafeAddrOfPinnedArrayElement( vPoint, 0 ), Marshal.SizeOf( typeof( Point ) ), ref vNumberOfBytesRead );
 					icons.Add( new DesktopIcon( j, vPoint[ 0 ] ) );
@@ -93,7 +93,7 @@ namespace ABC.Windows
 
 		static void SendMsg( IntPtr hWnd, uint msg, int wParam, int lParam )
 		{
-			var result = User32.SendMessage( hWnd, User32.LVM_SETITEMPOSITION, wParam, lParam );
+			var result = User32.SendMessage( hWnd, User32.LVM_SETITEMPOSITION, new IntPtr( wParam ), new IntPtr( lParam ) );
 
 			if ( result != IntPtr.Zero ) return;
 			var err = Marshal.GetLastWin32Error();
@@ -104,7 +104,7 @@ namespace ABC.Windows
 		static void GetDesktopIconCount( IntPtr vHandle, out int vItemCount, out IntPtr vProcess, out IntPtr vPointer )
 		{
 			//Get total count of the icons on the desktop
-			vItemCount = (int)User32.SendMessage( vHandle, User32.LVM_GETITEMCOUNT, 0, 0 );
+			vItemCount = (int)User32.SendMessage( vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero );
 
 			uint vProcessId;
 			User32.GetWindowThreadProcessId( vHandle, out vProcessId );
