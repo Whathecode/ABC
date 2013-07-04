@@ -88,7 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\asus.xml" />
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\chrome.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\chrome.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\visual_studio_2012.xml" />
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_7.xml" />
   </ItemGroup>
@@ -102,6 +104,11 @@
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\firefox.xml" />
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\internet_explorer.xml" />
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_photo_viewer.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\skype.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

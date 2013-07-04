@@ -733,7 +733,7 @@ namespace Generated.ProcessBehaviors
 	public partial class ProcessBehaviorsProcess
 	{
 
-		private WindowList ignoreWindowsField;
+		private ProcessBehaviorsProcessIgnoreWindows ignoreWindowsField;
 
 		private ProcessBehaviorsProcessHideBehavior hideBehaviorField;
 
@@ -745,13 +745,13 @@ namespace Generated.ProcessBehaviors
 
 		private static System.Xml.Serialization.XmlSerializer serializer;
 
-		public WindowList IgnoreWindows
+		public ProcessBehaviorsProcessIgnoreWindows IgnoreWindows
 		{
 			get
 			{
 				if ( (this.ignoreWindowsField == null) )
 				{
-					this.ignoreWindowsField = new WindowList();
+					this.ignoreWindowsField = new ProcessBehaviorsProcessIgnoreWindows();
 				}
 				return this.ignoreWindowsField;
 			}
@@ -1005,6 +1005,240 @@ namespace Generated.ProcessBehaviors
 			}
 		}
 		#endregion
+	}
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute( "System.Xml", "4.0.30319.18047" )]
+	[System.SerializableAttribute()]
+	[System.ComponentModel.DesignerCategoryAttribute( "code" )]
+	[System.Xml.Serialization.XmlTypeAttribute( AnonymousType=true, Namespace="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors" )]
+	public partial class ProcessBehaviorsProcessIgnoreWindows : WindowList
+	{
+
+		private ProcessBehaviorsProcessIgnoreWindowsMode modeField;
+
+		private static System.Xml.Serialization.XmlSerializer serializer;
+
+		public ProcessBehaviorsProcessIgnoreWindows()
+		{
+			this.modeField = ProcessBehaviorsProcessIgnoreWindowsMode.NoneExcept;
+		}
+
+		[System.Xml.Serialization.XmlAttributeAttribute()]
+		[System.ComponentModel.DefaultValueAttribute( ProcessBehaviorsProcessIgnoreWindowsMode.NoneExcept )]
+		public ProcessBehaviorsProcessIgnoreWindowsMode Mode
+		{
+			get
+			{
+				return this.modeField;
+			}
+			set
+			{
+				this.modeField = value;
+			}
+		}
+
+		private static System.Xml.Serialization.XmlSerializer Serializer
+		{
+			get
+			{
+				if ( (serializer == null) )
+				{
+					serializer = new System.Xml.Serialization.XmlSerializer( typeof( ProcessBehaviorsProcessIgnoreWindows ) );
+				}
+				return serializer;
+			}
+		}
+
+		#region Serialize/Deserialize
+		/// <summary>
+		/// Serializes current ProcessBehaviorsProcessIgnoreWindows object into an XML document
+		/// </summary>
+		/// <returns>string XML value</returns>
+		public virtual string Serialize()
+		{
+			System.IO.StreamReader streamReader = null;
+			System.IO.MemoryStream memoryStream = null;
+			try
+			{
+				memoryStream = new System.IO.MemoryStream();
+				Serializer.Serialize( memoryStream, this );
+				memoryStream.Seek( 0, System.IO.SeekOrigin.Begin );
+				streamReader = new System.IO.StreamReader( memoryStream );
+				return streamReader.ReadToEnd();
+			}
+			finally
+			{
+				if ( (streamReader != null) )
+				{
+					streamReader.Dispose();
+				}
+				if ( (memoryStream != null) )
+				{
+					memoryStream.Dispose();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deserializes workflow markup into an ProcessBehaviorsProcessIgnoreWindows object
+		/// </summary>
+		/// <param name="xml">string workflow markup to deserialize</param>
+		/// <param name="obj">Output ProcessBehaviorsProcessIgnoreWindows object</param>
+		/// <param name="exception">output Exception value if deserialize failed</param>
+		/// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+		public static bool Deserialize( string xml, out ProcessBehaviorsProcessIgnoreWindows obj, out System.Exception exception )
+		{
+			exception = null;
+			obj = default( ProcessBehaviorsProcessIgnoreWindows );
+			try
+			{
+				obj = Deserialize( xml );
+				return true;
+			}
+			catch ( System.Exception ex )
+			{
+				exception = ex;
+				return false;
+			}
+		}
+
+		public static bool Deserialize( string xml, out ProcessBehaviorsProcessIgnoreWindows obj )
+		{
+			System.Exception exception = null;
+			return Deserialize( xml, out obj, out exception );
+		}
+
+		public new static ProcessBehaviorsProcessIgnoreWindows Deserialize( string xml )
+		{
+			System.IO.StringReader stringReader = null;
+			try
+			{
+				stringReader = new System.IO.StringReader( xml );
+				return ((ProcessBehaviorsProcessIgnoreWindows)(Serializer.Deserialize( System.Xml.XmlReader.Create( stringReader ) )));
+			}
+			finally
+			{
+				if ( (stringReader != null) )
+				{
+					stringReader.Dispose();
+				}
+			}
+		}
+
+		public static ProcessBehaviorsProcessIgnoreWindows Deserialize( System.IO.Stream s )
+		{
+			return ((ProcessBehaviorsProcessIgnoreWindows)(Serializer.Deserialize( s )));
+		}
+
+		/// <summary>
+		/// Serializes current ProcessBehaviorsProcessIgnoreWindows object into file
+		/// </summary>
+		/// <param name="fileName">full path of outupt xml file</param>
+		/// <param name="exception">output Exception value if failed</param>
+		/// <returns>true if can serialize and save into file; otherwise, false</returns>
+		public virtual bool SaveToFile( string fileName, out System.Exception exception )
+		{
+			exception = null;
+			try
+			{
+				SaveToFile( fileName );
+				return true;
+			}
+			catch ( System.Exception e )
+			{
+				exception = e;
+				return false;
+			}
+		}
+
+		public virtual void SaveToFile( string fileName )
+		{
+			System.IO.StreamWriter streamWriter = null;
+			try
+			{
+				string xmlString = Serialize();
+				System.IO.FileInfo xmlFile = new System.IO.FileInfo( fileName );
+				streamWriter = xmlFile.CreateText();
+				streamWriter.WriteLine( xmlString );
+				streamWriter.Close();
+			}
+			finally
+			{
+				if ( (streamWriter != null) )
+				{
+					streamWriter.Dispose();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deserializes xml markup from file into an ProcessBehaviorsProcessIgnoreWindows object
+		/// </summary>
+		/// <param name="fileName">string xml file to load and deserialize</param>
+		/// <param name="obj">Output ProcessBehaviorsProcessIgnoreWindows object</param>
+		/// <param name="exception">output Exception value if deserialize failed</param>
+		/// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+		public static bool LoadFromFile( string fileName, out ProcessBehaviorsProcessIgnoreWindows obj, out System.Exception exception )
+		{
+			exception = null;
+			obj = default( ProcessBehaviorsProcessIgnoreWindows );
+			try
+			{
+				obj = LoadFromFile( fileName );
+				return true;
+			}
+			catch ( System.Exception ex )
+			{
+				exception = ex;
+				return false;
+			}
+		}
+
+		public static bool LoadFromFile( string fileName, out ProcessBehaviorsProcessIgnoreWindows obj )
+		{
+			System.Exception exception = null;
+			return LoadFromFile( fileName, out obj, out exception );
+		}
+
+		public new static ProcessBehaviorsProcessIgnoreWindows LoadFromFile( string fileName )
+		{
+			System.IO.FileStream file = null;
+			System.IO.StreamReader sr = null;
+			try
+			{
+				file = new System.IO.FileStream( fileName, FileMode.Open, FileAccess.Read );
+				sr = new System.IO.StreamReader( file );
+				string xmlString = sr.ReadToEnd();
+				sr.Close();
+				file.Close();
+				return Deserialize( xmlString );
+			}
+			finally
+			{
+				if ( (file != null) )
+				{
+					file.Dispose();
+				}
+				if ( (sr != null) )
+				{
+					sr.Dispose();
+				}
+			}
+		}
+		#endregion
+	}
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute( "System.Xml", "4.0.30319.18047" )]
+	[System.SerializableAttribute()]
+	[System.Xml.Serialization.XmlTypeAttribute( AnonymousType=true, Namespace="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors" )]
+	public enum ProcessBehaviorsProcessIgnoreWindowsMode
+	{
+
+		/// <remarks/>
+		AllExcept,
+
+		/// <remarks/>
+		NoneExcept,
 	}
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute( "System.Xml", "4.0.30319.18047" )]

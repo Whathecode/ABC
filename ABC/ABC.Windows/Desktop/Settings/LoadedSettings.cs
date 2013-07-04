@@ -126,11 +126,18 @@ namespace ABC.Windows.Desktop.Settings
 					return false;
 				}
 
-				// Process specific settings.
+				// Check whether the process needs to be managed at all.
 				ProcessBehaviorsProcess process = GetProcessSettings( w );
-				return
-					process.ShouldHandleProcess() &&
-					process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w ) ) == null;
+				if ( !process.ShouldHandleProcess() )
+				{
+					return false;
+				}
+
+				// Process specific settings.
+				Window listedWindow = process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w ) );
+				return process.IgnoreWindows.Mode == ProcessBehaviorsProcessIgnoreWindowsMode.NoneExcept
+					? listedWindow == null
+					: listedWindow != null;
 			};
 		}
 

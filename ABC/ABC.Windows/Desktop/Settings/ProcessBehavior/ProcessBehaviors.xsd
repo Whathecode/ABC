@@ -25,7 +25,7 @@
 
   <!-- Type which lists a set of windows. -->
   <xs:complexType name="WindowList">
-    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
       <xs:element name="Window" type="Window" />
     </xs:sequence>    
   </xs:complexType>
@@ -53,7 +53,22 @@
 
               <xs:sequence>
                 <!-- A list of windows which should be ignored entirely by the Virtual Desktop Manager. -->
-                <xs:element name="IgnoreWindows" type="WindowList" minOccurs="0" maxOccurs="1" />
+                <xs:element name="IgnoreWindows" minOccurs="0" maxOccurs="1">
+                  <xs:complexType>
+                    <xs:complexContent>
+                      <xs:extension base="WindowList">
+                        <xs:attribute name="Mode" default="NoneExcept">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                              <xs:enumeration value="AllExcept" />
+                              <xs:enumeration value="NoneExcept" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                      </xs:extension>
+                    </xs:complexContent>
+                  </xs:complexType>
+                </xs:element>
 
                 <!-- Describes which windows should be cut when a window of this process is cut. -->
                 <xs:element name="HideBehavior" minOccurs="0" maxOccurs="1">
