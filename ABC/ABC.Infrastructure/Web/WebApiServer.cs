@@ -9,62 +9,61 @@ using Owin;
 using ABC.Infrastructure.Events;
 using ABC.Infrastructure.Web.Controllers;
 
+
 namespace ABC.Infrastructure.Web
 {
     public class WebApiServer
     {
         public string Address { get; private set; }
         public int Port { get; private set; }
-        private static bool Running { get; set; }
+        static bool Running { get; set; }
 
-        public bool IsRunning 
-        { 
+        public bool IsRunning
+        {
             get { return Running; }
         }
 
-        public void Start(string addr,int port)
+        public void Start( string addr, int port )
         {
-            if (Running)
+            if ( Running )
                 return;
             Running = true;
             Address = addr;
             Port = port;
-            Task.Factory.StartNew(() =>
+            Task.Factory.StartNew( () =>
+            {
+                using ( WebApplication.Start<ActivityWebService>( Helpers.Net.GetUrl( addr, port, "" ).ToString() ) )
                 {
-
-                    using (WebApplication.Start<ActivityWebService>( Helpers.Net.GetUrl(addr, port, "").ToString()))
-                    {
-                        Console.WriteLine("WebAPI running on {0}", Helpers.Net.GetUrl(addr, port, ""));
-                        while(Running){}
-                    }
-                });
-
+                    Console.WriteLine( "WebAPI running on {0}", Helpers.Net.GetUrl( addr, port, "" ) );
+                    while ( Running ) {}
+                }
+            } );
         }
 
         public void Stop()
         {
-            if(Running)
+            if ( Running )
                 Running = false;
         }
 
         internal class ActivityWebService
         {
-            public void Configuration(IAppBuilder app)
+            public void Configuration( IAppBuilder app )
             {
-                var config = new HttpConfiguration {DependencyResolver = new ControllerResolver()};
+                var config = new HttpConfiguration { DependencyResolver = new ControllerResolver() };
                 config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
                 config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
-                config.Routes.MapHttpRoute("Default", "{controller}/{id}", new { id = RouteParameter.Optional });
-                app.UseWebApi(config);
-                app.MapConnection<EventDispatcher>("", new ConnectionConfiguration {EnableCrossDomain = true});
+                config.Routes.MapHttpRoute( "Default", "{controller}/{id}", new { id = RouteParameter.Optional } );
+                app.UseWebApi( config );
+                app.MapConnection<EventDispatcher>( "", new ConnectionConfiguration { EnableCrossDomain = true } );
                 app.MapHubs();
 
-                var serializer = new JsonNetSerializer(new JsonSerializerSettings
+                var serializer = new JsonNetSerializer( new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.Objects
-                });
+                } );
 
-                GlobalHost.DependencyResolver.Register(typeof(IJsonSerializer), () => serializer); 
+                GlobalHost.DependencyResolver.Register( typeof( IJsonSerializer ), () => serializer );
             }
         }
     }

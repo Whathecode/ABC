@@ -6,14 +6,15 @@ using ABC.Infrastructure.Helpers;
 using ABC.Model;
 using Newtonsoft.Json.Linq;
 
+
 namespace ABC.Infrastructure.Web.Controllers
 {
     public class ActivitiesController : ApiController
     {
-        private readonly ActivitySystem _system;
+        readonly ActivitySystem _system;
 
 
-        public ActivitiesController(ActivitySystem system)
+        public ActivitiesController( ActivitySystem system )
         {
             _system = system;
         }
@@ -22,21 +23,25 @@ namespace ABC.Infrastructure.Web.Controllers
         {
             return _system.Activities.Values.ToList();
         }
-        public IActivity Get(string id)
+
+        public IActivity Get( string id )
         {
-            return _system.Activities[id];
+            return _system.Activities[ id ];
         }
-        public void Post(JObject activity)
+
+        public void Post( JObject activity )
         {
-            _system.AddActivity(Json.ConvertFromTypedJson<IActivity>(activity.ToString()));
+            _system.AddActivity( Json.ConvertFromTypedJson<IActivity>( activity.ToString() ) );
         }
-        public void Delete(string id)
+
+        public void Delete( string id )
         {
-            _system.RemoveActivity(id);
+            _system.RemoveActivity( id );
         }
-        public void Put(JObject activity)
+
+        public void Put( JObject activity )
         {
-            _system.UpdateActivity(Json.ConvertFromTypedJson<IActivity>(activity.ToString()));
+            _system.UpdateActivity( Json.ConvertFromTypedJson<IActivity>( activity.ToString() ) );
         }
     }
 }

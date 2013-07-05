@@ -12,6 +12,5 @@
         public MovingStatus MovingStatus { get; set; }
         public BatteryStatus BatteryStatus { get; set; }
         public Detector Detector { get; set; }
-
     }
 }

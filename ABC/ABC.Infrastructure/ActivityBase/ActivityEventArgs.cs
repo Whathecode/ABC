@@ -13,22 +13,26 @@
 using ABC.Model;
 using System;
 
+
 namespace ABC.Infrastructure
 {
     public class ActivityEventArgs
     {
         public IActivity Activity { get; set; }
-        public ActivityEventArgs() { }
-        public ActivityEventArgs(IActivity activity)
+        public ActivityEventArgs() {}
+
+        public ActivityEventArgs( IActivity activity )
         {
-           Activity = activity;
+            Activity = activity;
         }
     }
+
     public class ActivityRemovedEventArgs
     {
         public string Id { get; set; }
-        public ActivityRemovedEventArgs() { }
-        public ActivityRemovedEventArgs(string id)
+        public ActivityRemovedEventArgs() {}
+
+        public ActivityRemovedEventArgs( string id )
         {
             Id = id;
         }

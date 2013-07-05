@@ -9,12 +9,13 @@ using System.ComponentModel;
 using System.Management;
 using System.Threading;
 
+
 //inspired from http://www.eggheadcafe.com/community/csharp/2/10315145/enabledisable-comm-port-by-programming.aspx
 
 namespace ABC.Infrastructure.Driver
 {
     [Flags()]
-    internal enum SetupDiGetClassDevsFlags
+    enum SetupDiGetClassDevsFlags
     {
         Default = 1,
         Present = 2,
@@ -23,7 +24,7 @@ namespace ABC.Infrastructure.Driver
         DeviceInterface = (int)0x10
     }
 
-    internal enum DiFunction
+    enum DiFunction
     {
         SelectDevice = 1,
         InstallDevice = 2,
@@ -68,7 +69,7 @@ namespace ABC.Infrastructure.Driver
         Reserved2 = (int)0x30
     }
 
-    internal enum StateChangeAction
+    enum StateChangeAction
     {
         Enable = 1,
         Disable = 2,
@@ -78,89 +79,89 @@ namespace ABC.Infrastructure.Driver
     }
 
     [Flags()]
-    internal enum Scopes
+    enum Scopes
     {
         Global = 1,
         ConfigSpecific = 2,
         ConfigGeneral = 4
     }
 
-    internal enum SetupApiError
+    enum SetupApiError
     {
-        NoAssociatedClass = unchecked((int)0xe0000200),
-        ClassMismatch = unchecked((int)0xe0000201),
-        DuplicateFound = unchecked((int)0xe0000202),
-        NoDriverSelected = unchecked((int)0xe0000203),
-        KeyDoesNotExist = unchecked((int)0xe0000204),
-        InvalidDevinstName = unchecked((int)0xe0000205),
-        InvalidClass = unchecked((int)0xe0000206),
-        DevinstAlreadyExists = unchecked((int)0xe0000207),
-        DevinfoNotRegistered = unchecked((int)0xe0000208),
-        InvalidRegProperty = unchecked((int)0xe0000209),
-        NoInf = unchecked((int)0xe000020a),
-        NoSuchHDevinst = unchecked((int)0xe000020b),
-        CantLoadClassIcon = unchecked((int)0xe000020c),
-        InvalidClassInstaller = unchecked((int)0xe000020d),
-        DiDoDefault = unchecked((int)0xe000020e),
-        DiNoFileCopy = unchecked((int)0xe000020f),
-        InvalidHwProfile = unchecked((int)0xe0000210),
-        NoDeviceSelected = unchecked((int)0xe0000211),
-        DevinfolistLocked = unchecked((int)0xe0000212),
-        DevinfodataLocked = unchecked((int)0xe0000213),
-        DiBadPath = unchecked((int)0xe0000214),
-        NoClassInstallParams = unchecked((int)0xe0000215),
-        FileQueueLocked = unchecked((int)0xe0000216),
-        BadServiceInstallSect = unchecked((int)0xe0000217),
-        NoClassDriverList = unchecked((int)0xe0000218),
-        NoAssociatedService = unchecked((int)0xe0000219),
-        NoDefaultDeviceInterface = unchecked((int)0xe000021a),
-        DeviceInterfaceActive = unchecked((int)0xe000021b),
-        DeviceInterfaceRemoved = unchecked((int)0xe000021c),
-        BadInterfaceInstallSect = unchecked((int)0xe000021d),
-        NoSuchInterfaceClass = unchecked((int)0xe000021e),
-        InvalidReferenceString = unchecked((int)0xe000021f),
-        InvalidMachineName = unchecked((int)0xe0000220),
-        RemoteCommFailure = unchecked((int)0xe0000221),
-        MachineUnavailable = unchecked((int)0xe0000222),
-        NoConfigMgrServices = unchecked((int)0xe0000223),
-        InvalidPropPageProvider = unchecked((int)0xe0000224),
-        NoSuchDeviceInterface = unchecked((int)0xe0000225),
-        DiPostProcessingRequired = unchecked((int)0xe0000226),
-        InvalidCOInstaller = unchecked((int)0xe0000227),
-        NoCompatDrivers = unchecked((int)0xe0000228),
-        NoDeviceIcon = unchecked((int)0xe0000229),
-        InvalidInfLogConfig = unchecked((int)0xe000022a),
-        DiDontInstall = unchecked((int)0xe000022b),
-        InvalidFilterDriver = unchecked((int)0xe000022c),
-        NonWindowsNTDriver = unchecked((int)0xe000022d),
-        NonWindowsDriver = unchecked((int)0xe000022e),
-        NoCatalogForOemInf = unchecked((int)0xe000022f),
-        DevInstallQueueNonNative = unchecked((int)0xe0000230),
-        NotDisableable = unchecked((int)0xe0000231),
-        CantRemoveDevinst = unchecked((int)0xe0000232),
-        InvalidTarget = unchecked((int)0xe0000233),
-        DriverNonNative = unchecked((int)0xe0000234),
-        InWow64 = unchecked((int)0xe0000235),
-        SetSystemRestorePoint = unchecked((int)0xe0000236),
-        IncorrectlyCopiedInf = unchecked((int)0xe0000237),
-        SceDisabled = unchecked((int)0xe0000238),
-        UnknownException = unchecked((int)0xe0000239),
-        PnpRegistryError = unchecked((int)0xe000023a),
-        RemoteRequestUnsupported = unchecked((int)0xe000023b),
-        NotAnInstalledOemInf = unchecked((int)0xe000023c),
-        InfInUseByDevices = unchecked((int)0xe000023d),
-        DiFunctionObsolete = unchecked((int)0xe000023e),
-        NoAuthenticodeCatalog = unchecked((int)0xe000023f),
-        AuthenticodeDisallowed = unchecked((int)0xe0000240),
-        AuthenticodeTrustedPublisher = unchecked((int)0xe0000241),
-        AuthenticodeTrustNotEstablished = unchecked((int)0xe0000242),
-        AuthenticodePublisherNotTrusted = unchecked((int)0xe0000243),
-        SignatureOSAttributeMismatch = unchecked((int)0xe0000244),
-        OnlyValidateViaAuthenticode = unchecked((int)0xe0000245)
+        NoAssociatedClass = unchecked( (int)0xe0000200 ),
+        ClassMismatch = unchecked( (int)0xe0000201 ),
+        DuplicateFound = unchecked( (int)0xe0000202 ),
+        NoDriverSelected = unchecked( (int)0xe0000203 ),
+        KeyDoesNotExist = unchecked( (int)0xe0000204 ),
+        InvalidDevinstName = unchecked( (int)0xe0000205 ),
+        InvalidClass = unchecked( (int)0xe0000206 ),
+        DevinstAlreadyExists = unchecked( (int)0xe0000207 ),
+        DevinfoNotRegistered = unchecked( (int)0xe0000208 ),
+        InvalidRegProperty = unchecked( (int)0xe0000209 ),
+        NoInf = unchecked( (int)0xe000020a ),
+        NoSuchHDevinst = unchecked( (int)0xe000020b ),
+        CantLoadClassIcon = unchecked( (int)0xe000020c ),
+        InvalidClassInstaller = unchecked( (int)0xe000020d ),
+        DiDoDefault = unchecked( (int)0xe000020e ),
+        DiNoFileCopy = unchecked( (int)0xe000020f ),
+        InvalidHwProfile = unchecked( (int)0xe0000210 ),
+        NoDeviceSelected = unchecked( (int)0xe0000211 ),
+        DevinfolistLocked = unchecked( (int)0xe0000212 ),
+        DevinfodataLocked = unchecked( (int)0xe0000213 ),
+        DiBadPath = unchecked( (int)0xe0000214 ),
+        NoClassInstallParams = unchecked( (int)0xe0000215 ),
+        FileQueueLocked = unchecked( (int)0xe0000216 ),
+        BadServiceInstallSect = unchecked( (int)0xe0000217 ),
+        NoClassDriverList = unchecked( (int)0xe0000218 ),
+        NoAssociatedService = unchecked( (int)0xe0000219 ),
+        NoDefaultDeviceInterface = unchecked( (int)0xe000021a ),
+        DeviceInterfaceActive = unchecked( (int)0xe000021b ),
+        DeviceInterfaceRemoved = unchecked( (int)0xe000021c ),
+        BadInterfaceInstallSect = unchecked( (int)0xe000021d ),
+        NoSuchInterfaceClass = unchecked( (int)0xe000021e ),
+        InvalidReferenceString = unchecked( (int)0xe000021f ),
+        InvalidMachineName = unchecked( (int)0xe0000220 ),
+        RemoteCommFailure = unchecked( (int)0xe0000221 ),
+        MachineUnavailable = unchecked( (int)0xe0000222 ),
+        NoConfigMgrServices = unchecked( (int)0xe0000223 ),
+        InvalidPropPageProvider = unchecked( (int)0xe0000224 ),
+        NoSuchDeviceInterface = unchecked( (int)0xe0000225 ),
+        DiPostProcessingRequired = unchecked( (int)0xe0000226 ),
+        InvalidCOInstaller = unchecked( (int)0xe0000227 ),
+        NoCompatDrivers = unchecked( (int)0xe0000228 ),
+        NoDeviceIcon = unchecked( (int)0xe0000229 ),
+        InvalidInfLogConfig = unchecked( (int)0xe000022a ),
+        DiDontInstall = unchecked( (int)0xe000022b ),
+        InvalidFilterDriver = unchecked( (int)0xe000022c ),
+        NonWindowsNTDriver = unchecked( (int)0xe000022d ),
+        NonWindowsDriver = unchecked( (int)0xe000022e ),
+        NoCatalogForOemInf = unchecked( (int)0xe000022f ),
+        DevInstallQueueNonNative = unchecked( (int)0xe0000230 ),
+        NotDisableable = unchecked( (int)0xe0000231 ),
+        CantRemoveDevinst = unchecked( (int)0xe0000232 ),
+        InvalidTarget = unchecked( (int)0xe0000233 ),
+        DriverNonNative = unchecked( (int)0xe0000234 ),
+        InWow64 = unchecked( (int)0xe0000235 ),
+        SetSystemRestorePoint = unchecked( (int)0xe0000236 ),
+        IncorrectlyCopiedInf = unchecked( (int)0xe0000237 ),
+        SceDisabled = unchecked( (int)0xe0000238 ),
+        UnknownException = unchecked( (int)0xe0000239 ),
+        PnpRegistryError = unchecked( (int)0xe000023a ),
+        RemoteRequestUnsupported = unchecked( (int)0xe000023b ),
+        NotAnInstalledOemInf = unchecked( (int)0xe000023c ),
+        InfInUseByDevices = unchecked( (int)0xe000023d ),
+        DiFunctionObsolete = unchecked( (int)0xe000023e ),
+        NoAuthenticodeCatalog = unchecked( (int)0xe000023f ),
+        AuthenticodeDisallowed = unchecked( (int)0xe0000240 ),
+        AuthenticodeTrustedPublisher = unchecked( (int)0xe0000241 ),
+        AuthenticodeTrustNotEstablished = unchecked( (int)0xe0000242 ),
+        AuthenticodePublisherNotTrusted = unchecked( (int)0xe0000243 ),
+        SignatureOSAttributeMismatch = unchecked( (int)0xe0000244 ),
+        OnlyValidateViaAuthenticode = unchecked( (int)0xe0000245 )
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct DeviceInfoData
+    [StructLayout( LayoutKind.Sequential )]
+    struct DeviceInfoData
     {
         public int Size;
         public Guid ClassGuid;
@@ -168,8 +169,8 @@ namespace ABC.Infrastructure.Driver
         public IntPtr Reserved;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct PropertyChangeParameters
+    [StructLayout( LayoutKind.Sequential )]
+    struct PropertyChangeParameters
     {
         public int Size;
         // part of header. It's flattened out into 1 structure.
@@ -179,13 +180,11 @@ namespace ABC.Infrastructure.Driver
         public int HwProfile;
     }
 
-    internal class NativeMethods
+    class NativeMethods
     {
-        private const string setupapi = "setupapi.dll";
+        const string setupapi = "setupapi.dll";
 
-        private NativeMethods()
-        {
-        }
+        NativeMethods() {}
 
         /// <summary>
         /// Retrieves the GUID(s) associated with the specified class name. 
@@ -201,12 +200,12 @@ namespace ABC.Infrastructure.Driver
         /// all the GUIDs.</param>
         /// <returns>The function returns TRUE if it is successful. Otherwise, it returns FALSE 
         /// and the logged error can be retrieved by making a call to GetLastError.</returns>
-        [DllImport("setupapi.dll", SetLastError = true)]
+        [DllImport( "setupapi.dll", SetLastError = true )]
         public static extern bool SetupDiClassGuidsFromName(
             string ClassName,
             ref Guid ClassGuidArray1stItem,
             UInt32 ClassGuidArraySize,
-            out UInt32 RequiredSize);
+            out UInt32 RequiredSize );
 
         /// <summary>
         /// The SetupDiCallClassInstaller function calls the appropriate class installer, and any registered 
@@ -222,12 +221,12 @@ namespace ABC.Infrastructure.Driver
         /// specified installation function. This parameter is optional and can be set to NULL.</param>
         /// <returns>The function returns TRUE if it is successful. Otherwise, it returns FALSE and the 
         /// logged error can be retrieved by making a call to GetLastError.</returns>
-        [DllImport(setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport( setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true )]
+        [return: MarshalAs( UnmanagedType.Bool )]
         public static extern bool SetupDiCallClassInstaller(
             DiFunction installFunction,
             SafeDeviceInfoSetHandle deviceInfoSet,
-            [In()]ref DeviceInfoData deviceInfoData);
+            [In()] ref DeviceInfoData deviceInfoData );
 
         /// <summary>
         /// The SetupDiEnumDeviceInfo function returns a SP_DEVINFO_DATA structure that specifies a 
@@ -241,12 +240,12 @@ namespace ABC.Infrastructure.Driver
         /// to sizeof(SP_DEVINFO_DATA).</param>
         /// <returns>The function returns TRUE if it is successful. Otherwise, it returns FALSE and the 
         /// logged error can be retrieved with a call to GetLastError.</returns>
-        [DllImport(setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport( setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true )]
+        [return: MarshalAs( UnmanagedType.Bool )]
         public static extern bool SetupDiEnumDeviceInfo(
             SafeDeviceInfoSetHandle deviceInfoSet,
             int memberIndex,
-            ref DeviceInfoData deviceInfoData);
+            ref DeviceInfoData deviceInfoData );
 
         /// <summary>
         /// The SetupDiGetClassDevs function returns a handle to a device information set that 
@@ -274,12 +273,12 @@ namespace ABC.Infrastructure.Driver
         /// <param name="flags">A variable of type DWORD that specifies control options that filter the device information elements 
         /// that are added to the device information set.</param>
         /// <returns></returns>
-        [DllImport(setupapi, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, SetLastError = true)]
+        [DllImport( setupapi, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, SetLastError = true )]
         public static extern SafeDeviceInfoSetHandle SetupDiGetClassDevs(
-            [In()]ref Guid classGuid,
-            [MarshalAs(UnmanagedType.LPWStr)]string enumerator,
+            [In()] ref Guid classGuid,
+            [MarshalAs( UnmanagedType.LPWStr )] string enumerator,
             IntPtr hwndParent,
-            SetupDiGetClassDevsFlags flags);
+            SetupDiGetClassDevsFlags flags );
 
         /// <summary>
         /// The SetupDiGetDeviceInstanceId function retrieves the device instance ID that is 
@@ -296,14 +295,14 @@ namespace ABC.Infrastructure.Driver
         /// to store the device instance ID.</param>
         /// <returns>The function returns TRUE if it is successful. Otherwise, it returns FALSE and the 
         /// logged error can be retrieved by making a call to GetLastError.</returns>
-        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport( "setupapi.dll", SetLastError = true, CharSet = CharSet.Auto )]
+        [return: MarshalAs( UnmanagedType.Bool )]
         public static extern bool SetupDiGetDeviceInstanceId(
             IntPtr DeviceInfoSet,
             ref DeviceInfoData did,
-            [MarshalAs(UnmanagedType.LPTStr)] StringBuilder DeviceInstanceId,
+            [MarshalAs( UnmanagedType.LPTStr )] StringBuilder DeviceInstanceId,
             int DeviceInstanceIdSize,
-            out int RequiredSize);
+            out int RequiredSize );
 
         /// <summary>
         /// The SetupDiDestroyDeviceInfoList function deletes a device information set and frees all associated memory.
@@ -312,10 +311,10 @@ namespace ABC.Infrastructure.Driver
         /// <returns>The function returns TRUE if it is successful. Otherwise, it returns FALSE and the 
         /// logged error can be retrieved with a call to GetLastError.</returns>
         [SuppressUnmanagedCodeSecurity()]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        [DllImport(setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetupDiDestroyDeviceInfoList(IntPtr deviceInfoSet);
+        [ReliabilityContract( Consistency.WillNotCorruptState, Cer.Success )]
+        [DllImport( setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true )]
+        [return: MarshalAs( UnmanagedType.Bool )]
+        public static extern bool SetupDiDestroyDeviceInfoList( IntPtr deviceInfoSet );
 
         /// <summary>
         /// The SetupDiSetClassInstallParams function sets or clears class install parameters for a 
@@ -334,25 +333,23 @@ namespace ABC.Infrastructure.Driver
         /// If the buffer is not supplied (that is, the class install parameters are being cleared), 
         /// ClassInstallParamsSize must be 0.</param>
         /// <returns></returns>
-        [DllImport(setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport( setupapi, CallingConvention = CallingConvention.Winapi, SetLastError = true )]
+        [return: MarshalAs( UnmanagedType.Bool )]
         public static extern bool SetupDiSetClassInstallParams(
             SafeDeviceInfoSetHandle deviceInfoSet,
-            [In()]ref DeviceInfoData deviceInfoData,
-            [In()]ref PropertyChangeParameters classInstallParams,
-            int classInstallParamsSize);
+            [In()] ref DeviceInfoData deviceInfoData,
+            [In()] ref PropertyChangeParameters classInstallParams,
+            int classInstallParamsSize );
     }
 
-    internal class SafeDeviceInfoSetHandle : SafeHandleZeroOrMinusOneIsInvalid
+    class SafeDeviceInfoSetHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         public SafeDeviceInfoSetHandle()
-            : base(true)
-        {
-        }
+            : base( true ) {}
 
         protected override bool ReleaseHandle()
         {
-            return NativeMethods.SetupDiDestroyDeviceInfoList(this.handle);
+            return NativeMethods.SetupDiDestroyDeviceInfoList( this.handle );
         }
     }
 
@@ -362,61 +359,59 @@ namespace ABC.Infrastructure.Driver
     /// </summary>
     public class PortHelper
     {
-        private PortHelper()
-        {
-        }
+        PortHelper() {}
 
         /// <summary>
         /// Tries to reset (disable/enable) the port with the given instance Id.
         /// </summary>
         /// <param name="instanceId">The instance Id of the port to reset.</param>
         /// <returns>True, if the port was successfully resetted, otherwise false.</returns>
-        public static bool TryResetPortByInstanceId(string instanceId)
+        public static bool TryResetPortByInstanceId( string instanceId )
         {
             SafeDeviceInfoSetHandle diSetHandle = null;
 
-            if (!String.IsNullOrEmpty(instanceId))
+            if ( !String.IsNullOrEmpty( instanceId ) )
             {
                 try
                 {
-                    Guid[] guidArray = GetGuidFromName("Ports");
+                    Guid[] guidArray = GetGuidFromName( "Ports" );
 
                     //Get the handle to a device information set for all devices matching classGuid that are present on the 
                     //system.
                     diSetHandle = NativeMethods.SetupDiGetClassDevs(
-                        ref guidArray[0], null, IntPtr.Zero, SetupDiGetClassDevsFlags.DeviceInterface);
+                        ref guidArray[ 0 ], null, IntPtr.Zero, SetupDiGetClassDevsFlags.DeviceInterface );
 
                     //Get the device information data for each matching device.
-                    DeviceInfoData[] diData = GetDeviceInfoData(diSetHandle);
+                    DeviceInfoData[] diData = GetDeviceInfoData( diSetHandle );
 
                     //Try to find the object with the same instance Id.
-                    foreach (var infoData in diData)
+                    foreach ( var infoData in diData )
                     {
-                        var instanceIds = GetInstanceIdsFromClassGuid(infoData.ClassGuid);
-                        foreach (var id in instanceIds)
+                        var instanceIds = GetInstanceIdsFromClassGuid( infoData.ClassGuid );
+                        foreach ( var id in instanceIds )
                         {
-                            if (id.Equals(instanceId))
+                            if ( id.Equals( instanceId ) )
                             {
                                 //disable port
-                                SetDeviceEnabled(infoData.ClassGuid, id, false);
+                                SetDeviceEnabled( infoData.ClassGuid, id, false );
                                 //wait a moment
-                                Thread.Sleep(1000);
+                                Thread.Sleep( 1000 );
                                 //enable port
-                                SetDeviceEnabled(infoData.ClassGuid, id, true);
+                                SetDeviceEnabled( infoData.ClassGuid, id, true );
                                 return true;
                             }
                         }
                     }
                 }
-                catch (Exception)
+                catch ( Exception )
                 {
                     return false;
                 }
                 finally
                 {
-                    if (diSetHandle != null)
+                    if ( diSetHandle != null )
                     {
-                        if (diSetHandle.IsClosed == false)
+                        if ( diSetHandle.IsClosed == false )
                         {
                             diSetHandle.Close();
                         }
@@ -433,46 +428,46 @@ namespace ABC.Infrastructure.Driver
         /// </summary>
         /// <param name="portName">The port name of the port to reset.</param>
         /// <returns>True, if the port was successfully resetted, otherwise false.</returns>
-        public static bool TryResetPortByName(string portName)
+        public static bool TryResetPortByName( string portName )
         {
             try
             {
                 var instanceId = String.Empty;
 
                 //get instance id for port from WMI
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher("select * from Win32_SerialPort");
-                foreach (ManagementObject port in searcher.Get())
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher( "select * from Win32_SerialPort" );
+                foreach ( ManagementObject port in searcher.Get() )
                 {
-                    if (port["DeviceID"].ToString().Equals(portName))
+                    if ( port[ "DeviceID" ].ToString().Equals( portName ) )
                     {
-                        instanceId = port["PNPDeviceID"].ToString();
+                        instanceId = port[ "PNPDeviceID" ].ToString();
                         break;
                     }
                 }
-                if (!String.IsNullOrEmpty(instanceId))
+                if ( !String.IsNullOrEmpty( instanceId ) )
                 {
-                    return TryResetPortByInstanceId(instanceId);
+                    return TryResetPortByInstanceId( instanceId );
                 }
                 return false;
             }
-            catch (Exception)
+            catch ( Exception )
             {
                 return false;
             }
         }
 
-        private static Guid[] GetGuidFromName(string devName)
+        static Guid[] GetGuidFromName( string devName )
         {
             UInt32 RequiredSize = 0;
             Guid[] GuidArray = new Guid[1];
             // read Guids
-            bool Status = NativeMethods.SetupDiClassGuidsFromName(devName, ref GuidArray[0], 1, out RequiredSize);
-            if (Status)
+            bool Status = NativeMethods.SetupDiClassGuidsFromName( devName, ref GuidArray[ 0 ], 1, out RequiredSize );
+            if ( Status )
             {
-                if (RequiredSize > 1)
+                if ( RequiredSize > 1 )
                 {
                     GuidArray = new Guid[RequiredSize];
-                    NativeMethods.SetupDiClassGuidsFromName(devName, ref GuidArray[0], RequiredSize, out RequiredSize);
+                    NativeMethods.SetupDiClassGuidsFromName( devName, ref GuidArray[ 0 ], RequiredSize, out RequiredSize );
                 }
             }
             else
@@ -482,7 +477,7 @@ namespace ABC.Infrastructure.Driver
             return GuidArray;
         }
 
-        private static List<string> GetInstanceIdsFromClassGuid(Guid classGuid)
+        static List<string> GetInstanceIdsFromClassGuid( Guid classGuid )
         {
             SafeDeviceInfoSetHandle diSetHandle = null;
             List<string> resultList = new List<string>();
@@ -490,30 +485,30 @@ namespace ABC.Infrastructure.Driver
             {
                 // Get the handle to a device information set for all devices matching classGuid that are present on the 
                 // system.
-                diSetHandle = NativeMethods.SetupDiGetClassDevs(ref classGuid, null, IntPtr.Zero, SetupDiGetClassDevsFlags.Present);
+                diSetHandle = NativeMethods.SetupDiGetClassDevs( ref classGuid, null, IntPtr.Zero, SetupDiGetClassDevsFlags.Present );
                 // Get the device information data for each matching device.
-                DeviceInfoData[] diData = GetDeviceInfoData(diSetHandle);
+                DeviceInfoData[] diData = GetDeviceInfoData( diSetHandle );
 
                 const int ERROR_INSUFFICIENT_BUFFER = 122;
-                for (int index = 0; index <= diData.Length - 1; index++)
+                for ( int index = 0; index <= diData.Length - 1; index++ )
                 {
-                    StringBuilder sb = new StringBuilder(1);
+                    StringBuilder sb = new StringBuilder( 1 );
                     int requiredSize = 0;
-                    bool result = NativeMethods.SetupDiGetDeviceInstanceId(diSetHandle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out requiredSize);
-                    if (result == false && Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
+                    bool result = NativeMethods.SetupDiGetDeviceInstanceId( diSetHandle.DangerousGetHandle(), ref diData[ index ], sb, sb.Capacity, out requiredSize );
+                    if ( result == false && Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER )
                     {
                         sb.Capacity = requiredSize;
-                        result = NativeMethods.SetupDiGetDeviceInstanceId(diSetHandle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out requiredSize);
+                        result = NativeMethods.SetupDiGetDeviceInstanceId( diSetHandle.DangerousGetHandle(), ref diData[ index ], sb, sb.Capacity, out requiredSize );
 
-                        resultList.Add(sb.ToString());
+                        resultList.Add( sb.ToString() );
                     }
                 }
             }
             finally
             {
-                if (diSetHandle != null)
+                if ( diSetHandle != null )
                 {
-                    if (diSetHandle.IsClosed == false)
+                    if ( diSetHandle.IsClosed == false )
                     {
                         diSetHandle.Close();
                     }
@@ -530,26 +525,26 @@ namespace ABC.Infrastructure.Driver
         /// <param name="instanceId">The device instance id of the device. Available in the device manager.</param>
         /// <param name="enable">True to enable, False to disable.</param>
         /// <remarks>Will throw an exception if the device is not Disableable.</remarks>
-        public static void SetDeviceEnabled(Guid classGuid, string instanceId, bool enable)
+        public static void SetDeviceEnabled( Guid classGuid, string instanceId, bool enable )
         {
             SafeDeviceInfoSetHandle diSetHandle = null;
             try
             {
                 // Get the handle to a device information set for all devices matching classGuid that are present on the 
                 // system.
-                diSetHandle = NativeMethods.SetupDiGetClassDevs(ref classGuid, null, IntPtr.Zero, SetupDiGetClassDevsFlags.Present);
+                diSetHandle = NativeMethods.SetupDiGetClassDevs( ref classGuid, null, IntPtr.Zero, SetupDiGetClassDevsFlags.Present );
                 // Get the device information data for each matching device.
-                DeviceInfoData[] diData = GetDeviceInfoData(diSetHandle);
+                DeviceInfoData[] diData = GetDeviceInfoData( diSetHandle );
                 // Find the index of our instance.
-                int index = GetIndexOfInstance(diSetHandle, diData, instanceId);
+                int index = GetIndexOfInstance( diSetHandle, diData, instanceId );
                 // Enable/Disable.
-                EnableDevice(diSetHandle, diData[index], enable);
+                EnableDevice( diSetHandle, diData[ index ], enable );
             }
             finally
             {
-                if (diSetHandle != null)
+                if ( diSetHandle != null )
                 {
-                    if (diSetHandle.IsClosed == false)
+                    if ( diSetHandle.IsClosed == false )
                     {
                         diSetHandle.Close();
                     }
@@ -558,16 +553,16 @@ namespace ABC.Infrastructure.Driver
             }
         }
 
-        private static DeviceInfoData[] GetDeviceInfoData(SafeDeviceInfoSetHandle handle)
+        static DeviceInfoData[] GetDeviceInfoData( SafeDeviceInfoSetHandle handle )
         {
             List<DeviceInfoData> data = new List<DeviceInfoData>();
             DeviceInfoData did = new DeviceInfoData();
-            int didSize = Marshal.SizeOf(did);
+            int didSize = Marshal.SizeOf( did );
             did.Size = didSize;
             int index = 0;
-            while (NativeMethods.SetupDiEnumDeviceInfo(handle, index, ref did))
+            while ( NativeMethods.SetupDiEnumDeviceInfo( handle, index, ref did ) )
             {
-                data.Add(did);
+                data.Add( did );
                 index += 1;
                 did = new DeviceInfoData();
                 did.Size = didSize;
@@ -582,22 +577,22 @@ namespace ABC.Infrastructure.Driver
         /// <param name="diData"></param>
         /// <param name="instanceId"></param>
         /// <returns></returns> 
-        private static int GetIndexOfInstance(SafeDeviceInfoSetHandle handle, DeviceInfoData[] diData, string instanceId)
+        static int GetIndexOfInstance( SafeDeviceInfoSetHandle handle, DeviceInfoData[] diData, string instanceId )
         {
             const int ERROR_INSUFFICIENT_BUFFER = 122;
-            for (int index = 0; index <= diData.Length - 1; index++)
+            for ( int index = 0; index <= diData.Length - 1; index++ )
             {
-                StringBuilder sb = new StringBuilder(1);
+                StringBuilder sb = new StringBuilder( 1 );
                 int requiredSize = 0;
-                bool result = NativeMethods.SetupDiGetDeviceInstanceId(handle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out requiredSize);
-                if (result == false && Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
+                bool result = NativeMethods.SetupDiGetDeviceInstanceId( handle.DangerousGetHandle(), ref diData[ index ], sb, sb.Capacity, out requiredSize );
+                if ( result == false && Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER )
                 {
                     sb.Capacity = requiredSize;
-                    result = NativeMethods.SetupDiGetDeviceInstanceId(handle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out requiredSize);
+                    result = NativeMethods.SetupDiGetDeviceInstanceId( handle.DangerousGetHandle(), ref diData[ index ], sb, sb.Capacity, out requiredSize );
                 }
-                if (result == false)
+                if ( result == false )
                     throw new Win32Exception();
-                if (instanceId.Equals(sb.ToString()))
+                if ( instanceId.Equals( sb.ToString() ) )
                 {
                     return index;
                 }
@@ -607,7 +602,7 @@ namespace ABC.Infrastructure.Driver
         }
 
         // enable/disable...
-        private static void EnableDevice(SafeDeviceInfoSetHandle handle, DeviceInfoData diData, bool enable)
+        static void EnableDevice( SafeDeviceInfoSetHandle handle, DeviceInfoData diData, bool enable )
         {
             PropertyChangeParameters @params = new PropertyChangeParameters();
             // The size is just the size of the header, but we've flattened the structure.
@@ -615,7 +610,7 @@ namespace ABC.Infrastructure.Driver
             @params.Size = 8;
             @params.DiFunction = DiFunction.PropertyChange;
             @params.Scope = Scopes.Global;
-            if (enable)
+            if ( enable )
             {
                 @params.StateChange = StateChangeAction.Enable;
             }
@@ -624,26 +619,26 @@ namespace ABC.Infrastructure.Driver
                 @params.StateChange = StateChangeAction.Disable;
             }
 
-            bool result = NativeMethods.SetupDiSetClassInstallParams(handle, ref diData, ref @params, Marshal.SizeOf(@params));
-            if (result == false)
+            bool result = NativeMethods.SetupDiSetClassInstallParams( handle, ref diData, ref @params, Marshal.SizeOf( @params ) );
+            if ( result == false )
             {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+                throw new Win32Exception( Marshal.GetLastWin32Error() );
             }
-            result = NativeMethods.SetupDiCallClassInstaller(DiFunction.PropertyChange, handle, ref diData);
-            if (result == false)
+            result = NativeMethods.SetupDiCallClassInstaller( DiFunction.PropertyChange, handle, ref diData );
+            if ( result == false )
             {
                 int err = Marshal.GetLastWin32Error();
-                if (err == (int)SetupApiError.NotDisableable)
+                if ( err == (int)SetupApiError.NotDisableable )
                 {
-                    throw new ArgumentException("Device can't be disabled (programmatically or in Device Manager).");
+                    throw new ArgumentException( "Device can't be disabled (programmatically or in Device Manager)." );
                 }
-                else if (err <= (int)SetupApiError.NoAssociatedClass && err >= (int)SetupApiError.OnlyValidateViaAuthenticode)
+                else if ( err <= (int)SetupApiError.NoAssociatedClass && err >= (int)SetupApiError.OnlyValidateViaAuthenticode )
                 {
-                    throw new Win32Exception("SetupAPI error: " + ((SetupApiError)err).ToString());
+                    throw new Win32Exception( "SetupAPI error: " + ( (SetupApiError)err ).ToString() );
                 }
                 else
                 {
-                    throw new Win32Exception(err);
+                    throw new Win32Exception( err );
                 }
             }
         }

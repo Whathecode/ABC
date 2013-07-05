@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
  (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
 
  Pervasive Interaction Technology Laboratory (pIT lab)
@@ -12,9 +12,10 @@
 
 using System;
 
+
 namespace ABC.Infrastructure.Context
 {
-    public delegate void DataReceivedHandler(Object sender, DataEventArgs e);
+    public delegate void DataReceivedHandler( Object sender, DataEventArgs e );
 
     public interface IContextService
     {
@@ -22,7 +23,7 @@ namespace ABC.Infrastructure.Context
         Guid Id { get; set; }
         bool IsRunning { get; }
 
-        void Send(string message);
+        void Send( string message );
         void Start();
         void Stop();
 

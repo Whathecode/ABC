@@ -1,6 +1,7 @@
 ﻿using ABC.Infrastructure.Context.Location.Sonitor;
 using System.Collections.Generic;
 
+
 namespace ABC.Infrastructure.Context.Location
 {
     public class Detector
@@ -22,21 +23,22 @@ namespace ABC.Infrastructure.Context.Location
         {
             Tags = new Dictionary<string, Tag>();
         }
-        public void AttachTag(Tag t)
+
+        public void AttachTag( Tag t )
         {
-            if (!Tags.ContainsKey(t.Id))
+            if ( !Tags.ContainsKey( t.Id ) )
             {
-                Tags.Add(t.Id, t);
-                TagEnter(this, new TagEventArgs(t));
+                Tags.Add( t.Id, t );
+                TagEnter( this, new TagEventArgs( t ) );
             }
         }
 
-        public void DetachTag(Tag t)
+        public void DetachTag( Tag t )
         {
-            if (Tags.ContainsKey(t.Id))
+            if ( Tags.ContainsKey( t.Id ) )
             {
-                Tags.Remove(t.Id);
-                TagLeave(this, new TagEventArgs(t));
+                Tags.Remove( t.Id );
+                TagLeave( this, new TagEventArgs( t ) );
             }
         }
     }

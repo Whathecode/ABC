@@ -12,13 +12,12 @@
 
 using System;
 
+
 namespace ABC.Infrastructure.Context.Multicast
 {
     public interface IMulticastSocketListener
     {
-
-        void SocketMessage(object sender, NotifyMulticastSocketListenerEventArgs e);
-
+        void SocketMessage( object sender, NotifyMulticastSocketListenerEventArgs e );
     }
 
     public enum MulticastSocketMessageType
@@ -38,13 +37,13 @@ namespace ABC.Infrastructure.Context.Multicast
 
         public int Consecutive { get; private set; }
 
-        public NotifyMulticastSocketListenerEventArgs(MulticastSocketMessageType type, Object newObject)
+        public NotifyMulticastSocketListenerEventArgs( MulticastSocketMessageType type, Object newObject )
         {
             Type = type;
             NewObject = newObject;
         }
 
-        public NotifyMulticastSocketListenerEventArgs(MulticastSocketMessageType type, Object newObject, int mCons)
+        public NotifyMulticastSocketListenerEventArgs( MulticastSocketMessageType type, Object newObject, int mCons )
         {
             Type = type;
             NewObject = newObject;
@@ -52,6 +51,5 @@ namespace ABC.Infrastructure.Context.Multicast
         }
     }
 
-    public delegate void NotifyMulticastSocketListener(object sender, NotifyMulticastSocketListenerEventArgs e);
-
+    public delegate void NotifyMulticastSocketListener( object sender, NotifyMulticastSocketListenerEventArgs e );
 }

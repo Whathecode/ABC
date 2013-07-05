@@ -1,5 +1,6 @@
 ﻿using System;
 
+
 namespace ABC.Infrastructure.Context.Location
 {
     public class Detection
@@ -17,6 +18,5 @@ namespace ABC.Infrastructure.Context.Location
         public ButtonState ButtonCState { get; set; }
         public ButtonState ButtonDState { get; set; }
         public bool SelectedField { get; set; }
-
     }
 }

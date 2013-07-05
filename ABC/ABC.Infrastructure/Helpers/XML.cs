@@ -3,29 +3,30 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
+
 namespace ABC.Infrastructure.Helpers
 {
     public static class Xml
     {
-        public static XElement ToXElement<T>(this object obj)
+        public static XElement ToXElement<T>( this object obj )
         {
-            using (var memoryStream = new MemoryStream())
+            using ( var memoryStream = new MemoryStream() )
             {
-                using (TextWriter streamWriter = new StreamWriter(memoryStream))
+                using ( TextWriter streamWriter = new StreamWriter( memoryStream ) )
                 {
-                    var xmlSerializer = new XmlSerializer(typeof(T));
-                    xmlSerializer.Serialize(streamWriter, obj);
-                    return XElement.Parse(Encoding.ASCII.GetString(memoryStream.ToArray()));
+                    var xmlSerializer = new XmlSerializer( typeof( T ) );
+                    xmlSerializer.Serialize( streamWriter, obj );
+                    return XElement.Parse( Encoding.ASCII.GetString( memoryStream.ToArray() ) );
                 }
             }
         }
 
-        public static T FromXElement<T>(this XElement xElement)
+        public static T FromXElement<T>( this XElement xElement )
         {
-            using (var memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(xElement.ToString())))
+            using ( var memoryStream = new MemoryStream( Encoding.ASCII.GetBytes( xElement.ToString() ) ) )
             {
-                var xmlSerializer = new XmlSerializer(typeof(T));
-                return (T)xmlSerializer.Deserialize(memoryStream);
+                var xmlSerializer = new XmlSerializer( typeof( T ) );
+                return (T)xmlSerializer.Deserialize( memoryStream );
             }
         }
     }

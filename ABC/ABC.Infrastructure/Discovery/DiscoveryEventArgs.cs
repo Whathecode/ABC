@@ -13,16 +13,19 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace ABC.Infrastructure.Discovery
 {
-    public class DiscoveryEventArgs:EventArgs
+    public class DiscoveryEventArgs : EventArgs
     {
         public List<string> ServicesAddresses { get; set; }
-        public DiscoveryEventArgs() 
+
+        public DiscoveryEventArgs()
         {
             ServicesAddresses = new List<string>();
         }
-        public DiscoveryEventArgs(List<string> addrs)
+
+        public DiscoveryEventArgs( List<string> addrs )
         {
             ServicesAddresses = new List<string>();
             ServicesAddresses = addrs;

@@ -17,11 +17,12 @@ using System.Threading;
 using ABC.Infrastructure.Discovery;
 using ABC.Infrastructure.Helpers;
 
+
 namespace ABC.Infrastructure.Services
 {
-    public delegate void HostLaunchedHandler(object sender, EventArgs e);
+    public delegate void HostLaunchedHandler( object sender, EventArgs e );
 
-    public delegate void HostClosedHandler(object sender, EventArgs e);
+    public delegate void HostClosedHandler( object sender, EventArgs e );
 
     public class GenericHost
     {
@@ -32,10 +33,14 @@ namespace ABC.Infrastructure.Services
 
         #endregion
 
+
         #region Members
-        private readonly BroadcastService _broadcast = new BroadcastService();
-        private ServiceHost _host;
+
+        readonly BroadcastService _broadcast = new BroadcastService();
+        ServiceHost _host;
+
         #endregion
+
 
         #region Properties
 
@@ -69,16 +74,17 @@ namespace ABC.Infrastructure.Services
 
         #endregion
 
+
         #region Constructor-Destructor
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public GenericHost(int port = -1)
+        public GenericHost( int port = -1 )
         {
-            if (port == -1)
+            if ( port == -1 )
                 port = Net.FindPort();
-            Ip = Net.GetIp(IpType.All);
+            Ip = Net.GetIp( IpType.All );
             Port = port;
 
             Address = "http://" + Ip + ":" + Port + "/";
@@ -94,21 +100,23 @@ namespace ABC.Infrastructure.Services
 
         #endregion
 
+
         #region Local Handler
 
-        protected void OnHostLaunchedEvent(EventArgs e)
+        protected void OnHostLaunchedEvent( EventArgs e )
         {
-            if (HostLaunched != null)
-                HostLaunched(this, e);
+            if ( HostLaunched != null )
+                HostLaunched( this, e );
         }
 
-        protected void OnHostClosedEvent(EventArgs e)
+        protected void OnHostClosedEvent( EventArgs e )
         {
-            if (HostClosed != null)
-                HostClosed(this, e);
+            if ( HostClosed != null )
+                HostClosed( this, e );
         }
 
         #endregion
+
 
         #region Public Methods
 
@@ -119,14 +127,14 @@ namespace ABC.Infrastructure.Services
         /// <param name="hostName">The name of the service that needs to be broadcasted</param>
         /// <param name="code">Device code</param>
         /// <param name="location">The physical location of the service that needs to be broadcasted</param>
-        public void StartBroadcast(DiscoveryType type,string hostName,string code, string location = "undefined")
+        public void StartBroadcast( DiscoveryType type, string hostName, string code, string location = "undefined" )
         {
-            var t = new Thread(() =>
-                                   {
-                                       StopBroadcast();
-                                       _broadcast.Start(type, hostName, location,code,
-                                                        Net.GetUrl(Ip, Port, ""));
-                                   }) {IsBackground = true};
+            var t = new Thread( () =>
+            {
+                StopBroadcast();
+                _broadcast.Start( type, hostName, location, code,
+                                  Net.GetUrl( Ip, Port, "" ) );
+            } ) { IsBackground = true };
             t.Start();
         }
 
@@ -135,8 +143,8 @@ namespace ABC.Infrastructure.Services
         /// </summary>
         public void StopBroadcast()
         {
-            if (_broadcast != null)
-                if (_broadcast.IsRunning)
+            if ( _broadcast != null )
+                if ( _broadcast.IsRunning )
                     _broadcast.Stop();
         }
 
@@ -146,32 +154,32 @@ namespace ABC.Infrastructure.Services
         /// <param name="implementation">The concrete initialized single instance service</param>
         /// <param name="description">The interface or contract of initialized single instance service</param>
         /// <param name="name">The name the service</param>
-        public void Open(IServiceBase implementation, Type description, string name)
+        public void Open( IServiceBase implementation, Type description, string name )
         {
             Service = implementation;
 
-            Log.Out("BasicHost", string.Format(" Attemting to find an IP for endPoint"), LogCode.Net);
-            Ip = Net.GetIp(IpType.All);
+            Log.Out( "BasicHost", string.Format( " Attemting to find an IP for endPoint" ), LogCode.Net );
+            Ip = Net.GetIp( IpType.All );
 
-            _host = new ServiceHost(implementation);
+            _host = new ServiceHost( implementation );
 
             var serviceEndpoint = _host.AddServiceEndpoint(
-                description, 
-                new WebHttpBinding 
+                description,
+                new WebHttpBinding
                 {
                     MaxReceivedMessageSize = 2147483647,
                     MaxBufferSize = 2147483647,
                     ReaderQuotas = { MaxArrayLength = 2147483647, MaxStringContentLength = 2147483647 }
-                }, 
-                Net.GetUrl(Ip, Port, ""));
+                },
+                Net.GetUrl( Ip, Port, "" ) );
 
-            serviceEndpoint.Behaviors.Add(new WebHttpBehavior());
+            serviceEndpoint.Behaviors.Add( new WebHttpBehavior() );
             _host.Open();
 
-            Log.Out("BasicHost", string.Format(implementation+" host opened at " + Net.GetUrl(Ip, Port, "")), LogCode.Net);
+            Log.Out( "BasicHost", string.Format( implementation + " host opened at " + Net.GetUrl( Ip, Port, "" ) ), LogCode.Net );
             IsRunning = true;
 
-            OnHostLaunchedEvent(new EventArgs());
+            OnHostLaunchedEvent( new EventArgs() );
         }
 
         /// <summary>
@@ -179,17 +187,17 @@ namespace ABC.Infrastructure.Services
         /// </summary>
         public void Close()
         {
-            if (IsRunning)
+            if ( IsRunning )
             {
                 try
                 {
                     Service.ServiceDown();
-                    OnHostClosedEvent(new EventArgs());
+                    OnHostClosedEvent( new EventArgs() );
                     _host.Close();
                 }
-                catch (Exception ex)
+                catch ( Exception ex )
                 {
-                    Log.Out("BasicHost", string.Format("Problem closing connection: " + ex.StackTrace), LogCode.Net);
+                    Log.Out( "BasicHost", string.Format( "Problem closing connection: " + ex.StackTrace ), LogCode.Net );
                 }
             }
         }

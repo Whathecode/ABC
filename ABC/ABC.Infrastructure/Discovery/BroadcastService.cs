@@ -18,16 +18,21 @@ using Mono.Zeroconf.Providers.Bonjour;
 using ABC.Infrastructure.Helpers;
 using System.Diagnostics;
 
+
 namespace ABC.Infrastructure.Discovery
 {
     public class BroadcastService
     {
         #region Private Members
-        private ServiceHost _discoveryHost;
-        private RegisterService _service;
+
+        ServiceHost _discoveryHost;
+        RegisterService _service;
+
         #endregion
 
+
         #region Properties
+
         /// <summary>
         /// Local callback address
         /// </summary>
@@ -39,12 +44,12 @@ namespace ABC.Infrastructure.Discovery
         /// <summary>
         /// Client IP
         /// </summary>
-        private string Ip { get; set; }
+        string Ip { get; set; }
 
         /// <summary>
         /// Local callback port
         /// </summary>
-        private int Port { get; set; }
+        int Port { get; set; }
 
         /// <summary>
         /// Indicates if the service is running
@@ -55,14 +60,19 @@ namespace ABC.Infrastructure.Discovery
         /// Type of discovery
         /// </summary>
         public DiscoveryType DiscoveryType { get; set; }
+
         #endregion
 
+
         #region Constructor
+
         public BroadcastService()
         {
             IsRunning = false;
         }
+
         #endregion
+
 
         #region Public Members
 
@@ -75,69 +85,68 @@ namespace ABC.Infrastructure.Discovery
         /// <param name="code">code to be broadcasted (e.g. device id)</param>
         /// <param name="addressToBroadcast">The address of the service that needs to be broadcasted</param>
         /// <param name="broadcastPort">The port of the broadcast service. Default=56789</param>
-        public void Start(DiscoveryType type,string nameToBroadcast,string physicalLocation,string code,Uri addressToBroadcast,int broadcastPort=7892)
+        public void Start( DiscoveryType type, string nameToBroadcast, string physicalLocation, string code, Uri addressToBroadcast, int broadcastPort = 7892 )
         {
             DiscoveryType = type;
 
-            switch (DiscoveryType)
+            switch ( DiscoveryType )
             {
                 case DiscoveryType.WsDiscovery:
-                    {
-                        Ip = Net.GetIp(IpType.All);
-                        Port = broadcastPort;
-                        Address = "http://" + Ip + ":" + Port + "/";
+                {
+                    Ip = Net.GetIp( IpType.All );
+                    Port = broadcastPort;
+                    Address = "http://" + Ip + ":" + Port + "/";
 
-                        _discoveryHost = new ServiceHost(new DiscoveyService());
+                    _discoveryHost = new ServiceHost( new DiscoveyService() );
 
-                        var serviceEndpoint = _discoveryHost.AddServiceEndpoint(typeof(IDiscovery), new WebHttpBinding(), 
-                                                                                Net.GetUrl(Ip, Port, ""));
-                        serviceEndpoint.Behaviors.Add(new WebHttpBehavior());
+                    var serviceEndpoint = _discoveryHost.AddServiceEndpoint( typeof( IDiscovery ), new WebHttpBinding(),
+                                                                             Net.GetUrl( Ip, Port, "" ) );
+                    serviceEndpoint.Behaviors.Add( new WebHttpBehavior() );
 
-                        var broadcaster = new EndpointDiscoveryBehavior();
+                    var broadcaster = new EndpointDiscoveryBehavior();
 
-                        broadcaster.Extensions.Add(nameToBroadcast.ToXElement<string>());
-                        broadcaster.Extensions.Add(physicalLocation.ToXElement<string>());
-                        broadcaster.Extensions.Add(addressToBroadcast.ToString().ToXElement<string>());
-                        broadcaster.Extensions.Add(code.ToXElement<string>());
+                    broadcaster.Extensions.Add( nameToBroadcast.ToXElement<string>() );
+                    broadcaster.Extensions.Add( physicalLocation.ToXElement<string>() );
+                    broadcaster.Extensions.Add( addressToBroadcast.ToString().ToXElement<string>() );
+                    broadcaster.Extensions.Add( code.ToXElement<string>() );
 
-                        serviceEndpoint.Behaviors.Add(broadcaster);
-                        _discoveryHost.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
-                        _discoveryHost.Description.Endpoints.Add(new UdpDiscoveryEndpoint());
-                        _discoveryHost.Open();
+                    serviceEndpoint.Behaviors.Add( broadcaster );
+                    _discoveryHost.Description.Behaviors.Add( new ServiceDiscoveryBehavior() );
+                    _discoveryHost.Description.Endpoints.Add( new UdpDiscoveryEndpoint() );
+                    _discoveryHost.Open();
 
-                        IsRunning = true;
-                        Debug.WriteLine(DiscoveryType.ToString() + " is started");
-                    }
+                    IsRunning = true;
+                    Debug.WriteLine( DiscoveryType.ToString() + " is started" );
+                }
                     break;
                 case DiscoveryType.Zeroconf:
+                {
+                    _service = new RegisterService
+                    { Name = nameToBroadcast, RegType = "_am._tcp", ReplyDomain = "local", Port = 3689 };
+
+
+                    // TxtRecords are optional
+                    var txtRecord = new TxtRecord
                     {
-                       _service = new RegisterService
-                                          {Name = nameToBroadcast, RegType = "_am._tcp", ReplyDomain = "local", Port = 3689};
-
- 
-                        // TxtRecords are optional
-                        var txtRecord = new TxtRecord
-                            {
-                                                {"name", nameToBroadcast},
-                                                {"addr", addressToBroadcast.ToString()},
-                                                {"loc", physicalLocation},
-                                                {"code", code}
-                                            };
-                        _service.TxtRecord = txtRecord;
-                        _service.Response += service_Response;
-                        _service.Register();
-                        Debug.WriteLine(DiscoveryType.ToString() + " is started");
-
-                    }
+                        { "name", nameToBroadcast },
+                        { "addr", addressToBroadcast.ToString() },
+                        { "loc", physicalLocation },
+                        { "code", code }
+                    };
+                    _service.TxtRecord = txtRecord;
+                    _service.Response += service_Response;
+                    _service.Register();
+                    Debug.WriteLine( DiscoveryType.ToString() + " is started" );
+                }
                     break;
             }
         }
 
-        void service_Response(object o, Mono.Zeroconf.RegisterServiceEventArgs args)
+        void service_Response( object o, Mono.Zeroconf.RegisterServiceEventArgs args )
         {
             IsRunning = args.IsRegistered;
-            if (!IsRunning)
-                throw new Exception(args.Service.Name + " not registered");
+            if ( !IsRunning )
+                throw new Exception( args.Service.Name + " not registered" );
         }
 
         /// <summary>
@@ -145,25 +154,27 @@ namespace ABC.Infrastructure.Discovery
         /// </summary>
         public void Stop()
         {
-            if (DiscoveryType != DiscoveryType.WsDiscovery)
-                if (_service != null)
+            if ( DiscoveryType != DiscoveryType.WsDiscovery )
+                if ( _service != null )
                     _service.Dispose();
-            else
-                if(_discoveryHost!=null)
+                else if ( _discoveryHost != null )
                     _discoveryHost.Close();
 
             IsRunning = false;
-            Debug.WriteLine(DiscoveryType.ToString() + " is stopped");
+            Debug.WriteLine( DiscoveryType.ToString() + " is stopped" );
         }
+
         #endregion
     }
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, IncludeExceptionDetailInFaults = true)]
+
+    [ServiceBehavior( InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single, IncludeExceptionDetailInFaults = true )]
     public class DiscoveyService : IDiscovery
     {
         public bool Alive()
-        { return true; }
-        public void  ServiceDown()
         {
+            return true;
         }
+
+        public void ServiceDown() {}
     }
 }

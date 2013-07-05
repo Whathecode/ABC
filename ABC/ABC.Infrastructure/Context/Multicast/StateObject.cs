@@ -12,6 +12,7 @@
 
 using System.Net.Sockets;
 
+
 namespace ABC.Infrastructure.Context.Multicast
 {
     public class StateObject
@@ -27,7 +28,7 @@ namespace ABC.Infrastructure.Context.Multicast
             WorkSocket = null;
         }
 
-        public StateObject(int size, Socket sock)
+        public StateObject( int size, Socket sock )
         {
             Buffer = new byte[size];
             WorkSocket = sock;

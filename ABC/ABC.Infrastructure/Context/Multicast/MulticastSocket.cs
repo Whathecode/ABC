@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
  (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
 
  Pervasive Interaction Technology Laboratory (pIT lab)
@@ -17,6 +17,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading.Tasks;
 
+
 namespace ABC.Infrastructure.Context.Multicast
 {
     /// <summary>
@@ -28,20 +29,20 @@ namespace ABC.Infrastructure.Context.Multicast
         public event NotifyMulticastSocketListener OnNotifyMulticastSocketListener;
 
         //Socket creation, regular UDP socket 
-        private readonly Socket _udpSocket;
-        private Int32 _mConsecutive;
+        readonly Socket _udpSocket;
+        Int32 _mConsecutive;
 
-        private EndPoint _localEndPoint;
-        private IPEndPoint _localIpEndPoint;
+        EndPoint _localEndPoint;
+        IPEndPoint _localIpEndPoint;
 
-        private readonly string _targetIp;
-        private readonly int _targetPort;
-        private readonly int _udpTtl;
+        readonly string _targetIp;
+        readonly int _targetPort;
+        readonly int _udpTtl;
 
         //socket initialization 
-        public MulticastSocket(string tIp, int tPort, int ttl)
+        public MulticastSocket( string tIp, int tPort, int ttl )
         {
-            _udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            _udpSocket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
             _mConsecutive = 0;
 
             _targetIp = tIp;
@@ -51,58 +52,58 @@ namespace ABC.Infrastructure.Context.Multicast
             SetupSocket();
         }
 
-        private void SetupSocket()
+        void SetupSocket()
         {
-            if (_udpSocket.IsBound)
-                throw new ApplicationException("The socket is already bound and receving.");
+            if ( _udpSocket.IsBound )
+                throw new ApplicationException( "The socket is already bound and receving." );
 
             //recieve data from any source 
-            _localIpEndPoint = new IPEndPoint(IPAddress.Any, _targetPort);
+            _localIpEndPoint = new IPEndPoint( IPAddress.Any, _targetPort );
             _localEndPoint = _localIpEndPoint;
 
             //init Socket properties:
-            _udpSocket.SetSocketOption(SocketOptionLevel.Udp, SocketOptionName.NoDelay, 1);
+            _udpSocket.SetSocketOption( SocketOptionLevel.Udp, SocketOptionName.NoDelay, 1 );
 
             //allow for loopback testing 
-            _udpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+            _udpSocket.SetSocketOption( SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1 );
 
             //extremly important to bind the Socket before joining multicast groups 
-            _udpSocket.Bind(_localIpEndPoint);
+            _udpSocket.Bind( _localIpEndPoint );
 
             //set multicast flags, sending flags - TimeToLive (TTL) 
             // 0 - LAN 
             // 1 - Single Router Hop 
             // 2 - Two Router Hops... 
-            _udpSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, _udpTtl);
+            _udpSocket.SetSocketOption( SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, _udpTtl );
 
             //join multicast group 
-            _udpSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(IPAddress.Parse(_targetIp)));
+            _udpSocket.SetSocketOption( SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption( IPAddress.Parse( _targetIp ) ) );
 
-            NotifyMulticastSocketListener(MulticastSocketMessageType.SocketStarted, null);
+            NotifyMulticastSocketListener( MulticastSocketMessageType.SocketStarted, null );
         }
 
         public void StartReceiving()
         {
-            if (OnNotifyMulticastSocketListener == null)
-                throw new ApplicationException("No socket listener has been specified at OnNotifyMulticastSocketListener.");
+            if ( OnNotifyMulticastSocketListener == null )
+                throw new ApplicationException( "No socket listener has been specified at OnNotifyMulticastSocketListener." );
 
             // Create the state object. 
-            var state = new StateObject {WorkSocket = _udpSocket};
+            var state = new StateObject { WorkSocket = _udpSocket };
 
             //get in waiting mode for data - always (this doesn't halt code execution) 
-            Recieve(state);
+            Recieve( state );
         }
 
         //initial receive function
-        private void Recieve(StateObject state)
+        void Recieve( StateObject state )
         {
             // Begin receiving the data from the remote device. 
             var client = state.WorkSocket;
-            client.BeginReceiveFrom(state.Buffer, 0, StateObject.BufferSize, 0, ref _localEndPoint, ReceiveCallback, state);
+            client.BeginReceiveFrom( state.Buffer, 0, StateObject.BufferSize, 0, ref _localEndPoint, ReceiveCallback, state );
         }
 
         //executes the asynchronous receive - executed everytime data is received on the port 
-        private void ReceiveCallback(IAsyncResult ar)
+        void ReceiveCallback( IAsyncResult ar )
         {
             // Retrieve the state object and the client socket from the async state object. 
             StateObject state = null;
@@ -112,45 +113,45 @@ namespace ABC.Infrastructure.Context.Multicast
                 var client = state.WorkSocket;
 
                 // Read data from the remote device. 
-                var bytesRead = client.EndReceiveFrom(ar, ref _localEndPoint);
+                var bytesRead = client.EndReceiveFrom( ar, ref _localEndPoint );
 
                 // Makes a copy of the buffer so it can be cleant up and reused while the listeners are notified in parallel threads.
                 var bufferCopy = new byte[bytesRead];
-                Array.Copy(state.Buffer, 0, bufferCopy, 0, bytesRead);
+                Array.Copy( state.Buffer, 0, bufferCopy, 0, bytesRead );
 
                 // Listeners are notified in a different thread
-                NotifyMulticastSocketListener(MulticastSocketMessageType.MessageReceived, bufferCopy, ++_mConsecutive);
+                NotifyMulticastSocketListener( MulticastSocketMessageType.MessageReceived, bufferCopy, ++_mConsecutive );
 
                 //keep listening 
-                for (var i = 0; i < bytesRead; i++)
-                    state.Buffer[i] = (byte)'\0';
-                Recieve(state);
+                for ( var i = 0; i < bytesRead; i++ )
+                    state.Buffer[ i ] = (byte)'\0';
+                Recieve( state );
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                NotifyMulticastSocketListener(MulticastSocketMessageType.ReceiveException, e);
-                if (state != null)
-                    Recieve(state);
+                NotifyMulticastSocketListener( MulticastSocketMessageType.ReceiveException, e );
+                if ( state != null )
+                    Recieve( state );
                 else
                     StartReceiving();
             }
         }
 
         //client send function 
-        public void Send(string sendData)
+        public void Send( string sendData )
         {
-            byte[] bytesToSend = Encoding.ASCII.GetBytes(sendData);
+            byte[] bytesToSend = Encoding.ASCII.GetBytes( sendData );
 
             //set the target IP 
-            var remoteIpEndPoint = new IPEndPoint(IPAddress.Parse(_targetIp), _targetPort);
+            var remoteIpEndPoint = new IPEndPoint( IPAddress.Parse( _targetIp ), _targetPort );
             var remoteEndPoint = (EndPoint)remoteIpEndPoint;
 
             //do asynchronous send 
-            _udpSocket.BeginSendTo(bytesToSend, 0, bytesToSend.Length, SocketFlags.None, remoteEndPoint, SendCallback, _udpSocket);
+            _udpSocket.BeginSendTo( bytesToSend, 0, bytesToSend.Length, SocketFlags.None, remoteEndPoint, SendCallback, _udpSocket );
         }
 
         //executes the asynchronous send 
-        private void SendCallback(IAsyncResult ar)
+        void SendCallback( IAsyncResult ar )
         {
             try
             {
@@ -158,35 +159,38 @@ namespace ABC.Infrastructure.Context.Multicast
                 var client = (Socket)ar.AsyncState;
 
                 // Complete sending the data to the remote device. 
-                var bytesSent = client.EndSendTo(ar);
+                var bytesSent = client.EndSendTo( ar );
 
                 // Notifies sending completed
-                NotifyMulticastSocketListener(MulticastSocketMessageType.MessageSent, bytesSent);
+                NotifyMulticastSocketListener( MulticastSocketMessageType.MessageSent, bytesSent );
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                NotifyMulticastSocketListener(MulticastSocketMessageType.SendException, e);
+                NotifyMulticastSocketListener( MulticastSocketMessageType.SendException, e );
             }
         }
 
-        private void NotifyMulticastSocketListener(MulticastSocketMessageType messageType, Object obj)
+        void NotifyMulticastSocketListener( MulticastSocketMessageType messageType, Object obj )
         {
-                     Task.Factory.StartNew(ThreadedNotifyMulticastSocketListener, new NotifyMulticastSocketListenerEventArgs(messageType, obj));
+            Task.Factory.StartNew( ThreadedNotifyMulticastSocketListener, new NotifyMulticastSocketListenerEventArgs( messageType, obj ) );
         }
-        private void NotifyMulticastSocketListener(MulticastSocketMessageType messageType, Object obj, int consecutive)
+
+        void NotifyMulticastSocketListener( MulticastSocketMessageType messageType, Object obj, int consecutive )
         {
-            Task.Factory.StartNew(ThreadedNotifyMulticastSocketListener, new NotifyMulticastSocketListenerEventArgs(messageType, obj, consecutive));
+            Task.Factory.StartNew( ThreadedNotifyMulticastSocketListener, new NotifyMulticastSocketListenerEventArgs( messageType, obj, consecutive ) );
         }
-        private void ThreadedNotifyMulticastSocketListener(Object argsObj)
+
+        void ThreadedNotifyMulticastSocketListener( Object argsObj )
         {
             try
             {
-                if (OnNotifyMulticastSocketListener != null)
-                    OnNotifyMulticastSocketListener(this, (NotifyMulticastSocketListenerEventArgs)argsObj);
+                if ( OnNotifyMulticastSocketListener != null )
+                    OnNotifyMulticastSocketListener( this, (NotifyMulticastSocketListenerEventArgs)argsObj );
             }
-            catch (Exception ex)
-            { Debug.WriteLine(ex.ToString());}
+            catch ( Exception ex )
+            {
+                Debug.WriteLine( ex.ToString() );
+            }
         }
-
     }
 }
