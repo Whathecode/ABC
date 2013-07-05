@@ -13,10 +13,10 @@ namespace ABC.Infrastructure.ActivityBase
 {
     public class ActivityClient:ActivityController
     {
-
         #region Members
         private readonly Connection _eventHandler;
         private string Address { get; set; }
+        private bool _connected;
         #endregion
 
         #region Constructor/Destructor
@@ -37,7 +37,8 @@ namespace ABC.Infrastructure.ActivityBase
         }
         ~ActivityClient()
         {
-            RemoveDevice(Device.Id);
+            if(_connected)
+                RemoveDevice(Device.Id);
 
             _eventHandler.Stop();
         }
@@ -58,6 +59,8 @@ namespace ABC.Infrastructure.ActivityBase
             var dvs = GetDevices();
             foreach (var item in dvs)
                 devices.AddOrUpdate(item.Id, item, (key, oldValue) => item);
+
+            _connected = true;
         }
         private void eventHandler_Received(string obj)
         {
