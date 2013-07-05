@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -47,7 +48,18 @@ namespace ABC.Interruptions
 
 			foreach ( var handler in _interruptionHandlers )
 			{
-				handler.Update( now );
+				// ReSharper disable EmptyGeneralCatchClause
+				try
+				{
+					handler.Update( now );
+				}
+				catch ( Exception ex )
+				{
+					// Prevent main application from crashing when plugins throw exceptions.
+					string pluginName = handler.GetType().ToString();
+					Debug.WriteLine( "The interruption handler plugin \"{0}\" threw an exception:\n {1}", pluginName, ex );
+				}
+				// ReSharper restore EmptyGeneralCatchClause
 			}
 
 			Monitor.Exit( this );
