@@ -134,6 +134,23 @@ namespace ABC.Windows.Desktop
 			return restored;
 		}
 
+        /// <summary>
+        ///   Creates a new desktop from a stored session.
+        /// </summary>
+        /// <param name="session">The newly created virtual desktop.</param>
+        public VirtualDesktop CreateDesktopFromSession(StoredSession session,string folder)
+        {
+            // The startup desktop contains all windows open at startup.
+            // Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
+            StartupDesktop.RemoveWindows(session.OpenWindows.ToList());
+
+            var restored = new VirtualDesktop(session) { Folder = folder };
+            _desktops.Add(restored);
+
+            return restored;
+        }
+
+
 		/// <summary>
 		///   Update which windows are associated to the current virtual desktop.
 		/// </summary>

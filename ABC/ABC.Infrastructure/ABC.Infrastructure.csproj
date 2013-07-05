@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7AC39E7E-0853-482D-85FC-98311681BE54}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ABC.Infrastructure</RootNamespace>
+    <AssemblyName>ABC.Infrastructure</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LibUsbDotNet">
+      <HintPath>..\..\..\..\..\..\Program Files\LibUsbDotNet\LibUsbDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.1.1.2\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.1.1.2\lib\net40\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Owin.1.1.2\lib\net45\Microsoft.AspNet.SignalR.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.1.1.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.WebApi.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.0.21.0-pre\lib\net40\Microsoft.AspNet.WebApi.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.0.21.0-pre\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.1.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting">
+      <HintPath>..\packages\Microsoft.Owin.Hosting.0.21.0-pre\lib\net40\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Zeroconf, Version=4.0.0.90, Culture=neutral, PublicKeyToken=e60c4f4a95e1099e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\NooSphere\NooSphere\Libs\mono\Mono.Zeroconf.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Zeroconf.Providers.Bonjour, Version=4.0.0.90, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\NooSphere\NooSphere\Libs\mono\Mono.Zeroconf.Providers.Bonjour.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Abstractions">
+      <HintPath>..\packages\RavenDB.Client.2.0.2360\lib\net40\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight">
+      <HintPath>..\packages\RavenDB.Client.2.0.2360\lib\net40\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.0.0-alpha1\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.1.30214.0\lib\Net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.1.30214.0\lib\Net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.1.30214.0\lib\Net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.1.30214.0\lib\Net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Discovery" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.30506.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.SelfHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.30506.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivityBase\ActivityClient.cs" />
+    <Compile Include="ActivityBase\ActivityNode.cs" />
+    <Compile Include="ActivityBase\ActivityService.cs" />
+    <Compile Include="ActivityBase\DeviceEventArgs.cs" />
+    <Compile Include="ActivityBase\ActivityEventArgs.cs" />
+    <Compile Include="ActivityBase\ActivitySystem.cs" />
+    <Compile Include="ActivityBase\NetEventArgs.cs" />
+    <Compile Include="Context\ContextMonitor.cs" />
+    <Compile Include="Context\DataEventArgs.cs" />
+    <Compile Include="Context\IContextService.cs" />
+    <Compile Include="Context\Multicast\MulticastSocket.cs" />
+    <Compile Include="Context\Multicast\MulticastSocketListener.cs" />
+    <Compile Include="Context\Multicast\StateObject.cs" />
+    <Compile Include="Context\Multicast\UdpPerformanceTest.cs" />
+    <Compile Include="Discovery\BroadcastService.cs" />
+    <Compile Include="Discovery\DiscoveryAddressAddedEventArgs.cs" />
+    <Compile Include="Discovery\DiscoveryEventArgs.cs" />
+    <Compile Include="Discovery\DiscoveryManager.cs" />
+    <Compile Include="Discovery\DiscoveryType.cs" />
+    <Compile Include="Discovery\IDiscovery.cs" />
+    <Compile Include="Discovery\ServiceInfo.cs" />
+    <Compile Include="Drivers\PortHelper.cs" />
+    <Compile Include="Drivers\HyPRDevice.cs" />
+    <Compile Include="ActivityBase\Events.cs" />
+    <Compile Include="Drivers\SafeSerialPort.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Files\FileEvents.cs" />
+    <Compile Include="Files\FileRequest.cs" />
+    <Compile Include="Files\FileSource.cs" />
+    <Compile Include="Files\FileStore.cs" />
+    <Compile Include="Files\IFileServer.cs" />
+    <Compile Include="Files\IFileStore.cs" />
+    <Compile Include="Helpers\Json.cs" />
+    <Compile Include="Helpers\Log.cs" />
+    <Compile Include="Helpers\Mime.cs" />
+    <Compile Include="Helpers\Net.cs" />
+    <Compile Include="Helpers\Rest.cs" />
+    <Compile Include="Helpers\XML.cs" />
+    <Compile Include="Events\EventDispatcher.cs" />
+    <Compile Include="Events\Notifier.cs" />
+    <Compile Include="Events\Events.cs" />
+    <Compile Include="Web\Controllers\ControllerResolver.cs" />
+    <Compile Include="Web\ConnectedClient.cs" />
+    <Compile Include="Web\Controllers\ActivityController.cs" />
+    <Compile Include="Web\Controllers\DevicesController.cs" />
+    <Compile Include="Web\Controllers\UsersController.cs" />
+    <Compile Include="Services\GenericHost.cs" />
+    <Compile Include="Context\Location\LocationEvents.cs" />
+    <Compile Include="Context\Location\Sonitor\Converter.cs" />
+    <Compile Include="Context\Location\Detector.cs" />
+    <Compile Include="Context\Location\Sonitor\SonitorEvents.cs" />
+    <Compile Include="Context\Location\LocationTracker.cs" />
+    <Compile Include="Context\Location\Detection.cs" />
+    <Compile Include="Context\Location\Sonitor\DetectorStatus.cs" />
+    <Compile Include="Context\Location\Sonitor\Location.cs" />
+    <Compile Include="Context\Location\Sonitor\Map.cs" />
+    <Compile Include="Context\Location\Sonitor\Messages.cs" />
+    <Compile Include="Context\Location\Sonitor\SonitorTracker.cs" />
+    <Compile Include="Context\Location\States.cs" />
+    <Compile Include="Context\Location\Tag.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ActivityBase\UserEventArgs.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Services\IServiceBase.cs" />
+    <Compile Include="Web\Message.cs" />
+    <Compile Include="Web\WebApiServer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Documentation\Web-adresses.txt" />
+    <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.6.4.js" />
+    <Content Include="Scripts\jquery-1.6.4.min.js" />
+    <Content Include="Scripts\jquery.signalR-1.1.2.js" />
+    <Content Include="Scripts\jquery.signalR-1.1.2.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ABC.Model\ABC.Model.csproj">
+      <Project>{2eb224b2-07da-4231-84d0-2ef5fcbdd843}</Project>
+      <Name>ABC.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
