@@ -1,5 +1,4 @@
-﻿
-using ABC.Infrastructure.Driver;
+﻿using ABC.Infrastructure.Driver;
 using ABC.Model.Device;
 using System;
 using System.IO;
@@ -8,10 +7,12 @@ using System.Threading;
 using ABC.Model.Primitives;
 using LibUsbDotNet.DeviceNotify;
 
+
 namespace ABC.Infrastructure.Drivers
 {
-    public delegate void RfidDataReceivedHandler(object sender, RfdiDataReceivedEventArgs e);
-    public class HyPrDevice:Device
+    public delegate void RfidDataReceivedHandler( object sender, RfdiDataReceivedEventArgs e );
+
+    public class HyPrDevice : Device
     {
         public event RfidDataReceivedHandler RfidDataReceived = null;
         public event EventHandler RfidResetReceived = null;
@@ -19,16 +20,16 @@ namespace ABC.Infrastructure.Drivers
         public string Port { get; private set; }
         public string CurrentRfid { get; private set; }
 
-        private const string HandShakeCommand = "A";
-        private const string HandShakeReply = "B";
-        private const int BaudRate = 9600;
-        private const int ReadDelay = 100; //ms
-        private const int ReadTimeOut = 200; //ms
+        const string HandShakeCommand = "A";
+        const string HandShakeReply = "B";
+        const int BaudRate = 9600;
+        const int ReadDelay = 100; //ms
+        const int ReadTimeOut = 200; //ms
 
-        private SafeSerialPort _serialPort;
-        private string _output;
+        SafeSerialPort _serialPort;
+        string _output;
 
-        private readonly IDeviceNotifier _usbDeviceNotifier = DeviceNotifier.OpenDeviceNotifier();
+        readonly IDeviceNotifier _usbDeviceNotifier = DeviceNotifier.OpenDeviceNotifier();
 
         public HyPrDevice()
         {
@@ -36,66 +37,70 @@ namespace ABC.Infrastructure.Drivers
             _usbDeviceNotifier.OnDeviceNotify += UsbDeviceNotifier_OnDeviceNotify;
         }
 
-        private void Connect()
+        void Connect()
         {
-
             var port = FindDevice();
-            if (port != null)
+            if ( port != null )
             {
-                ConnectToDevice(port);
+                ConnectToDevice( port );
             }
             else
-                Console.WriteLine("No HyPR Device found");
+                Console.WriteLine( "No HyPR Device found" );
         }
-        private void ResetConnection()
+
+        void ResetConnection()
         {
             try
             {
-                if(_serialPort !=null)
-                    _serialPort.Write("Any value");
+                if ( _serialPort != null )
+                    _serialPort.Write( "Any value" );
             }
-            catch (IOException)
+            catch ( IOException )
             {
-                if (_serialPort == null) return;
+                if ( _serialPort == null ) return;
                 _serialPort.Dispose();
                 _serialPort.Close();
             }
         }
-        void UsbDeviceNotifier_OnDeviceNotify(object sender, DeviceNotifyEventArgs e)
+
+        void UsbDeviceNotifier_OnDeviceNotify( object sender, DeviceNotifyEventArgs e )
         {
-            if (e.Object.ToString().Split('\n')[1].Contains("0x2341"))
+            if ( e.Object.ToString().Split( '\n' )[ 1 ].Contains( "0x2341" ) )
             {
-                if (e.EventType == EventType.DeviceArrival)
+                if ( e.EventType == EventType.DeviceArrival )
                 {
                     Connect();
                 }
-                else if (e.EventType == EventType.DeviceRemoveComplete)
+                else if ( e.EventType == EventType.DeviceRemoveComplete )
                 {
                     ResetConnection();
                 }
             }
         }
 
-        private string FindDevice()
+        string FindDevice()
         {
             var ports = SerialPort.GetPortNames();
-            foreach (var portname in ports)
+            foreach ( var portname in ports )
             {
-                Console.WriteLine("Attempt to connect to {0}", portname);
-                var sp = new SerialPort(portname, BaudRate);
+                Console.WriteLine( "Attempt to connect to {0}", portname );
+                var sp = new SerialPort( portname, BaudRate );
                 try
                 {
                     sp.ReadTimeout = ReadTimeOut;
                     sp.Open();
-                    sp.Write(HandShakeCommand);
-                    Thread.Sleep(ReadDelay);
+                    sp.Write( HandShakeCommand );
+                    Thread.Sleep( ReadDelay );
 
                     string received = sp.ReadExisting();
 
-                    if (received == HandShakeReply)
+                    if ( received == HandShakeReply )
                         return portname;
                 }
-                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                catch ( Exception ex )
+                {
+                    Console.WriteLine( ex.ToString() );
+                }
                 finally
                 {
                     sp.Close();
@@ -103,22 +108,23 @@ namespace ABC.Infrastructure.Drivers
             }
             return null;
         }
-        public HyPrDevice(string port)
+
+        public HyPrDevice( string port )
         {
-            ConnectToDevice(port);
+            ConnectToDevice( port );
         }
 
-        private void ConnectToDevice(string port)
+        void ConnectToDevice( string port )
         {
             Port = port;
-            ConnectToHyPrDevice(port);
+            ConnectToHyPrDevice( port );
         }
-        
+
         ~HyPrDevice()
         {
-            if (_serialPort != null)
+            if ( _serialPort != null )
             {
-                if (_serialPort.IsOpen)
+                if ( _serialPort.IsOpen )
                 {
                     _serialPort.Close();
                     _serialPort.Dispose();
@@ -126,35 +132,37 @@ namespace ABC.Infrastructure.Drivers
             }
         }
 
-        private void ConnectToHyPrDevice(string portname)
+        void ConnectToHyPrDevice( string portname )
         {
             try
             {
                 _serialPort = null;
-                _serialPort = new SafeSerialPort(portname, BaudRate);
+                _serialPort = new SafeSerialPort( portname, BaudRate );
                 _serialPort.DataReceived += serialPort_DataReceived;
                 _serialPort.Open();
-                Console.WriteLine("Found HyPR device at: " + portname);
+                Console.WriteLine( "Found HyPR device at: " + portname );
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                Console.WriteLine("NOT connected to: " + portname);
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine( "NOT connected to: " + portname );
+                Console.WriteLine( ex.ToString() );
             }
         }
-        public void UpdateColor(Rgb color)
+
+        public void UpdateColor( Rgb color )
         {
-            WriteToDevice(color.ToString());
+            WriteToDevice( color.ToString() );
         }
-        private void WriteToDevice(string msg)
+
+        void WriteToDevice( string msg )
         {
             try
             {
-                if(_serialPort != null)
-                    if(_serialPort.IsOpen)
-                        _serialPort.Write(msg);
+                if ( _serialPort != null )
+                    if ( _serialPort.IsOpen )
+                        _serialPort.Write( msg );
             }
-            catch (IOException)
+            catch ( IOException )
             {
                 ResetConnection();
                 //var success  = PortHelper.TryResetPortByName(Port);
@@ -164,40 +172,44 @@ namespace ABC.Infrastructure.Drivers
         }
 
 
-        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        void serialPort_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
             _output += _serialPort.ReadExisting();
 
-            if (_output.EndsWith("#"))
+            if ( _output.EndsWith( "#" ) )
             {
-                if (!_output.Contains("RESET#"))
+                if ( !_output.Contains( "RESET#" ) )
                 {
                     CurrentRfid = _output;
-                    OnRfidDataReceived(new RfdiDataReceivedEventArgs(_output));
+                    OnRfidDataReceived( new RfdiDataReceivedEventArgs( _output ) );
                 }
                 else
-                    OnRfidResetReceived(new EventArgs());
-               // Console.WriteLine("Received:\t" + output);
+                    OnRfidResetReceived( new EventArgs() );
+                // Console.WriteLine("Received:\t" + output);
                 _output = "";
             }
         }
-        protected void OnRfidDataReceived(RfdiDataReceivedEventArgs e)
+
+        protected void OnRfidDataReceived( RfdiDataReceivedEventArgs e )
         {
-            if (RfidDataReceived != null)
-                RfidDataReceived(this, e);
+            if ( RfidDataReceived != null )
+                RfidDataReceived( this, e );
         }
-        protected void OnRfidResetReceived(EventArgs e)
+
+        protected void OnRfidResetReceived( EventArgs e )
         {
-            if (RfidResetReceived != null)
-                RfidResetReceived(this, e);
+            if ( RfidResetReceived != null )
+                RfidResetReceived( this, e );
         }
     }
-    public class RfdiDataReceivedEventArgs:EventArgs
+
+    public class RfdiDataReceivedEventArgs : EventArgs
     {
-        public string Rfid{get;set;}
-        public RfdiDataReceivedEventArgs(string rfid)
+        public string Rfid { get; set; }
+
+        public RfdiDataReceivedEventArgs( string rfid )
         {
-            Rfid=rfid;
+            Rfid = rfid;
         }
     }
 }

@@ -1,18 +1,18 @@
 ﻿using System;
 using ABC.Infrastructure.Events;
-using ABC.Infrastructure.Helpers;
 using ABC.Infrastructure.Web;
+
 
 namespace ABC.Infrastructure.ActivityBase
 {
     public class ActivityService
     {
         public event InitializedHandler Initialized = delegate { };
-        public event ConnectionEstablishedHandler ConnectionEstablished = delegate { }; 
+        public event ConnectionEstablishedHandler ConnectionEstablished = delegate { };
 
         public static ActivitySystem ActivitySystem;
 
-        private WebApiServer _webApi;
+        WebApiServer _webApi;
 
         public bool IsRunning
         {
@@ -22,12 +22,12 @@ namespace ABC.Infrastructure.ActivityBase
         public string Ip { get; private set; }
         public int Port { get; private set; }
 
-        public ActivityService(ActivitySystem system,string ip,int port)
+        public ActivityService( ActivitySystem system, string ip, int port )
         {
-            InitializeSevice(system, ip, port);
+            InitializeSevice( system, ip, port );
         }
 
-        private void InitializeSevice(ActivitySystem system, string ip, int port)
+        void InitializeSevice( ActivitySystem system, string ip, int port )
         {
             ActivitySystem = system;
             ActivitySystem.ActivityAdded += ActivitySystem_ActivityAdded;
@@ -44,84 +44,87 @@ namespace ABC.Infrastructure.ActivityBase
 
             Ip = ip;
             Port = port;
-            Initialized(this, new EventArgs());
+            Initialized( this, new EventArgs() );
         }
 
-        void ActivitySystem_UserChanged(object sender, UserEventArgs e)
+        void ActivitySystem_UserChanged( object sender, UserEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.UserChanged, e.User);
+            Notifier.NotifyAll( NotificationType.UserChanged, e.User );
         }
 
-        void ActivitySystem_UserRemoved(object sender, UserRemovedEventArgs e)
+        void ActivitySystem_UserRemoved( object sender, UserRemovedEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.UserRemoved, e.Id);
+            Notifier.NotifyAll( NotificationType.UserRemoved, e.Id );
         }
 
-        void ActivitySystem_UserAdded(object sender, UserEventArgs e)
+        void ActivitySystem_UserAdded( object sender, UserEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.UserAdded, e.User);
+            Notifier.NotifyAll( NotificationType.UserAdded, e.User );
         }
 
-        void ActivitySystem_DeviceRemoved(object sender, DeviceRemovedEventArgs e)
+        void ActivitySystem_DeviceRemoved( object sender, DeviceRemovedEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.DeviceRemoved, e.Id);
+            Notifier.NotifyAll( NotificationType.DeviceRemoved, e.Id );
         }
 
-        void ActivitySystem_DeviceChanged(object sender, DeviceEventArgs e)
+        void ActivitySystem_DeviceChanged( object sender, DeviceEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.DeviceChanged, e.Device);
+            Notifier.NotifyAll( NotificationType.DeviceChanged, e.Device );
         }
 
-        void ActivitySystem_DeviceAdded(object sender, DeviceEventArgs e)
+        void ActivitySystem_DeviceAdded( object sender, DeviceEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.DeviceAdded, e.Device);
+            Notifier.NotifyAll( NotificationType.DeviceAdded, e.Device );
         }
 
-        void ActivitySystem_ActivityRemoved(object sender, ActivityRemovedEventArgs e)
+        void ActivitySystem_ActivityRemoved( object sender, ActivityRemovedEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.ActivityRemoved, e.Id);
+            Notifier.NotifyAll( NotificationType.ActivityRemoved, e.Id );
         }
 
-        void ActivitySystem_ActivityChanged(object sender, ActivityEventArgs e)
+        void ActivitySystem_ActivityChanged( object sender, ActivityEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.ActivityChanged, e.Activity);
+            Notifier.NotifyAll( NotificationType.ActivityChanged, e.Activity );
         }
 
-        void ActivitySystem_ActivityAdded(object sender, ActivityEventArgs e)
+        void ActivitySystem_ActivityAdded( object sender, ActivityEventArgs e )
         {
-            Notifier.NotifyAll(NotificationType.ActivityAdded, e.Activity);
+            Notifier.NotifyAll( NotificationType.ActivityAdded, e.Activity );
         }
+
         public void Start()
         {
             try
             {
                 _webApi = new WebApiServer();
-                _webApi.Start(Ip, Port);
-                ConnectionEstablished(this,new EventArgs());
+                _webApi.Start( Ip, Port );
+                ConnectionEstablished( this, new EventArgs() );
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine( ex.ToString() );
             }
         }
-        public void Start(string ip, int port)
+
+        public void Start( string ip, int port )
         {
             try
             {
                 Ip = ip;
                 Port = port;
                 _webApi = new WebApiServer();
-                _webApi.Start(Ip, Port);
-                ConnectionEstablished(this, new EventArgs());
+                _webApi.Start( Ip, Port );
+                ConnectionEstablished( this, new EventArgs() );
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine( ex.ToString() );
             }
         }
+
         public void Stop()
         {
-            if(IsRunning)
+            if ( IsRunning )
                 _webApi.Stop();
         }
     }

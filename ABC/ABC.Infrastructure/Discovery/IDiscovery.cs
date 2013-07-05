@@ -13,13 +13,14 @@
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
+
 namespace ABC.Infrastructure.Discovery
 {
     [ServiceContract]
     public interface IDiscovery
     {
         [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "")]
+        [WebGet( ResponseFormat = WebMessageFormat.Json, UriTemplate = "" )]
         bool Alive();
     }
 }

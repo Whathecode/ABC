@@ -6,14 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ABC.Infrastructure.Driver
 {
     public class SafeSerialPort : SerialPort
     {
-        private Stream theBaseStream;
+        Stream theBaseStream;
 
-        public SafeSerialPort(string portName, int baudRate)
-            : base(portName, baudRate) {}
+        public SafeSerialPort( string portName, int baudRate )
+            : base( portName, baudRate ) {}
 
         public new void Open()
         {
@@ -21,38 +22,35 @@ namespace ABC.Infrastructure.Driver
             {
                 base.Open();
                 theBaseStream = BaseStream;
-                GC.SuppressFinalize(BaseStream);
+                GC.SuppressFinalize( BaseStream );
             }
-            catch
-            {
-
-            }
+            catch {}
         }
 
         public new void Dispose()
         {
-            Dispose(true);
+            Dispose( true );
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose( bool disposing )
         {
-            if (disposing && (base.Container != null))
+            if ( disposing && ( base.Container != null ) )
             {
                 base.Container.Dispose();
             }
             try
             {
-                if (theBaseStream.CanRead)
+                if ( theBaseStream.CanRead )
                 {
                     theBaseStream.Close();
-                    GC.ReRegisterForFinalize(theBaseStream);
+                    GC.ReRegisterForFinalize( theBaseStream );
                 }
             }
             catch
             {
                 // ignore exception - bug with USB - serial adapters.
             }
-            base.Dispose(disposing);
+            base.Dispose( disposing );
         }
     }
 }

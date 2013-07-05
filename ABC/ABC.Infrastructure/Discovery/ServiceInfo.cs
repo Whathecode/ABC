@@ -18,8 +18,9 @@ namespace ABC.Infrastructure.Discovery
         public string Name { get; set; }
         public string Location { get; set; }
         public string Code { get; set; }
-        public ServiceInfo() { }
-        public ServiceInfo(string name,string location, string addr,string code)
+        public ServiceInfo() {}
+
+        public ServiceInfo( string name, string location, string addr, string code )
         {
             Name = name;
             Location = location;

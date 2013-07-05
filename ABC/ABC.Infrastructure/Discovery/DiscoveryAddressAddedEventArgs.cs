@@ -12,13 +12,15 @@
 
 using System;
 
+
 namespace ABC.Infrastructure.Discovery
 {
-    public class DiscoveryAddressAddedEventArgs:EventArgs
+    public class DiscoveryAddressAddedEventArgs : EventArgs
     {
-        public ServiceInfo ServiceInfo{ get; set; }
-        public DiscoveryAddressAddedEventArgs() { }
-        public DiscoveryAddressAddedEventArgs(ServiceInfo serviceInfo)
+        public ServiceInfo ServiceInfo { get; set; }
+        public DiscoveryAddressAddedEventArgs() {}
+
+        public DiscoveryAddressAddedEventArgs( ServiceInfo serviceInfo )
         {
             ServiceInfo = new ServiceInfo();
             ServiceInfo = serviceInfo;

@@ -14,7 +14,7 @@ namespace ABC.Infrastructure.Discovery
 {
     public enum DiscoveryType
     {
-        WsDiscovery,     //using WS_dISCOVERY
-        Zeroconf    //using MONO.ZEROCONF
+        WsDiscovery, //using WS_dISCOVERY
+        Zeroconf //using MONO.ZEROCONF
     }
 }

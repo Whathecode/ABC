@@ -15,11 +15,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
+
 namespace ABC.Infrastructure.Helpers
 {
     public static class Net
     {
         #region Public Members
+
         /// <summary>
         /// Finds an available port by scanning all ports
         /// </summary>
@@ -28,16 +30,16 @@ namespace ABC.Infrastructure.Helpers
         {
             int port;
 
-            var endPoint = new IPEndPoint(IPAddress.Any, 0);
-            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+            var endPoint = new IPEndPoint( IPAddress.Any, 0 );
+            using ( var socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp ) )
             {
-                socket.Bind(endPoint);
+                socket.Bind( endPoint );
                 var local = (IPEndPoint)socket.LocalEndPoint;
                 port = local.Port;
             }
 
-            if (port == NoPort)
-                throw new InvalidOperationException("The client was unable to find a free port.");
+            if ( port == NoPort )
+                throw new InvalidOperationException( "The client was unable to find a free port." );
 
             return port;
         }
@@ -46,18 +48,18 @@ namespace ABC.Infrastructure.Helpers
         /// Finds a valid IP address by scanning the network devices
         /// </summary>
         /// <returns></returns>
-        public static string GetIp(IpType type)
+        public static string GetIp( IpType type )
         {
             var localIp = NoIp;
 
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            var host = Dns.GetHostEntry( Dns.GetHostName() );
+            foreach ( var ip in host.AddressList )
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                if ( ip.AddressFamily == AddressFamily.InterNetwork )
                 {
-                    if (type == IpType.Local)
+                    if ( type == IpType.Local )
                     {
-                        if (IsLocalIpAddress(ip.ToString()))
+                        if ( IsLocalIpAddress( ip.ToString() ) )
                         {
                             localIp = ip.ToString();
                             return localIp;
@@ -68,8 +70,8 @@ namespace ABC.Infrastructure.Helpers
                 }
             }
 
-            if (localIp == NoIp)
-                throw new InvalidOperationException("The client was unable to detect an IP address or there is no active connection.");
+            if ( localIp == NoIp )
+                throw new InvalidOperationException( "The client was unable to detect an IP address or there is no active connection." );
 
             return localIp;
         }
@@ -79,19 +81,19 @@ namespace ABC.Infrastructure.Helpers
         /// </summary>
         /// <param name="host">The IP address</param>
         /// <returns>A bool indicating if the IP address if local or not</returns>
-        public static bool IsLocalIpAddress(string host)
+        public static bool IsLocalIpAddress( string host )
         {
-            var hostIPs = Dns.GetHostAddresses(host);
+            var hostIPs = Dns.GetHostAddresses( host );
             // get local IP addresses
-            var localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            var localIPs = Dns.GetHostAddresses( Dns.GetHostName() );
 
             // test if any host IP equals to any local IP or to localhost
-            foreach (var hostIp in hostIPs)
+            foreach ( var hostIp in hostIPs )
             {
                 // is localhost
-                if (IPAddress.IsLoopback(hostIp)) return true;
+                if ( IPAddress.IsLoopback( hostIp ) ) return true;
                 // is local address
-                if (localIPs.Contains(hostIp))
+                if ( localIPs.Contains( hostIp ) )
                 {
                     return true;
                 }
@@ -106,15 +108,19 @@ namespace ABC.Infrastructure.Helpers
         /// <param name="port">Base port</param>
         /// <param name="relative">Relate path</param>
         /// <returns></returns>
-        public static Uri GetUrl(string ip, int port, string relative)
+        public static Uri GetUrl( string ip, int port, string relative )
         {
-            return new Uri(string.Format("http://{0}:{1}/{2}", ip, port, relative));
+            return new Uri( string.Format( "http://{0}:{1}/{2}", ip, port, relative ) );
         }
+
         #endregion
 
+
         #region Constants
+
         public static string NoIp = "NULL";
         public static int NoPort = -1;
+
         #endregion
     }
 

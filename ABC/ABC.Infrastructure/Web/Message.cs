@@ -14,10 +14,12 @@
             Type = MessageType.Communication;
         }
     }
+
     public class BulkMessage : Message
     {
         public Message[] Bulk { get; set; }
     }
+
     public enum MessageType
     {
         Connect,
