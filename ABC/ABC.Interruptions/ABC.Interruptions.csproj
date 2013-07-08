@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AbstractInterruptionHandler.cs" />
+    <Compile Include="AbstractIntervalInterruptionHandler.cs" />
     <Compile Include="InterruptionAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
