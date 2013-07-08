@@ -72,7 +72,6 @@ namespace ABC.Model.Primitives
 
 		public void UpdateAllProperties( object newUser )
 		{
-			Console.WriteLine( "Update of {0}", newUser.GetType().Name );
 			foreach ( var propertyInfo in newUser.GetType().GetProperties() )
 				if ( propertyInfo.CanRead )
 				{

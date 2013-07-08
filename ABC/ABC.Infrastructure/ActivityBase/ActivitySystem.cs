@@ -308,7 +308,7 @@ namespace ABC.Infrastructure.ActivityBase
 
         public void StartLocationTracker()
         {
-            if ( !Tracker.IsRunning ) return;
+            if ( Tracker.IsRunning ) return;
             Tracker.Detection += tracker_Detection;
             Tracker.TagButtonDataReceived += TrackerTagButtonDataReceived;
             Tracker.Start();
