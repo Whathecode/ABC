@@ -6,13 +6,13 @@ namespace ABC.Interruptions
 	/// <summary>
 	///  An interruption handler which only updates its state at specified intervals.
 	/// </summary>
-	public abstract class AbstractIntervalInterruptionHandler : AbstractInterruptionHandler
+	public abstract class AbstractIntervalInterruptionTrigger : AbstractInterruptionTrigger
 	{
 		readonly TimeSpan _interval;
 		DateTime? _lastUpdate;
 
 
-		protected AbstractIntervalInterruptionHandler( TimeSpan interval )
+		protected AbstractIntervalInterruptionTrigger( TimeSpan interval )
 		{
 			_interval = interval;
 		}

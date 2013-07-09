@@ -30,14 +30,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AbstractInterruptionHandler.cs" />
-    <Compile Include="AbstractIntervalInterruptionHandler.cs" />
+    <Compile Include="AbstractInterruption.cs" />
+    <Compile Include="AbstractInterruptionTrigger.cs" />
+    <Compile Include="AbstractIntervalInterruptionTrigger.cs" />
     <Compile Include="InterruptionAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Whathecode.System, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

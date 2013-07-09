@@ -5,6 +5,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 
 
@@ -13,12 +14,12 @@ namespace ABC.Interruptions
 	/// <summary>
 	///   Aggregates interruptions raised by externally loaded plugins.
 	/// </summary>
-	public class InterruptionAggregator : AbstractInterruptionHandler
+	public class InterruptionAggregator : AbstractInterruptionTrigger
 	{
 		readonly CompositionContainer _pluginContainer;
 
 		[ImportMany]
-		readonly List<AbstractInterruptionHandler> _interruptionHandlers = new List<AbstractInterruptionHandler>();
+		readonly List<AbstractInterruptionTrigger> _interruptionTriggers = new List<AbstractInterruptionTrigger>();
 
 
 		public InterruptionAggregator( string pluginFolderPath )
@@ -41,8 +42,22 @@ namespace ABC.Interruptions
 			_pluginContainer = new CompositionContainer( catalog );
 			_pluginContainer.ComposeParts( this );
 
+			// Remove invalid interruption handlers.
+			var toRemove = new List<AbstractInterruptionTrigger>();
+			foreach ( var trigger in _interruptionTriggers )
+			{
+				bool haveDataContracts = trigger.GetInterruptionTypes().All( i => i.GetCustomAttributes( false ).Any( a => a is DataContractAttribute ) );
+				if ( !haveDataContracts )
+				{
+					string pluginName = trigger.GetType().ToString();
+					Debug.WriteLine( "The interruptions triggered by plugin \"{0}\" should be serializable and have a DataContract attribute applied to them.", new object[] { pluginName } );
+					toRemove.Add( trigger );
+				}
+			}
+			toRemove.ForEach( t => _interruptionTriggers.Remove( t ) );
+
 			// Initialize loaded interruption handlers.
-			foreach ( var handler in _interruptionHandlers )
+			foreach ( var handler in _interruptionTriggers )
 			{
 				handler.InterruptionReceived += TriggerInterruption;
 			}
@@ -56,23 +71,32 @@ namespace ABC.Interruptions
 				return;
 			}
 
-			foreach ( var handler in _interruptionHandlers )
+			foreach ( var trigger in _interruptionTriggers )
 			{
-				// ReSharper disable EmptyGeneralCatchClause
 				try
 				{
-					handler.Update( now );
+					trigger.Update( now );
 				}
 				catch ( Exception ex )
 				{
 					// Prevent main application from crashing when plugins throw exceptions.
-					string pluginName = handler.GetType().ToString();
-					Debug.WriteLine( "The interruption handler plugin \"{0}\" threw an exception:\n {1}", pluginName, ex );
+					string pluginName = trigger.GetType().ToString();
+					Debug.WriteLine( "The interruption trigger plugin \"{0}\" threw an exception:\n {1}", pluginName, ex );
 				}
-				// ReSharper restore EmptyGeneralCatchClause
 			}
 
 			Monitor.Exit( this );
+		}
+
+		/// <summary>
+		///   The <see cref = "AbstractInterruptionTrigger.InterruptionReceived" /> event returns interruption types which are serializable.
+		///   In order to serialize them however, a <see cref = "DataContractSerializer" /> needs to be aware of the exact types.
+		///   These are returned by this function.
+		/// </summary>
+		/// <returns>All the interruption types this interruption aggregator knows about.</returns>
+		public override List<Type> GetInterruptionTypes()
+		{
+			return _interruptionTriggers.SelectMany( h => h.GetInterruptionTypes() ).ToList();
 		}
 	}
 }
