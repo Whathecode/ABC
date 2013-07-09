@@ -27,12 +27,12 @@ namespace ABC.Windows.Desktop
 	///   You should have received a copy of the GNU General Public License
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
-	public class DesktopManager
+	public class VirtualDesktopManager
 	{
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
 		readonly Func<WindowInfo, bool> _windowFilter;
-		readonly Func<WindowInfo, DesktopManager, List<WindowInfo>> _hideBehavior;
+		readonly Func<WindowInfo, VirtualDesktopManager, List<WindowInfo>> _hideBehavior;
 		readonly List<WindowInfo> _invalidWindows = new List<WindowInfo>();
 
 		// ReSharper disable NotAccessedField.Local
@@ -58,7 +58,7 @@ namespace ABC.Windows.Desktop
 		/// <param name = "settings">
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
-		public DesktopManager( ISettings settings )
+		public VirtualDesktopManager( ISettings settings )
 		{
 			Contract.Requires( settings != null );
 
@@ -180,7 +180,7 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			CurrentDesktop.Icons = DesktopIconManager.SaveDestopIcons();
+			CurrentDesktop.Icons = DesktopManager.SaveDestopIcons();
 
 			// Hide windows and show those from the new desktop.
 			UpdateWindowAssociations();
@@ -190,11 +190,11 @@ namespace ABC.Windows.Desktop
 			// Update desktop icons.
 			if ( desktop.Folder != null )
 			{
-				DesktopFolderSwitcher.ChangeDesktopFolder( desktop.Folder );
+                DesktopManager.ChangeDesktopFolder(desktop.Folder);
 			}
 			if ( desktop.Icons != null )
 			{
-				DesktopIconManager.ArrangeDesktopIcons( desktop.Icons );
+                DesktopManager.ArrangeDesktopIcons(desktop.Icons);
 			}
 
 			CurrentDesktop = desktop;
