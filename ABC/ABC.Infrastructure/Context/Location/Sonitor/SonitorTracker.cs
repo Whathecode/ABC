@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -22,9 +23,18 @@ namespace ABC.Infrastructure.Context.Location.Sonitor
             get { return Running; }
         }
 
+        public string Address { get; private set; }
+        public int Port { get; private set; }
+
+        public SonitorTracker(string addr, int port)
+        {
+            Address = addr;
+            Port = port;
+        }
         public void Start()
         {
             Running = true;
+
             Task.Factory.StartNew( RunTcpClient );
         }
 
@@ -41,13 +51,15 @@ namespace ABC.Infrastructure.Context.Location.Sonitor
             try
             {
                 var client = new TcpClient();
-                client.Connect( IPAddress.Parse(
-                    Properties.Settings.Default.LocationTracker_IP ),
-                                Properties.Settings.Default.LocationTracker_Port );
+
+                client.Connect( IPAddress.Parse(Address),Port);
 
                 var reader = new StreamReader( client.GetStream(), Encoding.ASCII );
+
                 Debug.WriteLine( GetType().Name + " started" );
+
                 var message = new List<string>();
+
                 while ( Running )
                 {
                     var line = reader.ReadLine();

@@ -27,10 +27,11 @@ namespace ABC.Infrastructure.ActivityBase
 
         public ActivitySystem( string systemName = "activitysystem" )
         {
-            Tracker = new LocationTracker();
+
             Name = systemName;
             Ip = Net.GetIp( IpType.All );
             Port = 1000;
+            Tracker = new LocationTracker(Ip);
         }
 
         ~ActivitySystem()
