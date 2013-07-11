@@ -42,18 +42,20 @@ namespace ABC.Infrastructure.Context.Location
 
         #endregion
 
+        const int DefaultSonitorPort = 43210;
 
         #region Members
 
-        readonly SonitorTracker _tracker = new SonitorTracker();
+        readonly SonitorTracker _tracker;
 
         #endregion
 
 
         #region Constructor
 
-        public LocationTracker()
+        public LocationTracker(string address)
         {
+            _tracker = new SonitorTracker(address, DefaultSonitorPort);
             Tags = new Dictionary<string, Tag>();
             Detectors = new Dictionary<string, Detector>();
 
