@@ -72,7 +72,7 @@ namespace Generated.ProcessBehaviors
 
 	public static class CutHelper
 	{
-		public static IEnumerable<WindowInfo> WindowsToSearchIn( DesktopManager desktopManager, ConsiderWindows selectedDesktops )
+		public static IEnumerable<WindowInfo> WindowsToSearchIn( VirtualDesktopManager desktopManager, ConsiderWindows selectedDesktops )
 		{
 			switch ( selectedDesktops )
 			{
@@ -90,7 +90,7 @@ namespace Generated.ProcessBehaviors
 
 	public interface ICutBehavior
 	{
-		IEnumerable<WindowInfo> ToCut( WindowInfo windowInfo, DesktopManager desktopManager );
+		IEnumerable<WindowInfo> ToCut( WindowInfo windowInfo, VirtualDesktopManager desktopManager );
 	}
 
 	/// <summary>
@@ -98,7 +98,7 @@ namespace Generated.ProcessBehaviors
 	/// </summary>
 	public partial class ProcessBehaviorsProcessHideBehaviorDefault : ICutBehavior
 	{
-		public IEnumerable<WindowInfo> ToCut( WindowInfo windowInfo, DesktopManager desktopManager )
+		public IEnumerable<WindowInfo> ToCut( WindowInfo windowInfo, VirtualDesktopManager desktopManager )
 		{
 			var windows = new List<WindowInfo>();
 
@@ -135,7 +135,7 @@ namespace Generated.ProcessBehaviors
 	/// </summary>
 	public partial class ProcessBehaviorsProcessHideBehaviorInclude : ICutBehavior
 	{
-		public IEnumerable<WindowInfo> ToCut( WindowInfo windowInfo, DesktopManager desktopManager )
+		public IEnumerable<WindowInfo> ToCut( WindowInfo windowInfo, VirtualDesktopManager desktopManager )
 		{
 			var searchWindows = CutHelper.WindowsToSearchIn( desktopManager, ConsiderWindows );
 			return searchWindows.Where( s => Window.Any( w => w.Equals( s ) ) );

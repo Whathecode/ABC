@@ -28,7 +28,7 @@ namespace ABC.Windows.Desktop.Server
 		readonly IpcServerChannel _channel = new IpcServerChannel( "VirtualDesktopManagerAPI" );
 
 
-		public MonitorVdmPipeServer( DesktopManager desktopManager )
+		public MonitorVdmPipeServer( VirtualDesktopManager desktopManager )
 		{
 			ChannelServices.RegisterChannel( _channel, false );
 			MonitorVdmService monitorVdm = new MonitorVdmService( desktopManager );

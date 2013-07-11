@@ -33,6 +33,6 @@ namespace ABC.Windows.Desktop.Settings
 		///   Creates a method which determines which windows should be cut when a given window is cut.
 		/// </summary>
 		/// <returns>The list of windows which should be cut when the given window is cut.</returns>
-		Func<WindowInfo, DesktopManager, List<WindowInfo>> CreateHideBehavior();
+		Func<WindowInfo, VirtualDesktopManager, List<WindowInfo>> CreateHideBehavior();
 	}
 }

@@ -26,10 +26,10 @@ namespace ABC.Windows.Desktop.Server
 	/// </license>
 	class MonitorVdmService : MarshalByRefObject, IMonitorVdmService
 	{
-		readonly DesktopManager _desktopManager;
+		readonly VirtualDesktopManager _desktopManager;
 
 
-		public MonitorVdmService( DesktopManager desktopManager )
+		public MonitorVdmService( VirtualDesktopManager desktopManager )
 		{
 			_desktopManager = desktopManager;
 		}

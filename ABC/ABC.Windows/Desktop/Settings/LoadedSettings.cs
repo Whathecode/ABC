@@ -141,7 +141,7 @@ namespace ABC.Windows.Desktop.Settings
 			};
 		}
 
-		public Func<WindowInfo, DesktopManager, List<WindowInfo>> CreateHideBehavior()
+		public Func<WindowInfo, VirtualDesktopManager, List<WindowInfo>> CreateHideBehavior()
 		{
 			return ( w, m ) =>
 			{

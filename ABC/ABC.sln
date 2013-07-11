@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20617.1 PREVIEW
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Windows", "ABC.Windows\ABC.Windows.csproj", "{DB8DBDF2-70BF-4712-86DA-06674986BC12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.PInvoke", "ABC.PInvoke\ABC.PInvoke.csproj", "{072142C4-284E-4F1A-A1FE-F886E8ECF728}"
@@ -11,7 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Windows.Desktop.Monitor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Interruptions", "ABC.Interruptions\ABC.Interruptions.csproj", "{582661FF-FF3D-4CD3-8A52-3C75447E9F69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Infrastructure", "ABC.Infrastructure\ABC.Infrastructure.csproj", "{7AC39E7E-0853-482D-85FC-98311681BE54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Infrastructure", "ABC.Infrastructure\ABC.Infrastructure.csproj", "{7574CB54-4241-4723-9B4E-9B69D9DB505E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8465610F-A045-4282-BADB-2460440B260C}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Applications", "ABC.Applications\ABC.Applications.csproj", "{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}"
 EndProject
@@ -89,6 +96,14 @@ Global
 		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x64.ActiveCfg = Release|Any CPU
 		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x86.ActiveCfg = Release|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Release|x64.ActiveCfg = Release|Any CPU
+		{7574CB54-4241-4723-9B4E-9B69D9DB505E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

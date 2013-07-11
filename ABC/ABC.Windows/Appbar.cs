@@ -7,7 +7,7 @@ using ABC.PInvoke;
 
 namespace ABC.Windows
 {
-	public abstract class Taskbar : Window
+	public abstract class Appbar : Window
 	{
 		#region Abstract Methods
 
@@ -26,7 +26,7 @@ namespace ABC.Windows
 		#endregion
 
 
-		bool _isHorizontal;
+        public System.Windows.Controls.Orientation BarOrientation { get; private set; }
 
 		DockPosition _dockPosition;
 
@@ -39,8 +39,9 @@ namespace ABC.Windows
 
 				if ( _dockPosition != DockPosition.None )
 				{
-					_isHorizontal = IsHorizontal( _dockPosition );
-					if ( _isHorizontal )
+       
+                    BarOrientation = IsHorizontal(_dockPosition);
+					if ( BarOrientation == System.Windows.Controls.Orientation.Horizontal )
 						Height = HorizontalModeSize;
 					else
 						Width = VerticalModeSize;
@@ -53,16 +54,17 @@ namespace ABC.Windows
 
 		public bool AutoHide { get; set; }
 
-		protected Taskbar()
+		protected Appbar()
 		{
 			Loaded += Taskbar_Loaded;
 
 			ShowInTaskbar = false;
 		}
 
-		static bool IsHorizontal( DockPosition pos )
+		static System.Windows.Controls.Orientation IsHorizontal( DockPosition pos )
 		{
-			return pos == DockPosition.Top || pos == DockPosition.Bottom || pos == DockPosition.None;
+            if ( pos == DockPosition.Top || pos == DockPosition.Bottom || pos == DockPosition.None ) return System.Windows.Controls.Orientation.Horizontal;
+            else return System.Windows.Controls.Orientation.Vertical;
 		}
 
 		void Taskbar_Loaded( object sender, RoutedEventArgs e )
@@ -130,7 +132,7 @@ namespace ABC.Windows
 
 			User32.SetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE, (uint)exStyle );
 
-			DockPosition = DockPosition.Left;
+			DockPosition = DockPosition.Top;
 		}
 
 		/// <summary>
