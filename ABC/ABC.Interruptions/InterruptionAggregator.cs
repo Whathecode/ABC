@@ -23,7 +23,7 @@ namespace ABC.Interruptions
 		readonly List<AbstractInterruptionTrigger> _interruptionTriggers = new List<AbstractInterruptionTrigger>();
 
 		[Export]
-		public readonly ServiceProvider ServiceProvider = new ServiceProvider();
+		readonly ServiceProvider _serviceProvider = new ServiceProvider { ForceOpenInNewWindow = true };
 
 
 		public InterruptionAggregator( string pluginFolderPath )
