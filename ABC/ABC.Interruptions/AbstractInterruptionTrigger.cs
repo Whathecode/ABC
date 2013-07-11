@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using ABC.Applications;
 
 
 namespace ABC.Interruptions
@@ -9,7 +11,10 @@ namespace ABC.Interruptions
 	/// </summary>
 	public abstract class AbstractInterruptionTrigger
 	{
-		public event Action<AbstractInterruption> InterruptionReceived = delegate { };		
+		[Import]
+		protected ServiceProvider ServiceProvider { get; private set; }
+
+		public event Action<AbstractInterruption> InterruptionReceived = delegate { };
 
 		protected void TriggerInterruption( AbstractInterruption interruption )
 		{

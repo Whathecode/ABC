@@ -13,6 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Interruptions", "ABC.In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Infrastructure", "ABC.Infrastructure\ABC.Infrastructure.csproj", "{7AC39E7E-0853-482D-85FC-98311681BE54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Applications", "ABC.Applications\ABC.Applications.csproj", "{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E5FEF09C-A090-41D4-AB66-90599D87AE64}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +81,14 @@ Global
 		{7AC39E7E-0853-482D-85FC-98311681BE54}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7AC39E7E-0853-482D-85FC-98311681BE54}.Release|x64.ActiveCfg = Release|Any CPU
 		{7AC39E7E-0853-482D-85FC-98311681BE54}.Release|x86.ActiveCfg = Release|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x64.ActiveCfg = Release|Any CPU
+		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

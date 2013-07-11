@@ -1,5 +1,9 @@
 ﻿using System;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Reflection;
 using System.Runtime.Serialization;
+using ABC.Applications;
 
 
 namespace ABC.Interruptions
@@ -10,6 +14,8 @@ namespace ABC.Interruptions
 	[DataContract]
 	public abstract class AbstractInterruption
 	{
+		protected ServiceProvider ServiceProvider { get; private set; }
+
 		[DataMember]
 		public string Name { get; private set; }
 
@@ -26,10 +32,21 @@ namespace ABC.Interruptions
 		public bool AttendedTo { get; private set; }
 
 
-		protected AbstractInterruption( string name )
+		protected AbstractInterruption( ServiceProvider serviceProvider, string name )
 		{
+			ServiceProvider = serviceProvider;
 			Name = name;
 			TriggeredAt = DateTime.Now;
 		}
+
+
+		public void Open()
+		{
+			OnInterruptionOpened();
+
+			AttendedTo = true;
+		}
+
+		protected abstract void OnInterruptionOpened();
 	}
 }
