@@ -11,6 +11,7 @@ namespace ABC.Infrastructure.Events
         public static void Subscribe( Guid connectionId, Guid groupId )
         {
             Context.Groups.Add( connectionId.ToString(), groupId.ToString() );
+
         }
 
         public static void Unsubscribe( Guid connectionId, Guid groupId )

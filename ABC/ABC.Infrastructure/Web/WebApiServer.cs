@@ -56,7 +56,6 @@ namespace ABC.Infrastructure.Web
                 config.Routes.MapHttpRoute( "Default", "{controller}/{id}", new { id = RouteParameter.Optional } );
                 app.UseWebApi( config );
                 app.MapConnection<EventDispatcher>( "", new ConnectionConfiguration { EnableCrossDomain = true } );
-                app.MapHubs();
 
                 var serializer = new JsonNetSerializer( new JsonSerializerSettings
                 {
@@ -64,6 +63,8 @@ namespace ABC.Infrastructure.Web
                 } );
 
                 GlobalHost.DependencyResolver.Register( typeof( IJsonSerializer ), () => serializer );
+
+                app.MapHubs();
             }
         }
     }
