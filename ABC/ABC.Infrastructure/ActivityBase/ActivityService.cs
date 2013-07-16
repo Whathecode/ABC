@@ -1,5 +1,5 @@
 ﻿using System;
-//using ABC.Infrastructure.Events;
+
 using ABC.Infrastructure.Web;
 using ABC.Infrastructure.Events;
 
@@ -26,11 +26,9 @@ namespace ABC.Infrastructure.ActivityBase
         public ActivityService( ActivitySystem system, string ip, int port )
         {
             InitializeSevice( system, ip, port );
-        }
 
-        void InitializeSevice( ActivitySystem system, string ip, int port )
-        {
             ActivitySystem = system;
+
             ActivitySystem.ActivityAdded += ActivitySystem_ActivityAdded;
             ActivitySystem.ActivityChanged += ActivitySystem_ActivityChanged;
             ActivitySystem.ActivityRemoved += ActivitySystem_ActivityRemoved;
@@ -43,67 +41,61 @@ namespace ABC.Infrastructure.ActivityBase
             ActivitySystem.UserChanged += ActivitySystem_UserChanged;
             ActivitySystem.UserRemoved += ActivitySystem_UserRemoved;
 
-            Ip = ip;
-            Port = port;
-            Initialized( this, new EventArgs() );
         }
 
-        void ActivitySystem_UserChanged( object sender, UserEventArgs e )
+        void ActivitySystem_UserChanged(object sender, UserEventArgs e)
         {
-            Notifier.NotifyAll(NotificationType.UserChanged, new User());
+            Notifier.NotifyAll(NotificationType.UserChanged, e.User);
         }
-        public class User
+
+        void ActivitySystem_UserRemoved(object sender, UserRemovedEventArgs e)
         {
-            public string Id { get; set; }
-            public string Name { get; set; }
-            public DateTime Birthday { get; set; }
-
-            public User()
-            {
-                Id = Guid.NewGuid().ToString();
-                Name = "Default " + Id;
-                Birthday = DateTime.Now;
-            }
+            Notifier.NotifyAll(NotificationType.UserRemoved, e.Id);
         }
 
-        void ActivitySystem_UserRemoved( object sender, UserRemovedEventArgs e )
+        void ActivitySystem_UserAdded(object sender, UserEventArgs e)
         {
-            Notifier.NotifyAll( NotificationType.UserRemoved, e.Id );
+            Notifier.NotifyAll(NotificationType.UserAdded, e.User);
         }
 
-        void ActivitySystem_UserAdded( object sender, UserEventArgs e )
-        {
-            Notifier.NotifyAll( NotificationType.UserAdded, e.User );
-        }
-
-        void ActivitySystem_DeviceRemoved( object sender, DeviceRemovedEventArgs e )
+        void ActivitySystem_DeviceRemoved(object sender, DeviceRemovedEventArgs e)
         {
             Notifier.NotifyAll(NotificationType.DeviceRemoved, e.Id);
         }
 
-        void ActivitySystem_DeviceChanged( object sender, DeviceEventArgs e )
+        void ActivitySystem_DeviceChanged(object sender, DeviceEventArgs e)
         {
             Notifier.NotifyAll(NotificationType.DeviceChanged, e.Device);
         }
 
-        void ActivitySystem_DeviceAdded( object sender, DeviceEventArgs e )
+        void ActivitySystem_DeviceAdded(object sender, DeviceEventArgs e)
         {
             Notifier.NotifyAll(NotificationType.DeviceAdded, e.Device);
         }
 
-        void ActivitySystem_ActivityRemoved( object sender, ActivityRemovedEventArgs e )
+        void ActivitySystem_ActivityRemoved(object sender, ActivityRemovedEventArgs e)
         {
             Notifier.NotifyAll(NotificationType.ActivityRemoved, e.Id);
         }
 
-        void ActivitySystem_ActivityChanged( object sender, ActivityEventArgs e )
+        void ActivitySystem_ActivityChanged(object sender, ActivityEventArgs e)
         {
             Notifier.NotifyAll(NotificationType.ActivityChanged, e.Activity);
         }
 
-        void ActivitySystem_ActivityAdded( object sender, ActivityEventArgs e )
+        void ActivitySystem_ActivityAdded(object sender, ActivityEventArgs e)
         {
             Notifier.NotifyAll(NotificationType.ActivityAdded, e.Activity);
+        }
+
+        void InitializeSevice( ActivitySystem system, string ip, int port )
+        {
+            ActivitySystem = system;
+
+            Ip = ip;
+            Port = port;
+
+            Initialized( this, new EventArgs() );
         }
 
         public void Start()

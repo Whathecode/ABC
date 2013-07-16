@@ -6,6 +6,7 @@ using ABC.Model.Users;
 using Newtonsoft.Json.Linq;
 using ABC.Infrastructure.ActivityBase;
 using ABC.Infrastructure.Helpers;
+using ABC.Infrastructure.Events;
 
 
 namespace ABC.Infrastructure.Web.Controllers
@@ -14,7 +15,7 @@ namespace ABC.Infrastructure.Web.Controllers
     {
         readonly ActivitySystem _system;
 
-        public UsersController( ActivitySystem system )
+        public UsersController(ActivitySystem system)
         {
             _system = system;
         }
@@ -24,24 +25,24 @@ namespace ABC.Infrastructure.Web.Controllers
             return _system.Users.Values.ToList();
         }
 
-        public IUser Get( string id )
+        public IUser Get(string id)
         {
-            return _system.Users[ id ];
+            return _system.Users[id];
         }
 
-        public void Post( JObject user )
+        public void Post(JObject user)
         {
-            _system.AddUser( Json.ConvertFromTypedJson<IUser>( user.ToString() ) );
+            _system.AddUser(Json.ConvertFromTypedJson<IUser>(user.ToString()));
         }
 
-        public void Delete( string id )
+        public void Delete(string id)
         {
-            _system.RemoveUser( id );
+            _system.RemoveUser(id);
         }
 
-        public void Put( JObject user )
+        public void Put(JObject user)
         {
-            _system.UpdateUser( Json.ConvertFromTypedJson<IUser>( user.ToString() ) );
+            _system.UpdateUser(Json.ConvertFromTypedJson<IUser>(user.ToString()));
         }
     }
 }

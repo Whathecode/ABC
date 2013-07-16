@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
+using System;
 
 
 namespace ABC.Infrastructure.Events

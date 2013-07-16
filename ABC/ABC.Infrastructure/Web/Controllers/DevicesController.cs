@@ -5,6 +5,7 @@ using ABC.Model.Device;
 using Newtonsoft.Json.Linq;
 using ABC.Infrastructure.ActivityBase;
 using ABC.Infrastructure.Helpers;
+using ABC.Infrastructure.Events;
 
 
 namespace ABC.Infrastructure.Web.Controllers
@@ -13,7 +14,7 @@ namespace ABC.Infrastructure.Web.Controllers
     {
         readonly ActivitySystem _system;
 
-        public DevicesController( ActivitySystem system )
+        public DevicesController(ActivitySystem system)
         {
             _system = system;
         }
@@ -23,24 +24,24 @@ namespace ABC.Infrastructure.Web.Controllers
             return _system.Devices.Values.ToList();
         }
 
-        public IDevice Get( string id )
+        public IDevice Get(string id)
         {
-            return _system.Devices[ id ];
+            return _system.Devices[id];
         }
 
-        public void Post( JObject device )
+        public void Post(JObject device)
         {
-            _system.AddDevice( Json.ConvertFromTypedJson<IDevice>( device.ToString() ) );
+            _system.AddDevice(Json.ConvertFromTypedJson<IDevice>(device.ToString()));
         }
 
-        public void Delete( string id )
+        public void Delete(string id)
         {
-            _system.RemoveDevice( id );
+            _system.RemoveDevice(id);
         }
 
-        public void Put( JObject device )
+        public void Put(JObject device)
         {
-            _system.UpdateDevice( Json.ConvertFromTypedJson<IDevice>( device.ToString() ) );
+            _system.UpdateDevice(Json.ConvertFromTypedJson<IDevice>(device.ToString()));
         }
     }
 }

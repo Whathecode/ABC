@@ -6,12 +6,11 @@ namespace ABC.Infrastructure.Events
 {
     public class Notifier
     {
-        static readonly IPersistentConnectionContext Context = GlobalHost.ConnectionManager.GetConnectionContext<EventDispatcher>();
-
         public static void NotifyAll(NotificationType type, object obj)
         {
+            var context = GlobalHost.ConnectionManager.GetConnectionContext<EventDispatcher>();
             var output = ConstructEvent(type, obj);
-            Context.Connection.Broadcast(output);
+            context.Connection.Broadcast(output);
         }
 
         protected static object ConstructEvent(NotificationType type, object obj)
@@ -21,3 +20,4 @@ namespace ABC.Infrastructure.Events
         }
     }
 }
+

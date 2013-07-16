@@ -53,24 +53,18 @@ namespace ABC.Infrastructure.Web
         {
             var config = new HttpConfiguration { DependencyResolver = new ControllerResolver() };
             config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
-            config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
+            config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
             config.Routes.MapHttpRoute("Default", "{controller}/{id}", new { id = RouteParameter.Optional });
-
-            GlobalHost.DependencyResolver.Register(typeof(JsonSerializer), () =>
-                JsonSerializer.Create(new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Objects
-                }));
-
             app.UseWebApi(config);
+            app.MapConnection<EventDispatcher>("", new ConnectionConfiguration { EnableCrossDomain = true });
 
-            app.MapConnection<EventDispatcher>("",
-                new ConnectionConfiguration
-                {
-                    EnableCrossDomain = true,
-                });
+            GlobalHost.DependencyResolver.Register(typeof(JsonSerializer), () => JsonSerializer.Create(new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All
+            }));
 
-            app.MapHubs();
+            var hubConfig = new HubConfiguration() { EnableCrossDomain = true };
+            app.MapHubs(hubConfig);
         }
     }
 }

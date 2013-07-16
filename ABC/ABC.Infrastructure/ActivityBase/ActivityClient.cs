@@ -41,7 +41,6 @@ namespace ABC.Infrastructure.ActivityBase
             try
             {
                 _eventHandler = new Connection(Address);
-                _eventHandler.JsonSerializer.TypeNameHandling = TypeNameHandling.None;
                 _eventHandler.Received += eventHandler_Received;
                 _eventHandler.Start().Wait();
             }
@@ -70,16 +69,16 @@ namespace ABC.Infrastructure.ActivityBase
         {
             var acts = GetActivities();
 
-            foreach ( var item in acts )
-                activities.AddOrUpdate( item.Id, item, ( key, oldValue ) => item );
+            foreach (var item in acts)
+                activities.AddOrUpdate(item.Id, item, (key, oldValue) => item);
 
             var usrs = GetUsers();
             foreach ( var item in usrs )
                 users.AddOrUpdate( item.Id, item, ( key, oldValue ) => item );
 
             var dvs = GetDevices();
-            foreach ( var item in dvs )
-                devices.AddOrUpdate( item.Id, item, ( key, oldValue ) => item );
+            foreach (var item in dvs)
+                devices.AddOrUpdate(item.Id, item, (key, oldValue) => item);
 
             _connected = true;
         }
@@ -146,7 +145,7 @@ namespace ABC.Infrastructure.ActivityBase
 
         public override void UpdateUser( IUser user )
         {
-            Rest.Post( Address + Url.Users, user );
+            Rest.Put( Address + Url.Users, user );
         }
 
         public override IUser GetUser( string id )
@@ -156,7 +155,7 @@ namespace ABC.Infrastructure.ActivityBase
 
         public override void UpdateActivity( IActivity act )
         {
-            Rest.Post( Address + Url.Activities, act );
+            Rest.Put( Address + Url.Activities, act );
         }
 
         public override void RemoveActivity( string id )
@@ -171,7 +170,7 @@ namespace ABC.Infrastructure.ActivityBase
 
         public override List<IActivity> GetActivities()
         {
-            return Json.ConvertArrayFromTypedJson<IActivity>( Rest.Get( Address + Url.Activities, "" ) );
+            return Json.ConvertFromTypedJson<List<IActivity>>( Rest.Get( Address + Url.Activities, "" ) );
         }
 
         public override void AddDevice( IDevice dev )
@@ -181,7 +180,7 @@ namespace ABC.Infrastructure.ActivityBase
 
         public override void UpdateDevice( IDevice dev )
         {
-            Rest.Post( Address + Url.Devices, dev );
+            Rest.Put( Address + Url.Devices, dev );
         }
 
         public override void RemoveDevice( string id )
@@ -198,12 +197,12 @@ namespace ABC.Infrastructure.ActivityBase
 
         public override List<IUser> GetUsers()
         {
-            return Json.ConvertArrayFromTypedJson<IUser>( Rest.Get( Address + Url.Users, "" ) );
+            return Json.ConvertFromTypedJson<List<IUser>>(Rest.Get(Address + Url.Users, ""));
         }
 
         public override List<IDevice> GetDevices()
         {
-            return Json.ConvertArrayFromTypedJson<IDevice>( Rest.Get( Address + Url.Devices, "" ) );
+            return Json.ConvertFromTypedJson<List<IDevice>>(Rest.Get(Address + Url.Devices, ""));
         }
 
         #endregion
