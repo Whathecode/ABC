@@ -1,6 +1,7 @@
 ﻿using System;
-using ABC.Infrastructure.Events;
+//using ABC.Infrastructure.Events;
 using ABC.Infrastructure.Web;
+using ABC.Infrastructure.Events;
 
 
 namespace ABC.Infrastructure.ActivityBase
@@ -49,7 +50,20 @@ namespace ABC.Infrastructure.ActivityBase
 
         void ActivitySystem_UserChanged( object sender, UserEventArgs e )
         {
-            Notifier.NotifyAll( NotificationType.UserChanged, e.User );
+            Notifier.NotifyAll(NotificationType.UserChanged, new User());
+        }
+        public class User
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public DateTime Birthday { get; set; }
+
+            public User()
+            {
+                Id = Guid.NewGuid().ToString();
+                Name = "Default " + Id;
+                Birthday = DateTime.Now;
+            }
         }
 
         void ActivitySystem_UserRemoved( object sender, UserRemovedEventArgs e )
@@ -64,32 +78,32 @@ namespace ABC.Infrastructure.ActivityBase
 
         void ActivitySystem_DeviceRemoved( object sender, DeviceRemovedEventArgs e )
         {
-            Notifier.NotifyAll( NotificationType.DeviceRemoved, e.Id );
+            Notifier.NotifyAll(NotificationType.DeviceRemoved, e.Id);
         }
 
         void ActivitySystem_DeviceChanged( object sender, DeviceEventArgs e )
         {
-            Notifier.NotifyAll( NotificationType.DeviceChanged, e.Device );
+            Notifier.NotifyAll(NotificationType.DeviceChanged, e.Device);
         }
 
         void ActivitySystem_DeviceAdded( object sender, DeviceEventArgs e )
         {
-            Notifier.NotifyAll( NotificationType.DeviceAdded, e.Device );
+            Notifier.NotifyAll(NotificationType.DeviceAdded, e.Device);
         }
 
         void ActivitySystem_ActivityRemoved( object sender, ActivityRemovedEventArgs e )
         {
-            Notifier.NotifyAll( NotificationType.ActivityRemoved, e.Id );
+            Notifier.NotifyAll(NotificationType.ActivityRemoved, e.Id);
         }
 
         void ActivitySystem_ActivityChanged( object sender, ActivityEventArgs e )
         {
-            Notifier.NotifyAll( NotificationType.ActivityChanged, e.Activity );
+            Notifier.NotifyAll(NotificationType.ActivityChanged, e.Activity);
         }
 
         void ActivitySystem_ActivityAdded( object sender, ActivityEventArgs e )
         {
-            Notifier.NotifyAll( NotificationType.ActivityAdded, e.Activity );
+            Notifier.NotifyAll(NotificationType.ActivityAdded, e.Activity);
         }
 
         public void Start()

@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Json;
 using Microsoft.Owin.Hosting;
-using Newtonsoft.Json;
 using Owin;
-using ABC.Infrastructure.Events;
+using Newtonsoft.Json;
+
 using ABC.Infrastructure.Web.Controllers;
+using ABC.Infrastructure.Events;
 
 
 namespace ABC.Infrastructure.Web
@@ -32,7 +32,7 @@ namespace ABC.Infrastructure.Web
             Port = port;
             Task.Factory.StartNew( () =>
             {
-                using ( WebApplication.Start<ActivityWebService>( Helpers.Net.GetUrl( addr, port, "" ).ToString() ) )
+                using ( WebApp.Start<WebService>( Helpers.Net.GetUrl( addr, port, "" ).ToString() ) )
                 {
                     Console.WriteLine( "WebAPI running on {0}", Helpers.Net.GetUrl( addr, port, "" ) );
                     while ( Running ) {}
@@ -46,26 +46,31 @@ namespace ABC.Infrastructure.Web
                 Running = false;
         }
 
-        internal class ActivityWebService
+    }
+    internal class WebService
+    {
+        public void Configuration(IAppBuilder app)
         {
-            public void Configuration( IAppBuilder app )
-            {
-                var config = new HttpConfiguration { DependencyResolver = new ControllerResolver() };
-                config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
-                config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
-                config.Routes.MapHttpRoute( "Default", "{controller}/{id}", new { id = RouteParameter.Optional } );
-                app.UseWebApi( config );
-                app.MapConnection<EventDispatcher>( "", new ConnectionConfiguration { EnableCrossDomain = true } );
+            var config = new HttpConfiguration { DependencyResolver = new ControllerResolver() };
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+            config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
+            config.Routes.MapHttpRoute("Default", "{controller}/{id}", new { id = RouteParameter.Optional });
 
-                var serializer = new JsonNetSerializer( new JsonSerializerSettings
+            GlobalHost.DependencyResolver.Register(typeof(JsonSerializer), () =>
+                JsonSerializer.Create(new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.Objects
-                } );
+                }));
 
-                GlobalHost.DependencyResolver.Register( typeof( IJsonSerializer ), () => serializer );
+            app.UseWebApi(config);
 
-                app.MapHubs();
-            }
+            app.MapConnection<EventDispatcher>("",
+                new ConnectionConfiguration
+                {
+                    EnableCrossDomain = true,
+                });
+
+            app.MapHubs();
         }
     }
 }

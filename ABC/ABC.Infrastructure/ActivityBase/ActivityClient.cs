@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using ABC.Model.Device;
 using ABC.Model.Users;
+
+using ABC.Infrastructure.Helpers;
+using ABC.Model;
+
 using Microsoft.AspNet.SignalR.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ABC.Infrastructure.Events;
-using ABC.Infrastructure.Helpers;
-using ABC.Model;
 
 
 namespace ABC.Infrastructure.ActivityBase
@@ -34,12 +36,22 @@ namespace ABC.Infrastructure.ActivityBase
 
             Device = device;
 
-            _eventHandler = new Connection( Address );
-            _eventHandler.Received += eventHandler_Received;
-            _eventHandler.Start().Wait();
-
             Initialize();
+
+            try
+            {
+                _eventHandler = new Connection(Address);
+                _eventHandler.JsonSerializer.TypeNameHandling = TypeNameHandling.None;
+                _eventHandler.Received += eventHandler_Received;
+                _eventHandler.Start().Wait();
+            }
+            catch(HttpClientException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
+
+
 
         ~ActivityClient()
         {
