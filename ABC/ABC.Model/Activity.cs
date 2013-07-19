@@ -96,6 +96,17 @@ namespace ABC.Model
 			}
 		}
 
+        private ActivityState _state;
+        public ActivityState State
+        {
+            get { return this._state;}
+            set
+            {
+                _state = value;
+                OnPropertyChanged("State");
+            }
+        }
+
 		#endregion
 
 
@@ -123,4 +134,10 @@ namespace ABC.Model
 
 		#endregion
 	}
+
+    public enum ActivityState
+    {
+        Open,
+        Closed
+    }
 }

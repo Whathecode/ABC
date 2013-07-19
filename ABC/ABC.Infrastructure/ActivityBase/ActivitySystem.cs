@@ -99,8 +99,8 @@ namespace ABC.Infrastructure.ActivityBase
             _documentStore.ParseConnectionString( "Url = " + address );
             _documentStore.Initialize();
 
-            SubscribeToChanges();
             LoadStore();
+            SubscribeToChanges();
             OnConnectionEstablished();
         }
 

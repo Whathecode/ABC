@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 
 
 namespace ABC.Model.Primitives
@@ -78,7 +79,10 @@ namespace ABC.Model.Primitives
 					var p = propertyInfo.GetValue( newUser, null );
 					var o = propertyInfo.GetValue( this, null );
 					if ( o != p )
-						propertyInfo.SetValue( this, propertyInfo.GetValue( newUser, null ) );
+                    {
+                        propertyInfo.SetValue(this, propertyInfo.GetValue(newUser, null));
+                    }
+
 				}
 		}
 
