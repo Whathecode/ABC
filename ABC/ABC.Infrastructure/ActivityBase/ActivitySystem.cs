@@ -30,7 +30,7 @@ namespace ABC.Infrastructure.ActivityBase
 
             Name = systemName;
             Ip = Net.GetIp( IpType.All );
-            Port = 1000;
+            Port = 8000;
             Tracker = new LocationTracker(Ip);
         }
 
@@ -96,6 +96,7 @@ namespace ABC.Infrastructure.ActivityBase
                     }
                 }
             };
+
             _documentStore.ParseConnectionString( "Url = " + address );
             _documentStore.Initialize();
 
