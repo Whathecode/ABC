@@ -7,7 +7,6 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:vm="clr-namespace:ABC.Windows.Desktop.Monitor.ViewModel"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:xaml="clr-namespace:Whathecode.System.Xaml;assembly=Whathecode.PresentationFramework"
 	mc:Ignorable="d"
 	Title="Monitor Virtual Desktops">
 

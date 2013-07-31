@@ -134,21 +134,21 @@ namespace ABC.Windows.Desktop
 			return restored;
 		}
 
-        /// <summary>
-        ///   Creates a new desktop from a stored session.
-        /// </summary>
-        /// <param name="session">The newly created virtual desktop.</param>
-        public VirtualDesktop CreateDesktopFromSession(StoredSession session,string folder)
-        {
-            // The startup desktop contains all windows open at startup.
-            // Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
-            StartupDesktop.RemoveWindows(session.OpenWindows.ToList());
+		/// <summary>
+		///   Creates a new desktop from a stored session.
+		/// </summary>
+		/// <param name = "session">The newly created virtual desktop.</param>
+		public VirtualDesktop CreateDesktopFromSession( StoredSession session, string folder )
+		{
+			// The startup desktop contains all windows open at startup.
+			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
+			StartupDesktop.RemoveWindows(session.OpenWindows.ToList());
 
-            var restored = new VirtualDesktop(session) { Folder = folder };
-            _desktops.Add(restored);
+			var restored = new VirtualDesktop( session ) { Folder = folder };
+			_desktops.Add( restored );
 
-            return restored;
-        }
+			return restored;
+		}
 
 
 		/// <summary>
@@ -190,11 +190,11 @@ namespace ABC.Windows.Desktop
 			// Update desktop icons.
 			if ( desktop.Folder != null )
 			{
-                DesktopManager.ChangeDesktopFolder(desktop.Folder);
+				DesktopManager.ChangeDesktopFolder(desktop.Folder);
 			}
 			if ( desktop.Icons != null )
 			{
-                DesktopManager.ArrangeDesktopIcons(desktop.Icons);
+				DesktopManager.ArrangeDesktopIcons(desktop.Icons);
 			}
 
 			CurrentDesktop = desktop;
@@ -261,8 +261,8 @@ namespace ABC.Windows.Desktop
 		{
 			List<WindowInfo> newWindows = WindowManager.GetWindows().Except(
 				_desktops.SelectMany( d => d.WindowSnapshots ).Concat( WindowClipboard )
-				         .Select( w => w.Info )
-				         .Concat( _invalidWindows ) ).ToList();
+						 .Select( w => w.Info )
+						 .Concat( _invalidWindows ) ).ToList();
 
 			var validWindows = new List<WindowSnapshot>();
 			foreach ( var w in newWindows )

@@ -71,7 +71,7 @@ namespace ABC.Applications
 				try
 				{
 					string path = pathKey.GetValue( null ).ToString().ToLower().Replace( "\"", "" );
-					if ( !path.EndsWith( "exe" ) )
+					if ( !path.EndsWith( exeSuffix ) )
 					{
 						path = path.Substring( 0, path.LastIndexOf( exeSuffix, StringComparison.Ordinal ) + exeSuffix.Length );
 						_browserPath = new FileInfo( path );
