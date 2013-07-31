@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
-using ABC.Applications;
 
 
 namespace ABC.Interruptions
@@ -21,9 +20,6 @@ namespace ABC.Interruptions
 
 		[ImportMany]
 		readonly List<AbstractInterruptionTrigger> _interruptionTriggers = new List<AbstractInterruptionTrigger>();
-
-		[Export]
-		readonly ServiceProvider _serviceProvider = new ServiceProvider { ForceOpenInNewWindow = true };
 
 
 		public InterruptionAggregator( string pluginFolderPath )

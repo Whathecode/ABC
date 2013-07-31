@@ -14,6 +14,7 @@ namespace ABC.Interruptions
 	[DataContract]
 	public abstract class AbstractInterruption
 	{
+		[Import]
 		protected ServiceProvider ServiceProvider { get; private set; }
 
 		[DataMember]
@@ -32,13 +33,26 @@ namespace ABC.Interruptions
 		public bool AttendedTo { get; private set; }
 
 
-		protected AbstractInterruption( ServiceProvider serviceProvider, string name )
+		protected AbstractInterruption( string name )
 		{
-			ServiceProvider = serviceProvider;
+			SetDefaults();
+
 			Name = name;
 			TriggeredAt = DateTime.Now;
 		}
 
+
+		[OnDeserializing]
+		void OnDeserializing( StreamingContext context )
+		{
+			SetDefaults();
+		}
+
+		void SetDefaults()
+		{
+			var container = new CompositionContainer( new AssemblyCatalog( Assembly.GetEntryAssembly() ) );
+			container.ComposeParts( this );
+		}
 
 		public void Open()
 		{
