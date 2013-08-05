@@ -65,16 +65,23 @@ namespace ABC.Infrastructure.Drivers
 
         void UsbDeviceNotifier_OnDeviceNotify( object sender, DeviceNotifyEventArgs e )
         {
-            if ( e.Object.ToString().Split( '\n' )[ 1 ].Contains( "0x2341" ) )
+            try
             {
-                if ( e.EventType == EventType.DeviceArrival )
+                if (e.Object.ToString().Split('\n')[1].Contains("0x2341"))
                 {
-                    Connect();
+                    if (e.EventType == EventType.DeviceArrival)
+                    {
+                        Connect();
+                    }
+                    else if (e.EventType == EventType.DeviceRemoveComplete)
+                    {
+                        ResetConnection();
+                    }
                 }
-                else if ( e.EventType == EventType.DeviceRemoveComplete )
-                {
-                    ResetConnection();
-                }
+            }
+            catch (Exception ex)
+            {
+ 
             }
         }
 
@@ -151,7 +158,8 @@ namespace ABC.Infrastructure.Drivers
 
         public void UpdateColor( Rgb color )
         {
-            WriteToDevice( color.ToString() );
+            if(color != null)
+                WriteToDevice( color.ToString() );
         }
 
         void WriteToDevice( string msg )

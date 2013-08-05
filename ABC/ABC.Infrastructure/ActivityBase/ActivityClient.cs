@@ -54,10 +54,12 @@ namespace ABC.Infrastructure.ActivityBase
 
         ~ActivityClient()
         {
-            if ( _connected )
-                RemoveDevice( Device.Id );
+            if (_connected)
+            {
+                RemoveDevice(Device.Id);
 
-            _eventHandler.Stop();
+                _eventHandler.Stop();
+            }
         }
 
         #endregion
@@ -79,14 +81,13 @@ namespace ABC.Infrastructure.ActivityBase
             var dvs = GetDevices();
             foreach (var item in dvs)
                 devices.AddOrUpdate(item.Id, item, (key, oldValue) => item);
-
-            _connected = true;
         }
 
         void eventHandler_Received( string obj )
         {
             if ( obj == "Connected" )
             {
+                _connected = true;
                 Device.ConnectionId = _eventHandler.ConnectionId;
                 AddDevice( Device );
                 OnConnectionEstablished();
@@ -117,8 +118,7 @@ namespace ABC.Infrastructure.ActivityBase
                     break;
                 case NotificationType.UserRemoved:
                     OnActivityRemoved(
-                        new ActivityRemovedEventArgs(
-                            JsonConvert.DeserializeObject<JObject>( data )[ "Id" ].ToString() ) );
+                        new ActivityRemovedEventArgs( data ) );
                     break;
             }
         }
