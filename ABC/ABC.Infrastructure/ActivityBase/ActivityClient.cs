@@ -117,8 +117,8 @@ namespace ABC.Infrastructure.ActivityBase
                     OnUserChanged( new UserEventArgs( Json.ConvertFromTypedJson<IUser>( data ) ) );
                     break;
                 case NotificationType.UserRemoved:
-                    OnActivityRemoved(
-                        new ActivityRemovedEventArgs( data ) );
+                    OnUserRemoved(
+                        new UserRemovedEventArgs( data ) );
                     break;
             }
         }
