@@ -7,16 +7,17 @@
 	<!-- Chrome. -->
 	<Process Name="chrome" CompanyName="Google Inc.">
 		<IgnoreWindows>
-		  <!-- Status bar. -->
+			<!-- Status bar. -->
 			<Window ClassName="Chrome_WidgetWin_0" />
 		
 			<!-- TODO: What is this? -->
 			<Window ClassName="Messaging" />
 			<Window ClassName="Base_PowerMessageWindow" />
+			<Window ClassName="SWFlash_PlaceholderX" />
 		</IgnoreWindows>
 		<HideBehavior>
 			<Default Hide="SelectedWindow" />
-		  <!-- Also take into account the currently visible status bar. -->
+			<!-- Also take into account the currently visible status bar. -->
 			<Include ConsiderWindows="AllWindows">
 				<Window ClassName="Chrome_WidgetWin_0" Visible="True" />
 			</Include>
