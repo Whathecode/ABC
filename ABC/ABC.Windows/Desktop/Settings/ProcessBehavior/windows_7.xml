@@ -46,11 +46,19 @@
 			<Window ClassName="Media Center SSO" />
 			<Window ClassName="PrintCacheLocalConnectionListenerHiddenWindow" />
 			<Window ClassName="PrintCacheListenerWindow_19A79E3F-0006-4175-AACD-6F5C69CC0D23" />
-		<Window ClassName="TaskSwitcherWnd" />
+			<Window ClassName="TaskSwitcherWnd" />
 		</IgnoreWindows>
 		<HideBehavior>
 			<Default Hide="SelectedWindow" />
 		</HideBehavior>
+	</Process>
+
+	<!-- This process triggered a window once a Windows Phone was plugged in, used to indicate the phone is connected, and to open up the related software. -->
+	<!-- Noticed when plugging in a Nokia Lumia 720. -->
+	<!-- TODO: Should some of its windows be handled differently? -->
+	<Process Name="Dxpserver" CompanyName="Microsoft Corporation">
+		<IgnoreWindows Mode="AllExcept">
+		</IgnoreWindows>
 	</Process>
 
 </ProcessBehaviors>
