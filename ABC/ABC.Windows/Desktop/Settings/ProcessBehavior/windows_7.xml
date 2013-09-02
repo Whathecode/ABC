@@ -60,5 +60,13 @@
 		<IgnoreWindows Mode="AllExcept">
 		</IgnoreWindows>
 	</Process>
+	
+	<!-- Windows Ink Services Platform Tablet Input Subsystem. -->
+	<!-- TODO: Verify what these windows do exactly, and whether they can be ignored. -->
+	<Process Name="wisptis" CompanyName="Microsoft Corporation">
+		<IgnoreWindows>
+		  <Window ClassName="wisptis_feedback_window" />
+	  </IgnoreWindows>
+	</Process>
 
 </ProcessBehaviors>
