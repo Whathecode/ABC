@@ -10,7 +10,7 @@
 		<Window ClassName="SysShadow" />
 		<!-- Tooltips. -->
 		<Window ClassName="tooltips_class32" />
-	
+
 		<!-- TODO: What are these exactly? -->		
 		<Window ClassName="GDI+ Hook Window Class" />
 		<Window ClassName="IME" />
@@ -20,7 +20,7 @@
 		<Window ClassName=".NET-BroadcastEventWindow.4.0.0.0.5c39d4.0" />
 		<Window ClassName="WindowsForms10.Window.0.app.0.5c39d4_r20_ad1" />
 	</CommonIgnoreWindows>
-	
+
 	<!-- Default windows 7. -->
 	<Process Name="explorer" CompanyName="Microsoft Corporation">
 		<IgnoreWindows>
@@ -37,7 +37,7 @@
 			<!-- View available networks dialog and tooltip. -->
 			<Window ClassName="NativeHWNDHost" />
 			<Window ClassName="VANUITooltip" />
-		
+
 			<!-- TODO: Get more information on these windows, what they are, and whether they should really be ignored. -->
 			<Window ClassName="_SearchEditBoxFakeWindow" />
 			<Window ClassName="AUTHUI.DLL: Shutdown Choices Message Window" />
@@ -60,13 +60,21 @@
 		<IgnoreWindows Mode="AllExcept">
 		</IgnoreWindows>
 	</Process>
-	
+
 	<!-- Windows Ink Services Platform Tablet Input Subsystem. -->
 	<!-- TODO: Verify what these windows do exactly, and whether they can be ignored. -->
 	<Process Name="wisptis" CompanyName="Microsoft Corporation">
 		<IgnoreWindows>
-		  <Window ClassName="wisptis_feedback_window" />
-	  </IgnoreWindows>
+			<Window ClassName="wisptis_feedback_window" />
+		</IgnoreWindows>
+	</Process>
+
+	<!-- Taskhost is used as the host for all DLL based services that are run. -->
+	<Process Name="taskhost" CompanyName="Microsoft Corporation">
+		<IgnoreWindows>
+			<!-- TODO: Showing this window doesn't make it show up, but where is this coming from? -->
+			<Window ClassName="COMTASKSWINDOWCLASS" />
+		</IgnoreWindows>
 	</Process>
 
 </ProcessBehaviors>
