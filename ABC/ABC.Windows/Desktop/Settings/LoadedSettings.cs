@@ -69,6 +69,7 @@ namespace ABC.Windows.Desktop.Settings
 					}
 
 					bool isWindowManager = process.Id == windowManagerProcess.Id;
+
 					return !isWindowManager;
 				};
 			}
@@ -197,7 +198,6 @@ namespace ABC.Windows.Desktop.Settings
 
 				var matches = _settings.Process.Where( p =>
 					p.Name == process.ProcessName &&
-					p.CompanyName == versionInfo.CompanyName &&
 					(p.Version == null || versionInfo.FileVersion.StartsWith( p.Version )) ).ToList();
 
 				ProcessBehaviorsProcess processBehavior = matches.Count == 0
