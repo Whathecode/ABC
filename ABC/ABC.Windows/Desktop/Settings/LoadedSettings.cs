@@ -8,6 +8,7 @@ using System.Reflection;
 using Generated.ProcessBehaviors;
 using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
+using Window = Generated.ProcessBehaviors.Window;
 
 
 namespace ABC.Windows.Desktop.Settings
@@ -38,21 +39,24 @@ namespace ABC.Windows.Desktop.Settings
 		readonly ProcessBehaviorsProcess _handleProcess = new ProcessBehaviorsProcess();
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
 		readonly Func<WindowInfo, bool> _windowManagerFilter;
-
+		readonly bool _ignoreRequireElevatedPrivileges;
 
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
 		/// </summary>
+		/// <param name = "ignoreRequireElevatedPrivileges">Setting to determine whether windows with higher privileges than the running application should be ignored or not.</param>
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
-		public LoadedSettings( bool loadDefaultSettings = true, Func<WindowInfo, bool> customWindowFilter = null )
+		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<WindowInfo, bool> customWindowFilter = null )
 		{
+			_ignoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
+
 			if ( loadDefaultSettings )
 			{
 				Assembly assembly = Assembly.GetExecutingAssembly();
 				assembly
 					.GetManifestResourceNames()
-				    .Where( name => name.StartsWith( SettingsFiles ) )
+					.Where( name => name.StartsWith( SettingsFiles ) )
 					.ForEach( settingsFile => AddSettingsFile( assembly.GetManifestResourceStream( settingsFile ) ) );
 			}
 
@@ -77,6 +81,11 @@ namespace ABC.Windows.Desktop.Settings
 			{
 				_windowManagerFilter = customWindowFilter;
 			}
+		}
+
+		public bool IgnoreRequireElevatedPrivileges
+		{
+			get { return _ignoreRequireElevatedPrivileges; }
 		}
 
 
@@ -192,13 +201,14 @@ namespace ABC.Windows.Desktop.Settings
 
 			// Get settings.
 			Process process = window.GetProcess();
+			
 			try
 			{
 				FileVersionInfo versionInfo = process.MainModule.FileVersionInfo;
 
 				var matches = _settings.Process.Where( p =>
 					p.Name == process.ProcessName &&
-					(p.Version == null || versionInfo.FileVersion.StartsWith( p.Version )) ).ToList();
+					( p.Version == null || versionInfo.FileVersion.StartsWith( p.Version ) ) ).ToList();
 
 				ProcessBehaviorsProcess processBehavior = matches.Count == 0
 					? _handleProcess

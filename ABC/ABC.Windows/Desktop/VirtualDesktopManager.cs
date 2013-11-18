@@ -5,6 +5,7 @@ using System.Linq;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
+using System.Security.Principal;
 
 
 namespace ABC.Windows.Desktop
@@ -59,9 +60,16 @@ namespace ABC.Windows.Desktop
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
 		public VirtualDesktopManager( ISettings settings )
-		{
+		{			
 			Contract.Requires( settings != null );
 
+			if (!settings.IgnoreRequireElevatedPrivileges)
+			{ 
+				// ReSharper disable once AssignNullToNotNullAttribute, there is always logged to refer
+				var myPrincipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+				if (!myPrincipal.IsInRole(WindowsBuiltInRole.Administrator))
+					throw new NotSupportedException("Virtual desktop manager should be started with elective privileges");
+			}
 			if ( Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess )
 			{
 				throw new BadImageFormatException( "A 64 bit version is needed for the Virtual Desktop Manager in order to run on a 64 bit platform." );

@@ -24,6 +24,12 @@ namespace ABC.Windows.Desktop.Settings
 	public interface ISettings
 	{
 		/// <summary>
+		///   Setting to determine whether windows with higher privileges than the running application should be ignored or not. False by default.
+		/// </summary>
+		/// <returns>True when windows with higher privileges than the running application are ignored, false otherwise.</returns>
+		bool IgnoreRequireElevatedPrivileges { get; }
+
+		/// <summary>
 		///   Creates a filter which returns true if the given window should be managed by the desktop manager, false otherwise.
 		/// </summary>
 		/// <returns></returns>

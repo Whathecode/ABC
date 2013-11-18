@@ -13,6 +13,9 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <DontImportPostSharp>True</DontImportPostSharp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,7 +80,9 @@
     <StartupObject>ABC.Windows.Desktop.Monitor.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PostSharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL" />
+    <Reference Include="PostSharp">
+      <HintPath>..\..\..\packages\PostSharp.3.0.38\lib\net20\PostSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Remoting" />
@@ -90,16 +95,16 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="Whathecode.PresentationFramework">
-      <HintPath>..\..\..\..\..\..\..\..\..\Whathecode\Laevo\Laevo\Libraries\Framework Class Library Extension\Whathecode.PresentationFramework.dll</HintPath>
+      <HintPath>..\..\..\..\..\Framework-Class-Library-Extension\Whathecode.PresentationFramework\bin\Debug\Whathecode.PresentationFramework.dll</HintPath>
     </Reference>
     <Reference Include="Whathecode.PresentationFramework.Aspects">
-      <HintPath>..\..\..\..\..\..\..\..\..\Whathecode\Laevo\Laevo\Libraries\Framework Class Library Extension\Whathecode.PresentationFramework.Aspects.dll</HintPath>
+      <HintPath>..\..\..\..\..\Framework-Class-Library-Extension\Whathecode.PresentationFramework.Aspects\bin\Debug\Whathecode.PresentationFramework.Aspects.dll</HintPath>
     </Reference>
     <Reference Include="Whathecode.System">
-      <HintPath>..\..\..\..\..\..\..\..\..\Whathecode\Laevo\Laevo\Libraries\Framework Class Library Extension\Whathecode.System.dll</HintPath>
+      <HintPath>..\..\..\..\..\Framework-Class-Library-Extension\Whathecode.System\bin\Debug\Whathecode.System.dll</HintPath>
     </Reference>
     <Reference Include="Whathecode.System.Aspects">
-      <HintPath>..\..\..\..\..\..\..\..\..\Whathecode\Laevo\Laevo\Libraries\Framework Class Library Extension\Whathecode.System.Aspects.dll</HintPath>
+      <HintPath>..\..\..\..\..\Framework-Class-Library-Extension\Whathecode.System.Aspects\bin\Debug\Whathecode.System.Aspects.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -111,6 +116,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\MonitorVdmClient.cs" />
+    <Compile Include="RequiresPostSharp.cs" />
     <Compile Include="ViewModel\Binding\Binding.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Page Include="View\MainWindow.xaml">
@@ -146,6 +152,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -162,6 +169,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\..\..\packages\PostSharp.3.0.38\tools\PostSharp.targets" Condition="Exists('..\..\..\packages\PostSharp.3.0.38\tools\PostSharp.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
