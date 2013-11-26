@@ -41,6 +41,7 @@ namespace ABC.Windows.Desktop.Settings
 		readonly Func<WindowInfo, bool> _windowManagerFilter;
 		readonly bool _ignoreRequireElevatedPrivileges;
 
+
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
 		/// </summary>
@@ -82,6 +83,7 @@ namespace ABC.Windows.Desktop.Settings
 				_windowManagerFilter = customWindowFilter;
 			}
 		}
+
 
 		public bool IgnoreRequireElevatedPrivileges
 		{

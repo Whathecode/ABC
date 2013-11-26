@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
 namespace ABC.Windows.Desktop.Settings
 {
 	/// <summary>

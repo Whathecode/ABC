@@ -5,6 +5,7 @@ using System.Linq;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
+using Whathecode.System.Security.Principal;
 using System.Security.Principal;
 
 
@@ -63,12 +64,17 @@ namespace ABC.Windows.Desktop
 		{			
 			Contract.Requires( settings != null );
 
-			if (!settings.IgnoreRequireElevatedPrivileges)
-			{ 
-				// ReSharper disable once AssignNullToNotNullAttribute, there is always logged to refer
-				var myPrincipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-				if (!myPrincipal.IsInRole(WindowsBuiltInRole.Administrator))
-					throw new NotSupportedException("Virtual desktop manager should be started with elective privileges");
+			if ( !settings.IgnoreRequireElevatedPrivileges )
+			{
+				// ReSharper disable once AssignNullToNotNullAttribute, WindowsIdentity.GetCurrent() will never return null (http://stackoverflow.com/a/15998940/590790)
+				var myPrincipal = new WindowsPrincipal( WindowsIdentity.GetCurrent() );
+				if ( !myPrincipal.IsInRole( WindowsBuiltInRole.Administrator ) && WindowsIdentityHelper.IsUserInAdminGroup() )
+				{
+					throw new NotSupportedException(
+						"The virtual desktop manager should be started with elevated privileges, otherwise it can't manage windows of processes with elevated privileges. " +
+						"Alternatively, set 'IgnoreRequireElevantedPrivileges' to true in the settings passed to the VDM initialization, in which case these windows will be ignored entirely. " +
+						"While debugging, we recommend running Visual Studio with elevated privileges as well." );
+				}
 			}
 			if ( Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess )
 			{
@@ -100,6 +106,7 @@ namespace ABC.Windows.Desktop
 
 			UpdateWindowAssociations();
 		}
+
 
 
 		/// <summary>
