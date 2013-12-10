@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Whathecode.System.Windows.Interop;
 
 
 namespace ABC.Windows.Desktop
@@ -23,7 +24,7 @@ namespace ABC.Windows.Desktop
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
 	[DataContract]
-	public class WindowSnapshot
+	class WindowSnapshot
 	{
 		[DataMember]
 		internal readonly WindowInfo Info;

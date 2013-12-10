@@ -54,7 +54,7 @@ namespace ABC.Windows
 					case ShellMessages.HSHELL_WINDOWCREATED:
 						if ( WindowCreated != null )
 						{
-							WindowCreated( new WindowInfo( m.LParam ) );
+							WindowCreated( new Window( m.LParam ) );
 						}
 						break;
 					case ShellMessages.HSHELL_WINDOWDESTROYED:
@@ -66,14 +66,14 @@ namespace ABC.Windows
 					case ShellMessages.HSHELL_WINDOWACTIVATED:
 						if ( WindowActivated != null )
 						{
-							WindowActivated( new WindowInfo( m.LParam ), false );
+							WindowActivated( new Window( m.LParam ), false );
 						}
 
 						break;
 					case ShellMessages.HSHELL_RUDEAPPACTIVATED:
 						if ( WindowActivated != null )
 						{
-							WindowActivated( new WindowInfo( m.LParam ), false );
+							WindowActivated( new Window( m.LParam ), false );
 						}
 
 						break;

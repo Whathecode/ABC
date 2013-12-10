@@ -8,7 +8,7 @@ using System.Reflection;
 using Generated.ProcessBehaviors;
 using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
-using Window = Generated.ProcessBehaviors.Window;
+using Whathecode.System.Windows.Interop;
 
 
 namespace ABC.Windows.Desktop.Settings
@@ -38,7 +38,7 @@ namespace ABC.Windows.Desktop.Settings
 		ProcessBehaviors _settings;
 		readonly ProcessBehaviorsProcess _handleProcess = new ProcessBehaviorsProcess();
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
-		readonly Func<WindowInfo, bool> _windowManagerFilter;
+		readonly Func<Window, bool> _windowManagerFilter;
 		readonly bool _ignoreRequireElevatedPrivileges;
 
 
@@ -48,7 +48,7 @@ namespace ABC.Windows.Desktop.Settings
 		/// <param name = "ignoreRequireElevatedPrivileges">Setting to determine whether windows with higher privileges than the running application should be ignored or not.</param>
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
-		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<WindowInfo, bool> customWindowFilter = null )
+		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null )
 		{
 			_ignoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
 
@@ -128,36 +128,36 @@ namespace ABC.Windows.Desktop.Settings
 			}
 		}
 
-		public Func<WindowInfo, bool> CreateWindowFilter()
+		public Func<Window, bool> CreateWindowFilter()
 		{
 			return w =>
 			{
 				// Custom filter and common windows to filter.
-				if ( !_windowManagerFilter( w ) || _settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w ) ) != null )
+				if ( !_windowManagerFilter( w ) || _settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) ) != null )
 				{
 					return false;
 				}
 
 				// Check whether the process needs to be managed at all.
-				ProcessBehaviorsProcess process = GetProcessSettings( w );
+				ProcessBehaviorsProcess process = GetProcessSettings( w.WindowInfo );
 				if ( !process.ShouldHandleProcess() )
 				{
 					return false;
 				}
 
 				// Process specific settings.
-				Window listedWindow = process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w ) );
+				Generated.ProcessBehaviors.Window listedWindow = process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) );
 				return process.IgnoreWindows.Mode == ProcessBehaviorsProcessIgnoreWindowsMode.NoneExcept
 					? listedWindow == null
 					: listedWindow != null;
 			};
 		}
 
-		public Func<WindowInfo, VirtualDesktopManager, List<WindowInfo>> CreateHideBehavior()
+		public Func<Window, VirtualDesktopManager, List<Window>> CreateHideBehavior()
 		{
 			return ( w, m ) =>
 			{
-				ProcessBehaviorsProcess process = GetProcessSettings( w );
+				ProcessBehaviorsProcess process = GetProcessSettings( w.WindowInfo );
 				var windows = new List<WindowInfo>();
 
 				// Ensure at least a default setting is included.
@@ -174,10 +174,10 @@ namespace ABC.Windows.Desktop.Settings
 				// Go through all specified cut behaviors in order.
 				foreach ( var hideBehavior in hideBehaviors.Cast<ICutBehavior>() )
 				{
-					windows.AddRange( hideBehavior.ToCut( w, m ) );
+					windows.AddRange( hideBehavior.ToCut( w.WindowInfo, m ) );
 				}
 
-				return windows.Distinct().ToList();
+				return windows.Distinct().Select( wi => new Window( wi ) ).ToList();
 			};
 		}
 

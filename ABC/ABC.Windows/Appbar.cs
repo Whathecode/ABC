@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using ABC.PInvoke;
+using WpfWindow = System.Windows.Window;
 
 
 namespace ABC.Windows
 {
-	public abstract class Appbar : Window
+	public abstract class Appbar : WpfWindow
 	{
 		#region Abstract Methods
 
@@ -26,7 +28,7 @@ namespace ABC.Windows
 		#endregion
 
 
-        public System.Windows.Controls.Orientation BarOrientation { get; private set; }
+		public Orientation BarOrientation { get; private set; }
 
 		DockPosition _dockPosition;
 
@@ -39,9 +41,9 @@ namespace ABC.Windows
 
 				if ( _dockPosition != DockPosition.None )
 				{
-       
-                    BarOrientation = IsHorizontal(_dockPosition);
-					if ( BarOrientation == System.Windows.Controls.Orientation.Horizontal )
+	   
+					BarOrientation = IsHorizontal(_dockPosition);
+					if ( BarOrientation == Orientation.Horizontal )
 						Height = HorizontalModeSize;
 					else
 						Width = VerticalModeSize;
@@ -56,18 +58,19 @@ namespace ABC.Windows
 
 		protected Appbar()
 		{
-			Loaded += Taskbar_Loaded;
+			Loaded += TaskbarLoaded;
 
 			ShowInTaskbar = false;
 		}
 
-		static System.Windows.Controls.Orientation IsHorizontal( DockPosition pos )
+		static Orientation IsHorizontal( DockPosition pos )
 		{
-            if ( pos == DockPosition.Top || pos == DockPosition.Bottom || pos == DockPosition.None ) return System.Windows.Controls.Orientation.Horizontal;
-            else return System.Windows.Controls.Orientation.Vertical;
+			return ( pos == DockPosition.Top || pos == DockPosition.Bottom || pos == DockPosition.None )
+				? Orientation.Horizontal
+				: Orientation.Vertical;
 		}
 
-		void Taskbar_Loaded( object sender, RoutedEventArgs e )
+		void TaskbarLoaded( object sender, RoutedEventArgs e )
 		{
 			InitializeTaskbarStyle();
 		}
@@ -113,8 +116,7 @@ namespace ABC.Windows
 			DwmApi.DwmEnableBlurBehindWindow( hwnd, ref bb );
 
 			var dwmncrpDisabled = 2;
-			DwmApi.DwmSetWindowAttribute( hwnd, DwmApi.DwmWindowAttribute.DWMWA_NCRENDERING_POLICY, ref dwmncrpDisabled,
-			                              sizeof( int ) );
+			DwmApi.DwmSetWindowAttribute( hwnd, DwmApi.DwmWindowAttribute.DWMWA_NCRENDERING_POLICY, ref dwmncrpDisabled, sizeof( int ) );
 			Topmost = true;
 
 			Focus();
@@ -143,8 +145,7 @@ namespace ABC.Windows
 			var returnvalue = IntPtr.Zero;
 			if ( msg == (int)WindowMessage.WM_NCACTIVATE )
 			{
-				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ),
-				                                    new IntPtr( -1 ) );
+				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
 				handled = true;
 			}
 			if ( msg == (int)WindowMessage.WM_ACTIVATE )

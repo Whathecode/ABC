@@ -5,15 +5,15 @@ namespace ABC.Windows
 {
 	public class ShellEvents
 	{
-		public delegate void WindowCreatedEventHandler( WindowInfo newWindow );
+		public delegate void WindowCreatedEventHandler( Window newWindow );
 
 		public delegate void WindowDestroyedEventHandler( IntPtr oldWindowHandle );
 
-		public delegate void WindowActivatedEventHandler( WindowInfo window, bool fullscreen );
+		public delegate void WindowActivatedEventHandler( Window window, bool fullscreen );
 
-		public delegate void WindowReplacedEventHandler( WindowInfo oldWindow, WindowInfo newWindow );
+		public delegate void WindowReplacedEventHandler( Window oldWindow, Window newWindow );
 
-		public delegate void WindowTitleChangeEventHandler( WindowInfo window, bool flash );
+		public delegate void WindowTitleChangeEventHandler( Window window, bool flash );
 	}
 
 	public enum ShellMessages

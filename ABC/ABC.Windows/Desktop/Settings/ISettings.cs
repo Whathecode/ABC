@@ -34,12 +34,12 @@ namespace ABC.Windows.Desktop.Settings
 		///   Creates a filter which returns true if the given window should be managed by the desktop manager, false otherwise.
 		/// </summary>
 		/// <returns></returns>
-		Func<WindowInfo, bool> CreateWindowFilter();
+		Func<Window, bool> CreateWindowFilter();
 
 		/// <summary>
 		///   Creates a method which determines which windows should be cut when a given window is cut.
 		/// </summary>
 		/// <returns>The list of windows which should be cut when the given window is cut.</returns>
-		Func<WindowInfo, VirtualDesktopManager, List<WindowInfo>> CreateHideBehavior();
+		Func<Window, VirtualDesktopManager, List<Window>> CreateHideBehavior();
 	}
 }

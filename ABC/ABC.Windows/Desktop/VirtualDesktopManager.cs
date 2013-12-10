@@ -7,6 +7,7 @@ using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
 using Whathecode.System.Security.Principal;
 using System.Security.Principal;
+using Whathecode.System.Windows.Interop;
 
 
 namespace ABC.Windows.Desktop
@@ -33,8 +34,8 @@ namespace ABC.Windows.Desktop
 	{
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
-		readonly Func<WindowInfo, bool> _windowFilter;
-		readonly Func<WindowInfo, VirtualDesktopManager, List<WindowInfo>> _hideBehavior;
+		readonly Func<Window, bool> _windowFilter;
+		readonly Func<Window, VirtualDesktopManager, List<Window>> _hideBehavior;
 		readonly List<WindowInfo> _invalidWindows = new List<WindowInfo>();
 
 		// ReSharper disable NotAccessedField.Local
@@ -152,7 +153,8 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Creates a new desktop from a stored session.
 		/// </summary>
-		/// <param name = "session">The newly created virtual desktop.</param>
+		/// <param name="session">The newly created virtual desktop.</param>
+		/// <param name="folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
 		public VirtualDesktop CreateDesktopFromSession( StoredSession session, string folder )
 		{
 			// The startup desktop contains all windows open at startup.
@@ -199,17 +201,17 @@ namespace ABC.Windows.Desktop
 
 			// Hide windows and show those from the new desktop.
 			UpdateWindowAssociations();
-			CurrentDesktop.Hide( w => _hideBehavior( w, this ) );
+			CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
 			desktop.Show();
 
 			// Update desktop icons.
 			if ( desktop.Folder != null )
 			{
-				DesktopManager.ChangeDesktopFolder(desktop.Folder);
+				DesktopManager.ChangeDesktopFolder( desktop.Folder );
 			}
 			if ( desktop.Icons != null )
 			{
-				DesktopManager.ArrangeDesktopIcons(desktop.Icons);
+				DesktopManager.ArrangeDesktopIcons( desktop.Icons );
 			}
 
 			CurrentDesktop = desktop;
@@ -263,9 +265,9 @@ namespace ABC.Windows.Desktop
 		///   Check whether the WindowInfo object represents a valid Window.
 		/// </summary>
 		/// <returns>True if valid, false if unvalid.</returns>
-		bool IsValidWindow( WindowInfo window )
+		bool IsValidWindow( WindowInfo windowInfo )
 		{
-			return !window.IsDestroyed() && _windowFilter( window );
+			return !windowInfo.IsDestroyed() && _windowFilter( new Window( windowInfo ) );
 		}
 
 		/// <summary>
@@ -298,7 +300,7 @@ namespace ABC.Windows.Desktop
 		///   Cut a given window from the currently open desktop and store it in a clipboard.
 		///   TODO: What if a window from a different desktop is passed? Should this be supported?
 		/// </summary>
-		public void CutWindow( WindowInfo window )
+		public void CutWindow( Window window )
 		{
 			UpdateWindowAssociations(); // Newly added windows might need to be cut too, so update associations first.
 
@@ -307,7 +309,7 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( w ) ).ToList();
+			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( w.WindowInfo ) ).ToList();
 			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
 			CurrentDesktop.RemoveWindows( cutWindows );
 		}

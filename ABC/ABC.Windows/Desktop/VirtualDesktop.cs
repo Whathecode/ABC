@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Whathecode.System.Extensions;
+using Whathecode.System.Windows.Interop;
 
 
 namespace ABC.Windows.Desktop
@@ -30,9 +31,9 @@ namespace ABC.Windows.Desktop
 	{
 		List<WindowSnapshot> _windows = new List<WindowSnapshot>();
 
-		public ReadOnlyCollection<WindowInfo> Windows
+		public ReadOnlyCollection<Window> Windows
 		{
-			get { return _windows.Select( w => w.Info ).ToList().AsReadOnly(); }
+			get { return _windows.Select( w => new Window( w.Info ) ).ToList().AsReadOnly(); }
 		}
 
 		internal ReadOnlyCollection<WindowSnapshot> WindowSnapshots
@@ -42,6 +43,9 @@ namespace ABC.Windows.Desktop
 
 		public bool IsVisible { get; private set; }
 
+		/// <summary>
+		///   The folder associated with this desktop, which is used to populate the desktop icons.
+		/// </summary>
 		public string Folder { get; set; }
 
 		public List<DesktopIcon> Icons { get; set; }
