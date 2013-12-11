@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Whathecode.System.Windows.Interop;
 
 
 namespace ABC.Windows.Desktop.Monitor.ViewModel

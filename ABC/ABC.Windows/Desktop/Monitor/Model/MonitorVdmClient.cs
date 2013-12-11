@@ -4,6 +4,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using ABC.Windows.Desktop.Server;
+using Whathecode.System.Windows.Interop;
 
 
 namespace ABC.Windows.Desktop.Monitor.Model
