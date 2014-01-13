@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
+using ABC.Common;
 
 
 namespace ABC.Interruptions
@@ -24,23 +24,7 @@ namespace ABC.Interruptions
 
 		public InterruptionAggregator( string pluginFolderPath )
 		{
-			// Before importing any plugins, make sure that all loaded assemblies can be resolved correctly.
-			// Otherwise required DLLs for the plugin need to be located in the executable folder and vice versa.
-			// For more information: http://stackoverflow.com/a/6646769/590790
-			AppDomain.CurrentDomain.AssemblyResolve += ( o, args ) =>
-			{
-				var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-				return loadedAssemblies.FirstOrDefault( a => a.FullName == args.Name );
-			};
-
-			// Set up plugin container.
-			if ( !Directory.Exists( pluginFolderPath ) )
-			{
-				Directory.CreateDirectory( pluginFolderPath );
-			}
-			var catalog = new DirectoryCatalog( pluginFolderPath );
-			_pluginContainer = new CompositionContainer( catalog );
-			_pluginContainer.ComposeParts( this );
+			_pluginContainer = CompositionHelper.Compose( this, pluginFolderPath );
 
 			// Remove invalid interruption handlers.
 			var toRemove = new List<AbstractInterruptionTrigger>();

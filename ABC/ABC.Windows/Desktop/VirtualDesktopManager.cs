@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using ABC.Applications;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
@@ -37,6 +38,7 @@ namespace ABC.Windows.Desktop
 		readonly Func<Window, bool> _windowFilter;
 		readonly Func<Window, VirtualDesktopManager, List<Window>> _hideBehavior;
 		readonly List<WindowInfo> _invalidWindows = new List<WindowInfo>();
+		readonly PersistenceProvider _persistenceProvider;
 
 		// ReSharper disable NotAccessedField.Local
 		readonly MonitorVdmPipeServer _monitorServer;
@@ -61,9 +63,12 @@ namespace ABC.Windows.Desktop
 		/// <param name = "settings">
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
-		public VirtualDesktopManager( ISettings settings )
+		/// <param name = "persistenceProvider">Allows state of applications to be persisted and restored.</param>
+		public VirtualDesktopManager( ISettings settings, PersistenceProvider persistenceProvider )
 		{			
 			Contract.Requires( settings != null );
+
+			_persistenceProvider = persistenceProvider;
 
 			if ( !settings.IgnoreRequireElevatedPrivileges )
 			{
@@ -87,7 +92,7 @@ namespace ABC.Windows.Desktop
 			_hideBehavior = settings.CreateHideBehavior();
 
 			// Initialize startup desktop.
-			StartupDesktop = new VirtualDesktop
+			StartupDesktop = new VirtualDesktop( _persistenceProvider )
 			{
 				Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop )
 			};
@@ -116,7 +121,7 @@ namespace ABC.Windows.Desktop
 		/// <returns>The newly created virtual desktop.</returns>
 		public VirtualDesktop CreateEmptyDesktop()
 		{
-			var newDesktop = new VirtualDesktop();
+			var newDesktop = new VirtualDesktop( _persistenceProvider );
 			_desktops.Add( newDesktop );
 
 			return newDesktop;
@@ -128,7 +133,7 @@ namespace ABC.Windows.Desktop
 		/// <returns>The newly created virtual desktop.</returns>
 		public VirtualDesktop CreateEmptyDesktop( string folder )
 		{
-			var newDesktop = new VirtualDesktop { Folder = folder };
+			var newDesktop = new VirtualDesktop( _persistenceProvider ) { Folder = folder };
 			_desktops.Add( newDesktop );
 
 			return newDesktop;
@@ -144,7 +149,7 @@ namespace ABC.Windows.Desktop
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			StartupDesktop.RemoveWindows( session.OpenWindows.ToList() );
 
-			var restored = new VirtualDesktop( session );
+			var restored = new VirtualDesktop( session, _persistenceProvider );
 			_desktops.Add( restored );
 
 			return restored;
@@ -161,7 +166,7 @@ namespace ABC.Windows.Desktop
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			StartupDesktop.RemoveWindows(session.OpenWindows.ToList());
 
-			var restored = new VirtualDesktop( session ) { Folder = folder };
+			var restored = new VirtualDesktop( session, _persistenceProvider ) { Folder = folder };
 			_desktops.Add( restored );
 
 			return restored;

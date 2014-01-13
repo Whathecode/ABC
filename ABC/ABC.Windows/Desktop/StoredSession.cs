@@ -32,6 +32,7 @@ namespace ABC.Windows.Desktop
 		[DataMember]
 		internal readonly ReadOnlyCollection<WindowSnapshot> OpenWindows;
 
+
 		internal StoredSession( VirtualDesktop desktop )
 		{
 			OpenWindows = desktop.WindowSnapshots;

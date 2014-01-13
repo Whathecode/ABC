@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using ABC.Applications;
+using Whathecode.System;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Interop;
 
@@ -30,6 +33,7 @@ namespace ABC.Windows.Desktop
 	public class VirtualDesktop
 	{
 		List<WindowSnapshot> _windows = new List<WindowSnapshot>();
+		readonly PersistenceProvider _persistenceProvider;
 
 		public ReadOnlyCollection<Window> Windows
 		{
@@ -44,6 +48,12 @@ namespace ABC.Windows.Desktop
 		public bool IsVisible { get; private set; }
 
 		/// <summary>
+		///   Determines whether the desktop is currently in a suspended state,
+		///   meaning all its containing processes and windows are closed and the desktop needs to be resumed prior to being able to continue work on it.
+		/// </summary>
+		public bool IsSuspended { get; private set; }
+
+		/// <summary>
 		///   The folder associated with this desktop, which is used to populate the desktop icons.
 		/// </summary>
 		public string Folder { get; set; }
@@ -54,13 +64,18 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Create an empty virtual desktop.
 		/// </summary>
-		internal VirtualDesktop() {}
+		internal VirtualDesktop( PersistenceProvider persistenceProvider )
+		{
+			_persistenceProvider = persistenceProvider;
+		}
 
 		/// <summary>
 		///   Create a virtual desktop from a previously stored session.
 		/// </summary>
 		/// <param name = "session">The previously stored session.</param>
-		internal VirtualDesktop( StoredSession session )
+		/// <param name = "persistenceProvider">Provider which allows to persist application state.</param>
+		internal VirtualDesktop( StoredSession session, PersistenceProvider persistenceProvider )
+			: this( persistenceProvider )
 		{
 			_windows.AddRange( session.OpenWindows );
 		}
@@ -175,6 +190,50 @@ namespace ABC.Windows.Desktop
 		public StoredSession Store()
 		{
 			return new StoredSession( this );
+		}
+
+		/// <summary>
+		///   Suspends this desktop by closing all open windows and storing their state in StoredSession.
+		/// </summary>
+		/// <returns>A list of processes which couldn't be suspended.</returns>
+		public List<Process> Suspend()
+		{
+			if ( IsSuspended )
+			{
+				return new List<Process>();
+			}
+
+			// TODO: Suspend all windows.
+			var unsuspended = new List<Process>();
+			foreach ( var process in _windows.GroupBy( w => w.Info.GetProcess() ) )
+			{
+				if ( _persistenceProvider.IsProviderAvailable( process.Key ) )
+				{
+					AbstractApplicationPersistence persistence = _persistenceProvider.GetProvider( process.Key );
+					persistence.Suspend( process.Key );
+				}
+				else
+				{
+					unsuspended.Add( process.Key );
+				}
+			}
+
+			IsSuspended = true;
+
+			return unsuspended;
+		}
+
+		/// <summary>
+		///   Resumes the desktop when it was suspended by reopening all windows which are stored in StoredSession.
+		/// </summary>
+		public void Resume()
+		{
+			if ( !IsSuspended )
+			{
+				return;
+			}
+
+			IsSuspended = false;
 		}
 	}
 }

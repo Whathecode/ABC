@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Windows", "ABC.Windows\ABC.Windows.csproj", "{DB8DBDF2-70BF-4712-86DA-06674986BC12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.PInvoke", "ABC.PInvoke\ABC.PInvoke.csproj", "{072142C4-284E-4F1A-A1FE-F886E8ECF728}"
@@ -15,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{846561
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Applications", "ABC.Applications\ABC.Applications.csproj", "{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Common", "ABC.Common\ABC.Common.csproj", "{D53F1095-6DC0-4950-982F-3322AAE74A50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,14 @@ Global
 		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x64.ActiveCfg = Release|Any CPU
 		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x86.ActiveCfg = Release|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Release|x64.ActiveCfg = Release|Any CPU
+		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

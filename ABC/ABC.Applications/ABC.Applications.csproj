@@ -30,13 +30,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AbstractApplicationPersistence.cs" />
     <Compile Include="AbstractService.cs" />
     <Compile Include="Browser.cs" />
+    <Compile Include="PersistenceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ABC.Common\ABC.Common.csproj">
+      <Project>{d53f1095-6dc0-4950-982f-3322aae74a50}</Project>
+      <Name>ABC.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
