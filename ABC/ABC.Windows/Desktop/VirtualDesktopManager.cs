@@ -43,7 +43,6 @@ namespace ABC.Windows.Desktop
 		// ReSharper disable NotAccessedField.Local
 		readonly MonitorVdmPipeServer _monitorServer;
 		// ReSharper restore NotAccessedField.Local
-		readonly WindowMonitor _windowMonitor;
 
 		public VirtualDesktop StartupDesktop { get; private set; }
 		public VirtualDesktop CurrentDesktop { get; private set; }
@@ -101,12 +100,6 @@ namespace ABC.Windows.Desktop
 
 			CurrentDesktop = StartupDesktop;
 			_desktops.Add( CurrentDesktop );
-
-			// Initialize window monitor.
-			_windowMonitor = new WindowMonitor();
-			_windowMonitor.WindowActivated += ( window, fullscreen ) => UpdateWindowAssociations();
-			_windowMonitor.WindowDestroyed += pointer => UpdateWindowAssociations();
-			_windowMonitor.Start();
 
 			_monitorServer = new MonitorVdmPipeServer( this );
 
