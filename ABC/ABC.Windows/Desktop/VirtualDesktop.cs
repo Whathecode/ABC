@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using ABC.Applications;
+using ABC.Applications.Persistence;
 using Whathecode.System;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Interop;
@@ -195,32 +194,17 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Suspends this desktop by closing all open windows and storing their state in StoredSession.
 		/// </summary>
-		/// <returns>A list of processes which couldn't be suspended.</returns>
-		public List<Process> Suspend()
+		public void Suspend()
 		{
 			if ( IsSuspended )
 			{
-				return new List<Process>();
+				return;
 			}
 
 			// TODO: Suspend all windows.
-			var unsuspended = new List<Process>();
-			foreach ( var process in _windows.GroupBy( w => w.Info.GetProcess() ) )
-			{
-				if ( _persistenceProvider.IsProviderAvailable( process.Key ) )
-				{
-					AbstractApplicationPersistence persistence = _persistenceProvider.GetProvider( process.Key );
-					persistence.Suspend( process.Key );
-				}
-				else
-				{
-					unsuspended.Add( process.Key );
-				}
-			}
+			List<PersistedApplication> persistedData = _persistenceProvider.Suspend( _windows.Select( w => w.Info ).ToList() );
 
 			IsSuspended = true;
-
-			return unsuspended;
 		}
 
 		/// <summary>

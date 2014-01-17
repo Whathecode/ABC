@@ -1,4 +1,4 @@
-﻿namespace ABC.Applications
+﻿namespace ABC.Applications.Services
 {
 	/// <summary>
 	///   Services exposed by various installed applications which can be accessed in an application-agnostic way.

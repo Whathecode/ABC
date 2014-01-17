@@ -1,4 +1,7 @@
-﻿namespace ABC.PInvoke.Process
+﻿using System;
+
+
+namespace ABC.PInvoke.Process
 {
 	public class ProcessInfo
 	{
@@ -12,6 +15,12 @@
 			Id = id;
 			Name = name;
 			CommandLine = commandLine;
+		}
+
+
+		public override string ToString()
+		{
+			return String.Format( "PID: {0}, Name: {1}, Arguments: {2}", Id, Name, CommandLine );
 		}
 	}
 }

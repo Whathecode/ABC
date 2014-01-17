@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using ABC.Applications;
+using ABC.Applications.Persistence;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
@@ -64,7 +64,7 @@ namespace ABC.Windows.Desktop
 		/// </param>
 		/// <param name = "persistenceProvider">Allows state of applications to be persisted and restored.</param>
 		public VirtualDesktopManager( ISettings settings, PersistenceProvider persistenceProvider )
-		{			
+		{
 			Contract.Requires( settings != null );
 
 			_persistenceProvider = persistenceProvider;

@@ -92,6 +92,12 @@
   <ItemGroup>
     <Compile Include="Shell32.Types.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Framework-Class-Library-Extension\Whathecode.System\Whathecode.System.csproj">
+      <Project>{6FF11324-46A9-4AE3-A802-4CFD47C59BA6}</Project>
+      <Name>Whathecode.System</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Win32;
 
 
-namespace ABC.Applications
+namespace ABC.Applications.Services
 {
 	/// <summary>
 	///   Access browser operations, regardless of the default set browser.

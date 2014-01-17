@@ -1,4 +1,4 @@
-﻿namespace ABC.Applications
+﻿namespace ABC.Applications.Services
 {
 	public abstract class AbstractService
 	{

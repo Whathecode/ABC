@@ -3,7 +3,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
 using System.Runtime.Serialization;
-using ABC.Applications;
+using ABC.Applications.Services;
 
 
 namespace ABC.Interruptions

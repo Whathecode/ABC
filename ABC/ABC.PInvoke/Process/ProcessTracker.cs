@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Management;
+using Whathecode.System;
 
 
 namespace ABC.PInvoke.Process
 {
-	public class ProcessTracker
+	public class ProcessTracker : AbstractDisposable
 	{
 		ManagementEventWatcher _startWatcher;
 		ManagementEventWatcher _stopWatcher;
@@ -64,6 +65,16 @@ namespace ABC.PInvoke.Process
 				Convert.ToInt32( o[ "ProcessId" ] ),
 				(string)o[ "Name" ],
 				(string)o[ "CommandLine" ] );
+		}
+
+		protected override void FreeManagedResources()
+		{
+			Stop();
+		}
+
+		protected override void FreeUnmanagedResources()
+		{
+			// Nothing to do.
 		}
 	}
 }
