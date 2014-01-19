@@ -26,6 +26,13 @@ namespace ABC.Applications.Persistence
 		/// <param name = "toSuspend">The process to suspend.</param>
 		/// <param name= "commandLine">The command line call used to initialize the process.</param>
 		/// <returns>The object which holds the persisted data.</returns>
-		public abstract object Suspend( Process toSuspend, string commandLine );
+		abstract public object Suspend( Process toSuspend, string commandLine );
+
+		/// <summary>
+		///   Resume an application with the passed persisted state.
+		/// </summary>
+		/// <param name = "applicationPath">The path to the application for which persisted data was stored.</param>
+		/// <param name = "persistedData">The object which holds the persisted data.</param>
+		abstract public void Resume( string applicationPath, object persistedData );
 	}
 }

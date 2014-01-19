@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics;
 using System.Linq;
 using ABC.Common;
 using ABC.PInvoke.Process;
@@ -44,12 +43,30 @@ namespace ABC.Applications.Persistence
 			var persistedApplications = (
 				from processWindows in windows.GroupBy( w => w.GetProcess() )
 				let process = processWindows.Key
+				let applicationPath = process.Modules[ 0 ].FileName
 				let persistor = _persistenceProviders.FirstOrDefault( p => p.ProcessName == process.ProcessName )
 				where persistor != null
 				let persistedData = persistor.Suspend( process, _commandLine.FirstOrDefault( a => a.Key == process.Id ).Value )
-				select new PersistedApplication( processWindows.ToList(), persistedData ) );
+				select
+					new PersistedApplication( processWindows.ToList(), persistedData )
+					{
+						ApplicationPath = applicationPath,
+						Persistor = persistor.GetType().AssemblyQualifiedName
+					} );
 
 			return persistedApplications.ToList();
+		}
+
+		public void Resume( List<PersistedApplication> persistedStates )
+		{
+			foreach ( var s in persistedStates )
+			{
+				AbstractApplicationPersistence persistor = _persistenceProviders.FirstOrDefault( p => p.GetType().AssemblyQualifiedName == s.Persistor );
+				if ( persistor != null )
+				{
+					persistor.Resume( s.ApplicationPath, s.Data );
+				}
+			}
 		}
 
 		protected override void FreeManagedResources()

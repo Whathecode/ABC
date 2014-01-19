@@ -52,6 +52,12 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public bool IsSuspended { get; private set; }
 
+		List<PersistedApplication>  _persistedApplications = new List<PersistedApplication>();
+		internal ReadOnlyCollection<PersistedApplication> PersistedApplications
+		{
+			get { return _persistedApplications.AsReadOnly(); }
+		}
+
 		/// <summary>
 		///   The folder associated with this desktop, which is used to populate the desktop icons.
 		/// </summary>
@@ -76,6 +82,8 @@ namespace ABC.Windows.Desktop
 		internal VirtualDesktop( StoredSession session, PersistenceProvider persistenceProvider )
 			: this( persistenceProvider )
 		{
+			_persistedApplications = session.PersistedApplications.ToList();
+			IsSuspended = _persistedApplications.Count > 0;
 			_windows.AddRange( session.OpenWindows );
 		}
 
@@ -201,8 +209,7 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			// TODO: Suspend all windows.
-			List<PersistedApplication> persistedData = _persistenceProvider.Suspend( _windows.Select( w => w.Info ).ToList() );
+			_persistedApplications = _persistenceProvider.Suspend( _windows.Select( w => w.Info ).ToList() );
 
 			IsSuspended = true;
 		}
@@ -216,6 +223,8 @@ namespace ABC.Windows.Desktop
 			{
 				return;
 			}
+
+			_persistenceProvider.Resume( _persistedApplications );
 
 			IsSuspended = false;
 		}

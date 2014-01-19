@@ -12,6 +12,12 @@ namespace ABC.Applications.Persistence
 	public class PersistedApplication
 	{
 		[DataMember]
+		internal string ApplicationPath;
+
+		[DataMember]
+		internal string Persistor;
+
+		[DataMember]
 		public List<WindowInfo> Windows { get; private set; }
 
 		[DataMember]

@@ -33,7 +33,6 @@
     <Compile Include="Persistence\AbstractApplicationPersistence.cs" />
     <Compile Include="Services\AbstractService.cs" />
     <Compile Include="Services\Browser.cs" />
-    <Compile Include="Persistence\IApplicationPersistence.cs" />
     <Compile Include="Persistence\PersistedApplication.cs" />
     <Compile Include="Persistence\PersistenceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
