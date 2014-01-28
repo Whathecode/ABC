@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ABC.Applications.Persistence;
-using Whathecode.System;
+using ABC.Common;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Interop;
 
@@ -209,7 +209,7 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			_persistedApplications = _persistenceProvider.Suspend( _windows.Select( w => w.Info ).ToList() );
+			_persistedApplications = _persistenceProvider.Suspend( _windows.Select( w => new Window( w.Info ) ).Cast<IWindow>().ToList() );
 
 			IsSuspended = true;
 		}

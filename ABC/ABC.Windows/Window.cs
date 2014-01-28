@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.Serialization;
+using ABC.Common;
 using Whathecode.System.Windows.Interop;
 
 
@@ -10,8 +12,10 @@ namespace ABC.Windows
 	/// </summary>
 	/// <remarks>This is a simple wrapper around WindowInfo in Whathecode.System.</remarks>
 	/// <author>Steven Jeuris</author>
-	public class Window
+	[DataContract]
+	public class Window : IWindow
 	{
+		[DataMember]
 		internal WindowInfo WindowInfo { get; private set; }
 
 

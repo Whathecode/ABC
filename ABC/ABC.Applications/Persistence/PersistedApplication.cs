@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Whathecode.System.Windows.Interop;
+using ABC.Common;
 
 
 namespace ABC.Applications.Persistence
@@ -18,13 +18,13 @@ namespace ABC.Applications.Persistence
 		internal string Persistor;
 
 		[DataMember]
-		public List<WindowInfo> Windows { get; private set; }
+		public List<IWindow> Windows { get; private set; }
 
 		[DataMember]
 		public object Data { get; private set; }
 
 
-		public PersistedApplication( List<WindowInfo> windows, object data )
+		public PersistedApplication( List<IWindow> windows, object data )
 		{
 			Windows = windows;
 			Data = data;

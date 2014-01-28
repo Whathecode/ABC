@@ -5,7 +5,6 @@ using System.Linq;
 using ABC.Common;
 using ABC.PInvoke.Process;
 using Whathecode.System;
-using Whathecode.System.Windows.Interop;
 
 
 namespace ABC.Applications.Persistence
@@ -38,7 +37,7 @@ namespace ABC.Applications.Persistence
 		}
 
 
-		public List<PersistedApplication> Suspend( List<WindowInfo> windows )
+		public List<PersistedApplication> Suspend( List<IWindow> windows )
 		{
 			var persistedApplications = (
 				from processWindows in windows.GroupBy( w => w.GetProcess() )
