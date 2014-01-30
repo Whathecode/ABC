@@ -32,7 +32,7 @@ namespace ABC.Windows.Desktop
 	public class VirtualDesktop
 	{
 		List<WindowSnapshot> _windows = new List<WindowSnapshot>();
-		readonly PersistenceProvider _persistenceProvider;
+		readonly AbstractPersistenceProvider _persistenceProvider;
 
 		public ReadOnlyCollection<Window> Windows
 		{
@@ -69,7 +69,7 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Create an empty virtual desktop.
 		/// </summary>
-		internal VirtualDesktop( PersistenceProvider persistenceProvider )
+		internal VirtualDesktop( AbstractPersistenceProvider persistenceProvider )
 		{
 			_persistenceProvider = persistenceProvider;
 		}
@@ -79,7 +79,7 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		/// <param name = "session">The previously stored session.</param>
 		/// <param name = "persistenceProvider">Provider which allows to persist application state.</param>
-		internal VirtualDesktop( StoredSession session, PersistenceProvider persistenceProvider )
+		internal VirtualDesktop( StoredSession session, AbstractPersistenceProvider persistenceProvider )
 			: this( persistenceProvider )
 		{
 			_persistedApplications = session.PersistedApplications.ToList();

@@ -38,7 +38,7 @@ namespace ABC.Windows.Desktop
 		readonly Func<Window, bool> _windowFilter;
 		readonly Func<Window, VirtualDesktopManager, List<Window>> _hideBehavior;
 		readonly List<WindowInfo> _invalidWindows = new List<WindowInfo>();
-		readonly PersistenceProvider _persistenceProvider;
+		readonly AbstractPersistenceProvider _persistenceProvider;
 
 		// ReSharper disable NotAccessedField.Local
 		readonly MonitorVdmPipeServer _monitorServer;
@@ -62,8 +62,20 @@ namespace ABC.Windows.Desktop
 		/// <param name = "settings">
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
+		public VirtualDesktopManager( ISettings settings )
+			: this( settings, new CollectionPersistenceProvider() )
+		{
+		}
+
+		/// <summary>
+		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
+		///   This desktop is accessible through the <see cref="CurrentDesktop" /> property.
+		/// </summary>
+		/// <param name = "settings">
+		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
+		/// </param>
 		/// <param name = "persistenceProvider">Allows state of applications to be persisted and restored.</param>
-		public VirtualDesktopManager( ISettings settings, PersistenceProvider persistenceProvider )
+		public VirtualDesktopManager( ISettings settings, AbstractPersistenceProvider persistenceProvider )
 		{
 			Contract.Requires( settings != null );
 
