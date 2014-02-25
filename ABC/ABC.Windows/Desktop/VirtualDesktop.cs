@@ -132,7 +132,7 @@ namespace ABC.Windows.Desktop
 			IsVisible = true;
 
 			// Reposition windows.
-			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.						
+			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.
 			var allWindows = _windows.GroupBy( w => w.Info.IsTopmost() );
 			allWindows.ForEach( group =>
 			{
@@ -227,6 +227,24 @@ namespace ABC.Windows.Desktop
 			_persistenceProvider.Resume( _persistedApplications );
 
 			IsSuspended = false;
+		}
+
+		/// <summary>
+		///   Transfer windows which are part of the currently visible desktop to another desktop.
+		/// </summary>
+		/// <param name = "toTransfer">The windows to transfer.</param>
+		/// <param name = "destination">The virtual desktop to which the windows will be transferred.</param>
+		public void TransferWindows( List<Window> toTransfer, VirtualDesktop destination )
+		{
+			// TODO: Is there any way to always support this? The internal WindowSnapshot constructor assumes the windows are part of the currently visible desktop.
+			if ( !IsVisible )
+			{
+				throw new InvalidOperationException( "Can only transfer windows when the desktop is currently visible." );
+			}
+
+			List<WindowSnapshot> snapshots = toTransfer.Select( w => new WindowSnapshot( w.WindowInfo ) ).ToList();
+			RemoveWindows( snapshots );
+			destination.AddWindows( snapshots );
 		}
 	}
 }

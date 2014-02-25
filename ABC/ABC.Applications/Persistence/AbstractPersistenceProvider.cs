@@ -13,6 +13,7 @@ namespace ABC.Applications.Persistence
 	public abstract class AbstractPersistenceProvider : AbstractDisposable
 	{
 		readonly ProcessTracker _processTracker;
+		// TODO: Persist the currently tracked command line parameters to allow suspending upon application restart.
 		readonly Dictionary<int, string> _commandLine = new Dictionary<int, string>();
 
 
@@ -34,18 +35,21 @@ namespace ABC.Applications.Persistence
 			var persistedApplications = (
 				from processWindows in windows.GroupBy( w => w.GetProcess() )
 				let process = processWindows.Key
+				where process != null
 				let applicationPath = process.Modules[ 0 ].FileName
 				let persistor = GetPersistenceProviders().FirstOrDefault( p => p.ProcessName == process.ProcessName )
 				where persistor != null
 				let persistedData = persistor.Suspend( process, _commandLine.FirstOrDefault( a => a.Key == process.Id ).Value )
 				select
-					new PersistedApplication( processWindows.ToList(), persistedData )
+					new PersistedApplication( process, processWindows.ToList(), persistedData )
 					{
 						ApplicationPath = applicationPath,
 						Persistor = persistor.GetType().AssemblyQualifiedName
-					} );
+					} ).ToList();
 
-			return persistedApplications.ToList();
+			persistedApplications.ForEach( p => _commandLine.Remove( p.Process.Id ) );
+
+			return persistedApplications;
 		}
 
 		public void Resume( List<PersistedApplication> persistedStates )
@@ -59,7 +63,6 @@ namespace ABC.Applications.Persistence
 				}
 			}
 		}
-
 		protected override void FreeManagedResources()
 		{
 			_processTracker.Dispose();

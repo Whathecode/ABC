@@ -192,7 +192,10 @@ namespace ABC.Windows.Desktop
 			var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
 			foreach ( var w in destroyedWindows )
 			{
-				_invalidWindows.Remove( w );
+				lock ( _invalidWindows )
+				{
+					_invalidWindows.Remove( w );
+				}
 			}
 		}
 
@@ -300,7 +303,10 @@ namespace ABC.Windows.Desktop
 				}
 				else
 				{
-					_invalidWindows.Add( w );
+					lock ( _invalidWindows )
+					{
+						_invalidWindows.Add( w );
+					}
 				}
 			}
 			return validWindows;
