@@ -107,10 +107,10 @@ namespace ABC.Windows.Desktop
 			{
 				Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop )
 			};
-			StartupDesktop.AddWindows( GetNewWindows() );
 			StartupDesktop.Show(); // The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
-
 			CurrentDesktop = StartupDesktop;
+			StartupDesktop.AddWindows( GetNewWindows() );
+
 			_desktops.Add( CurrentDesktop );
 
 			_monitorServer = new MonitorVdmPipeServer( this );
@@ -119,24 +119,12 @@ namespace ABC.Windows.Desktop
 		}
 
 
-
 		/// <summary>
 		///   Create an empty virtual desktop with no windows assigned to it.
 		/// </summary>
+		/// <param name = "folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
 		/// <returns>The newly created virtual desktop.</returns>
-		public VirtualDesktop CreateEmptyDesktop()
-		{
-			var newDesktop = new VirtualDesktop( _persistenceProvider );
-			_desktops.Add( newDesktop );
-
-			return newDesktop;
-		}
-
-		/// <summary>
-		///   Create an empty virtual desktop with no windows assigned to it.
-		/// </summary>
-		/// <returns>The newly created virtual desktop.</returns>
-		public VirtualDesktop CreateEmptyDesktop( string folder )
+		public VirtualDesktop CreateEmptyDesktop( string folder = null )
 		{
 			var newDesktop = new VirtualDesktop( _persistenceProvider ) { Folder = folder };
 			_desktops.Add( newDesktop );
@@ -147,31 +135,16 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Creates a new desktop from a stored session.
 		/// </summary>
-		/// <param name="session">The newly created virtual desktop.</param>
-		public VirtualDesktop CreateDesktopFromSession( StoredSession session )
+		/// <param name = "session">The newly created virtual desktop.</param>
+		/// <param name = "folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
+		public VirtualDesktop CreateDesktopFromSession( StoredSession session, string folder = null )
 		{
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			StartupDesktop.RemoveWindows( session.OpenWindows.ToList() );
 
-			var restored = new VirtualDesktop( session, _persistenceProvider );
-			_desktops.Add( restored );
-
-			return restored;
-		}
-
-		/// <summary>
-		///   Creates a new desktop from a stored session.
-		/// </summary>
-		/// <param name="session">The newly created virtual desktop.</param>
-		/// <param name="folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
-		public VirtualDesktop CreateDesktopFromSession( StoredSession session, string folder )
-		{
-			// The startup desktop contains all windows open at startup.
-			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
-			StartupDesktop.RemoveWindows(session.OpenWindows.ToList());
-
 			var restored = new VirtualDesktop( session, _persistenceProvider ) { Folder = folder };
+			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
 			_desktops.Add( restored );
 
 			return restored;
@@ -299,7 +272,7 @@ namespace ABC.Windows.Desktop
 			{
 				if ( IsValidWindow( w ) )
 				{
-					validWindows.Add( new WindowSnapshot( w ) );
+					validWindows.Add( new WindowSnapshot( CurrentDesktop, w ) );
 				}
 				else
 				{
@@ -325,7 +298,7 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( w.WindowInfo ) ).ToList();
+			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( CurrentDesktop, w.WindowInfo ) ).ToList();
 			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
 			CurrentDesktop.RemoveWindows( cutWindows );
 		}

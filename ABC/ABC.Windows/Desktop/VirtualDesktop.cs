@@ -97,6 +97,7 @@ namespace ABC.Windows.Desktop
 			// Add added windows to the front of the list so they show up in front.
 			var toAdd = newWindows.Where( w => !_windows.Contains( w ) ).ToList();
 			toAdd = OrderWindowsByZOrder( toAdd );
+			toAdd.ForEach( w => w.ChangeDesktop( this ) );
 			_windows = toAdd.Concat( OrderWindowsByZOrder( _windows ) ).ToList();
 
 			// Make sure to show the newly added windows in case they were hidden.
@@ -112,7 +113,11 @@ namespace ABC.Windows.Desktop
 		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
 		internal void RemoveWindows( List<WindowSnapshot> toRemove )
 		{
-			toRemove.ForEach( w => _windows.Remove( w ) );
+			toRemove.ForEach( w =>
+			{
+				w.ChangeDesktop( null );
+				_windows.Remove( w );
+			} );
 
 			if ( IsVisible && toRemove.Any() )
 			{
@@ -242,7 +247,7 @@ namespace ABC.Windows.Desktop
 				throw new InvalidOperationException( "Can only transfer windows when the desktop is currently visible." );
 			}
 
-			List<WindowSnapshot> snapshots = toTransfer.Select( w => new WindowSnapshot( w.WindowInfo ) ).ToList();
+			List<WindowSnapshot> snapshots = toTransfer.Select( w => new WindowSnapshot( this, w.WindowInfo ) ).ToList();
 			RemoveWindows( snapshots );
 			destination.AddWindows( snapshots );
 		}

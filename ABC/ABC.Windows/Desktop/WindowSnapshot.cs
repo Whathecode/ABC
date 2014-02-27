@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Whathecode.System.Windows.Interop;
 
 
@@ -26,24 +27,49 @@ namespace ABC.Windows.Desktop
 	[DataContract]
 	class WindowSnapshot
 	{
+		internal VirtualDesktop Desktop { get; private set; }
+
 		[DataMember]
 		internal readonly WindowInfo Info;
 
 		[DataMember]
-		internal bool Visible;
+		internal bool Visible { get; private set; }
 
-		public WindowSnapshot( WindowInfo info )
+
+		/// <summary>
+		///   Creates a new snapshot for a window currently visible on the open desktop.
+		///   This constructor should only be called on windows assigned to a currently visible desktop.
+		/// </summary>
+		/// <param name="currentDesktop">The desktop the window is assigned to.</param>
+		/// <param name="info">The open window</param>
+		internal WindowSnapshot( VirtualDesktop currentDesktop, WindowInfo info )
 		{
+			if ( !currentDesktop.IsVisible )
+			{
+				throw new InvalidOperationException( "Window snapshots can only be created when the desktop the window belongs to is currently visible." );
+			}
+
+			Desktop = currentDesktop;
 			Info = info;
 
-			// TODO: This constructor only makes sense when called on windows from a currently visible desktop. Verify this, and attempt to enforce this.
 			Update();
 		}
 
 
+		/// <summary>
+		///   Updates the snapshot. Visibility is only updated in case the desktop the window belongs to is currently visible.
+		/// </summary>
 		internal void Update()
 		{
-			Visible = Info.IsVisible();
+			if ( Desktop.IsVisible )
+			{
+				Visible = Info.IsVisible();
+			}
+		}
+
+		public void ChangeDesktop( VirtualDesktop newDesktop )
+		{
+			Desktop = newDesktop;
 		}
 
 		public override bool Equals( object obj )

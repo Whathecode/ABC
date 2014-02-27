@@ -49,7 +49,7 @@ namespace ABC.Windows.Desktop.Server
 
 		public void CutWindows( List<WindowInfo> windows )
 		{
-			List<WindowSnapshot> toCut = windows.Select( w => new WindowSnapshot( w ) ).ToList();
+			List<WindowSnapshot> toCut = windows.Select( w => new WindowSnapshot( _desktopManager.CurrentDesktop, w ) ).ToList();
 
 			// Cut the passed window from all desktops.
 			// TODO: This will cause problems once windows are allowed to be on multiple desktops.
