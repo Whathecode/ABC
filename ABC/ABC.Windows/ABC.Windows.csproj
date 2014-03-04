@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="Desktop\StoredSession.cs" />
     <Compile Include="Desktop\VirtualDesktop.cs" />
+    <Compile Include="UnresponsiveWindowsException.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Desktop\WindowSnapshot.cs" />
     <Compile Include="DockingManager.cs" />

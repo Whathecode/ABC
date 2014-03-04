@@ -6,7 +6,7 @@ using Whathecode.System.Windows.Interop;
 namespace ABC.Windows.Desktop
 {
 	/// <summary>
-	/// An internal representation of a WindowInfo object.
+	/// A snapshot of a window at a moment in time when the virtual desktop it belongs to was shown.
 	/// </summary>
 	/// <author>Steven Jeuris</author>
 	/// <license>
@@ -25,12 +25,24 @@ namespace ABC.Windows.Desktop
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
 	[DataContract]
-	class WindowSnapshot
+	public class WindowSnapshot
 	{
 		internal VirtualDesktop Desktop { get; private set; }
+		internal bool IsResponding { get; private set; }
+
+		/// <summary>
+		///   Can be set to true when the user decides to ignore a certain window.
+		/// </summary>
+		[DataMember]
+		public bool Ignore { get; set; }
 
 		[DataMember]
 		internal readonly WindowInfo Info;
+
+		/// <summary>
+		///   The window this is a snapshot of.
+		/// </summary>
+		public Window Window { get { return new Window( Info ); } }
 
 		[DataMember]
 		internal bool Visible { get; private set; }
@@ -65,9 +77,11 @@ namespace ABC.Windows.Desktop
 			{
 				Visible = Info.IsVisible();
 			}
+
+			IsResponding = !Info.HasTimedOut( 1000 );
 		}
 
-		public void ChangeDesktop( VirtualDesktop newDesktop )
+		internal void ChangeDesktop( VirtualDesktop newDesktop )
 		{
 			Desktop = newDesktop;
 		}

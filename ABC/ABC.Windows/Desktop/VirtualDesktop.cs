@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using ABC.Applications.Persistence;
 using ABC.Common;
 using Whathecode.System.Extensions;
@@ -89,6 +90,27 @@ namespace ABC.Windows.Desktop
 
 
 		/// <summary>
+		///   When windows don't process Win32 messages, they can lock up the VDM.
+		///   This method runs the passed operation, and suggests recovering when the operation lasts too long by ignoring the offending applications in subsequent calls.
+		/// </summary>
+		/// <param name="action">The window operation to perform.</param>
+		void SafeWindowOperation( Action action )
+		{
+			// Perform operation, and only continue when it didn't complete on time.
+			Task operations = Task.Factory.StartNew( action );
+			bool completed = operations.Wait( TimeSpan.FromSeconds( 1 ) );
+			if ( completed )
+			{
+				return;
+			}
+
+			// Notify application which windows are unresponsive.
+			_windows.ForEach( w => w.Update() );
+			List<WindowSnapshot> unresponsive = _windows.Where( w => !w.IsResponding ).ToList();
+			throw new UnresponsiveWindowsException( this, unresponsive );
+		}
+		
+		/// <summary>
 		///   Adds the passed new windows and shows them in case the desktop is visible.
 		/// </summary>
 		/// <param name = "newWindows">New windows associated to this virtual desktop.</param>
@@ -113,20 +135,20 @@ namespace ABC.Windows.Desktop
 		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
 		internal void RemoveWindows( List<WindowSnapshot> toRemove )
 		{
+			if ( IsVisible && toRemove.Any() )
+			{
+				// Hide windows.
+				var hideWindows = toRemove
+					.Where( w => !w.Ignore && !w.Info.IsDestroyed() )
+					.Select( w => new RepositionWindowInfo( w.Info ) { Visible = false } );
+				SafeWindowOperation( () => WindowManager.RepositionWindows( hideWindows.ToList() ) );
+			}
+
 			toRemove.ForEach( w =>
 			{
 				w.ChangeDesktop( null );
 				_windows.Remove( w );
 			} );
-
-			if ( IsVisible && toRemove.Any() )
-			{
-				// Hide windows.
-				var hideWindows = toRemove
-					.Where( w => !w.Info.IsDestroyed() )
-					.Select( w => new RepositionWindowInfo( w.Info ) { Visible = false } );
-				WindowManager.RepositionWindows( hideWindows.ToList() );
-			}
 		}
 
 		/// <summary>
@@ -138,11 +160,13 @@ namespace ABC.Windows.Desktop
 
 			// Reposition windows.
 			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.
-			var allWindows = _windows.GroupBy( w => w.Info.IsTopmost() );
+			var allWindows = _windows
+				.Where( w => !w.Ignore )
+				.GroupBy( w => w.Info.IsTopmost() );
 			allWindows.ForEach( group =>
 			{
 				var showWindows = group.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
-				WindowManager.RepositionWindows( showWindows.ToList(), true );
+				SafeWindowOperation( () => WindowManager.RepositionWindows( showWindows.ToList(), true ) );
 			} );
 
 			// Activate top window.
@@ -165,11 +189,13 @@ namespace ABC.Windows.Desktop
 			_windows = OrderWindowsByZOrder( _windows );
 
 			// Find windows to hide using process specific hide behaviors.
-			var toHide = _windows.Where( w => w.Visible ).SelectMany( w => hideBehavior( w.Info ) );
+			var toHide = _windows
+				.Where( w => !w.Ignore && w.Visible )
+				.SelectMany( w => hideBehavior( w.Info ) );
 
 			// Hide windows.
 			var hideWindows = toHide.Select( w => new RepositionWindowInfo( w ) { Visible = false } );
-			WindowManager.RepositionWindows( hideWindows.ToList() );
+			SafeWindowOperation( () => WindowManager.RepositionWindows( hideWindows.ToList() ) );
 		}
 
 		/// <summary>

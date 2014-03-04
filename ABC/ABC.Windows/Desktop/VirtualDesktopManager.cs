@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Security.Principal;
 using ABC.Applications.Persistence;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
 using Whathecode.System.Security.Principal;
-using System.Security.Principal;
 using Whathecode.System.Windows.Interop;
 
 
@@ -118,7 +118,6 @@ namespace ABC.Windows.Desktop
 			UpdateWindowAssociations();
 		}
 
-
 		/// <summary>
 		///   Create an empty virtual desktop with no windows assigned to it.
 		/// </summary>
@@ -141,7 +140,19 @@ namespace ABC.Windows.Desktop
 		{
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
-			StartupDesktop.RemoveWindows( session.OpenWindows.ToList() );
+			List<WindowSnapshot> otherWindows = StartupDesktop.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
+			try
+			{
+				StartupDesktop.RemoveWindows( otherWindows );
+			}
+			catch ( UnresponsiveWindowsException e )
+			{
+				// TODO: For now simply ignore hanging windows from loaded sessions.
+				// This is quite rare, as it only occurs when restarting the app while the hanging application is still running on any other desktop than the startup desktop.
+				// Ideally however, the API user is notified of this and is given a choice.
+				e.IgnoreAllWindows();
+				StartupDesktop.RemoveWindows( otherWindows );
+			}
 
 			var restored = new VirtualDesktop( session, _persistenceProvider ) { Folder = folder };
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
@@ -156,9 +167,15 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void UpdateWindowAssociations()
 		{
+			// The desktop needs to be visible in order to update window associations.
+			if ( !CurrentDesktop.IsVisible )
+			{
+				return;
+			}
+
 			// Update window associations for the currently open desktop.
 			CurrentDesktop.AddWindows( GetNewWindows() );
-			CurrentDesktop.RemoveWindows( CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w.Info ) ).ToList() );
+			CurrentDesktop.RemoveWindows( CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() );
 			CurrentDesktop.WindowSnapshots.ForEach( w => w.Update() );
 
 			// Remove destroyed windows from places where they are cached.
@@ -189,7 +206,7 @@ namespace ABC.Windows.Desktop
 			UpdateWindowAssociations();
 			CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
 			desktop.Show();
-
+			
 			// Update desktop icons.
 			if ( desktop.Folder != null )
 			{
@@ -230,11 +247,21 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void Close()
 		{
-			_desktops.ForEach( d => d.Show() );
+			try
+			{
+				_desktops.ForEach( d => d.Show() );
 
-			// Show all cut windows again.
-			var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
-			WindowManager.RepositionWindows( showWindows.ToList(), true );
+				// Show all cut windows again.
+				var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
+				WindowManager.RepositionWindows( showWindows.ToList(), true );
+			}
+			catch ( UnresponsiveWindowsException e )
+			{
+				e.IgnoreAllWindows();
+
+				// Try again now that the problematic windows are ignored.
+				Close();
+			}
 		}
 
 		/// <summary>
@@ -251,9 +278,9 @@ namespace ABC.Windows.Desktop
 		///   Check whether the WindowInfo object represents a valid Window.
 		/// </summary>
 		/// <returns>True if valid, false if unvalid.</returns>
-		bool IsValidWindow( WindowInfo windowInfo )
+		bool IsValidWindow( WindowSnapshot window )
 		{
-			return !windowInfo.IsDestroyed() && _windowFilter( new Window( windowInfo ) );
+			return !window.Info.IsDestroyed() && _windowFilter( new Window( window.Info ) );
 		}
 
 		/// <summary>
@@ -270,9 +297,10 @@ namespace ABC.Windows.Desktop
 			var validWindows = new List<WindowSnapshot>();
 			foreach ( var w in newWindows )
 			{
-				if ( IsValidWindow( w ) )
+				var snapshot = new WindowSnapshot( CurrentDesktop, w );
+				if ( IsValidWindow( snapshot ) )
 				{
-					validWindows.Add( new WindowSnapshot( CurrentDesktop, w ) );
+					validWindows.Add( snapshot );
 				}
 				else
 				{
