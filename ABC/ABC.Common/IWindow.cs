@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 
 namespace ABC.Common
@@ -9,6 +10,11 @@ namespace ABC.Common
 	/// <author>Steven Jeuris</author>
 	public interface IWindow
 	{
+		/// <summary>
+		///   The underlying window handle.
+		/// </summary>
+		IntPtr Handle { get; }
+
 		/// <summary>
 		///   Retrieves the process that created the window, when available.
 		/// </summary>

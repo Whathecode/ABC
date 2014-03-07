@@ -256,6 +256,7 @@ namespace ABC.Windows.Desktop
 			}
 
 			_persistenceProvider.Resume( _persistedApplications );
+			_persistedApplications.Clear();
 
 			IsSuspended = false;
 		}

@@ -15,6 +15,14 @@ namespace ABC.Windows
 	[DataContract]
 	public class Window : IWindow
 	{
+		/// <summary>
+		///   The underlying window handle.
+		/// </summary>
+		public IntPtr Handle
+		{
+			get { return WindowInfo.Handle; }
+		}
+
 		[DataMember]
 		internal WindowInfo WindowInfo { get; private set; }
 
@@ -25,8 +33,8 @@ namespace ABC.Windows
 		}
 
 		internal Window( IntPtr windowInfo )
+			: this ( new WindowInfo( windowInfo ) )
 		{
-			WindowInfo = new WindowInfo( windowInfo );
 		}
 
 

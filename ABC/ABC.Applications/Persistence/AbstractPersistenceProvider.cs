@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ABC.Common;
 using ABC.PInvoke.Process;
@@ -39,7 +40,13 @@ namespace ABC.Applications.Persistence
 				let applicationPath = process.Modules[ 0 ].FileName
 				let persistor = GetPersistenceProviders().FirstOrDefault( p => p.ProcessName == process.ProcessName )
 				where persistor != null
-				let persistedData = persistor.Suspend( process, _commandLine.FirstOrDefault( a => a.Key == process.Id ).Value )
+				let persistedData = persistor.Suspend(
+					new SuspendInformation
+					{
+						Process = process,
+						Windows = processWindows.ToList(),
+						CommandLine = _commandLine.FirstOrDefault( a => a.Key == process.Id ).Value
+					} )
 				select
 					new PersistedApplication( process, processWindows.ToList(), persistedData )
 					{
@@ -71,6 +78,15 @@ namespace ABC.Applications.Persistence
 		protected override void FreeUnmanagedResources()
 		{
 			// Nothing to do.
+		}
+
+		/// <summary>
+		///   Returns the types which are used to store persisted data. This needs to be passed to the DataContractSerializer.
+		/// </summary>
+		/// <returns></returns>
+		public List<Type> GetPersistedDataTypes()
+		{
+			return GetPersistenceProviders().Select( p => p.GetPersistedDataType() ).ToList();
 		}
 
 
