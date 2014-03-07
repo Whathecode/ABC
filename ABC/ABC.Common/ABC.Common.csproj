@@ -34,6 +34,8 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PluginException.cs" />
+    <Compile Include="PluginHelper.cs" />
     <Compile Include="CompositionHelper.cs" />
     <Compile Include="IWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -26,20 +25,6 @@ namespace ABC.Interruptions
 		{
 			_pluginContainer = CompositionHelper.Compose( this, pluginFolderPath );
 
-			// Remove invalid interruption handlers.
-			var toRemove = new List<AbstractInterruptionTrigger>();
-			foreach ( var trigger in _interruptionTriggers )
-			{
-				bool haveDataContracts = trigger.GetInterruptionTypes().All( i => i.GetCustomAttributes( false ).Any( a => a is DataContractAttribute ) );
-				if ( !haveDataContracts )
-				{
-					string pluginName = trigger.GetType().ToString();
-					Debug.WriteLine( "The interruptions triggered by plugin \"{0}\" should be serializable and have a DataContract attribute applied to them.", new object[] { pluginName } );
-					toRemove.Add( trigger );
-				}
-			}
-			toRemove.ForEach( t => _interruptionTriggers.Remove( t ) );
-
 			// Initialize loaded interruption handlers.
 			foreach ( var handler in _interruptionTriggers )
 			{
@@ -57,16 +42,7 @@ namespace ABC.Interruptions
 
 			foreach ( var trigger in _interruptionTriggers )
 			{
-				try
-				{
-					trigger.Update( now );
-				}
-				catch ( Exception ex )
-				{
-					// Prevent main application from crashing when plugins throw exceptions.
-					string pluginName = trigger.GetType().ToString();
-					Debug.WriteLine( "The interruption trigger plugin \"{0}\" threw an exception:\n {1}", pluginName, ex );
-				}
+				PluginHelper<AbstractInterruptionTrigger>.SafePluginInvoke( trigger, t => t.Update( now ) );
 			}
 
 			Monitor.Exit( this );
@@ -80,7 +56,9 @@ namespace ABC.Interruptions
 		/// <returns>All the interruption types this interruption aggregator knows about.</returns>
 		public override List<Type> GetInterruptionTypes()
 		{
-			return _interruptionTriggers.SelectMany( h => h.GetInterruptionTypes() ).ToList();
+			return _interruptionTriggers
+				.SelectMany( h => PluginHelper<AbstractInterruptionTrigger>.SafePluginInvoke( h, t => t.GetInterruptionTypes() ) )
+				.ToList();
 		}
 	}
 }
