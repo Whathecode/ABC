@@ -8,7 +8,7 @@ using System.Reflection;
 using Generated.ProcessBehaviors;
 using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
-using Whathecode.System.Windows.Interop;
+using Whathecode.System.Windows;
 
 
 namespace ABC.Windows.Desktop.Settings

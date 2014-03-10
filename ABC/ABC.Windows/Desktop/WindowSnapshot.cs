@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Whathecode.System.Windows.Interop;
+using Whathecode.System.Windows;
 
 
 namespace ABC.Windows.Desktop

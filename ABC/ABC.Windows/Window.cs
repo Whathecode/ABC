@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using ABC.Common;
-using Whathecode.System.Windows.Interop;
+using Whathecode.System.Windows;
 
 
 namespace ABC.Windows

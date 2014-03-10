@@ -88,15 +88,13 @@
     <Reference Include="System" />
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="Whathecode.System, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Shell32.Types.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Framework-Class-Library-Extension\Whathecode.System\Whathecode.System.csproj">
-      <Project>{6FF11324-46A9-4AE3-A802-4CFD47C59BA6}</Project>
-      <Name>Whathecode.System</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

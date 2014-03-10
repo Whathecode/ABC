@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ABC.Windows.Desktop;
-using Whathecode.System.Windows.Interop;
+using Whathecode.System.Windows;
 
 
 // TODO: Generating ProcessBehaviors with the correct namespace causes problems.

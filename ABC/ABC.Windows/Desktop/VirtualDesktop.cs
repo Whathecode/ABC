@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ABC.Applications.Persistence;
 using ABC.Common;
 using Whathecode.System.Extensions;
-using Whathecode.System.Windows.Interop;
+using Whathecode.System.Windows;
 
 
 namespace ABC.Windows.Desktop

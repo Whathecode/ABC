@@ -8,7 +8,7 @@ using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
 using Whathecode.System.Extensions;
 using Whathecode.System.Security.Principal;
-using Whathecode.System.Windows.Interop;
+using Whathecode.System.Windows;
 
 
 namespace ABC.Windows.Desktop
