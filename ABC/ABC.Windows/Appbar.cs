@@ -5,6 +5,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using ABC.PInvoke;
 using WpfWindow = System.Windows.Window;
+using User32 = Whathecode.Interop.User32;
 
 
 namespace ABC.Windows
@@ -132,7 +133,7 @@ namespace ABC.Windows
 
 			exStyle |= (int)User32.ExtendedWindowStyles.ToolWindow;
 
-			User32.SetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE, (uint)exStyle );
+			PInvoke.User32.SetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE, (uint)exStyle );
 
 			DockPosition = DockPosition.Top;
 		}
@@ -145,12 +146,12 @@ namespace ABC.Windows
 			var returnvalue = IntPtr.Zero;
 			if ( msg == (int)WindowMessage.WM_NCACTIVATE )
 			{
-				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
+				returnvalue = PInvoke.User32.DefWindowProc( hwnd, (int)WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
 				handled = true;
 			}
 			if ( msg == (int)WindowMessage.WM_ACTIVATE )
 			{
-				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_ACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
+				returnvalue = PInvoke.User32.DefWindowProc( hwnd, (int)WindowMessage.WM_ACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
 				handled = true;
 			}
 			return returnvalue;

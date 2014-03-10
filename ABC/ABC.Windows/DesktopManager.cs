@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using ABC.PInvoke;
 using System.IO;
+using Interop = Whathecode.Interop.User32;
 
 namespace ABC.Windows
 {
@@ -35,8 +36,8 @@ namespace ABC.Windows
             var vItemCount = (int)User32.SendMessage(vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero);
             var icons = new List<DesktopIcon>();
 
-            uint vProcessId;
-            User32.GetWindowThreadProcessId(vHandle, out vProcessId);
+	        uint vProcessId;
+            Interop.GetWindowThreadProcessId(vHandle, out vProcessId);
 
             var vProcess = Kernel32.OpenProcess(Kernel32.PROCESS_VM_OPERATION | Kernel32.PROCESS_VM_READ |
                                                  Kernel32.PROCESS_VM_WRITE, false, vProcessId);
@@ -118,7 +119,7 @@ namespace ABC.Windows
             vItemCount = (int)User32.SendMessage(vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero);
 
             uint vProcessId;
-            User32.GetWindowThreadProcessId(vHandle, out vProcessId);
+            Interop.GetWindowThreadProcessId(vHandle, out vProcessId);
 
             vProcess = Kernel32.OpenProcess(Kernel32.PROCESS_VM_OPERATION | Kernel32.PROCESS_VM_READ |
                                              Kernel32.PROCESS_VM_WRITE, false, vProcessId);

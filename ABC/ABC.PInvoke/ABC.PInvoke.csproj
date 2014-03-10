@@ -72,9 +72,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HookType.cs" />
     <Compile Include="NativeWindowEx.cs" />
-    <Compile Include="ErrorCode.cs" />
     <Compile Include="Kernel32.cs" />
-    <Compile Include="MarshalHelper.cs" />
     <Compile Include="Process\ProcessInfo.cs" />
     <Compile Include="Process\ProcessTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,6 +86,10 @@
     <Reference Include="System" />
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="Whathecode.Interop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="Whathecode.System, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>

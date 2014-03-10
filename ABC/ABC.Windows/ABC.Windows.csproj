@@ -109,6 +109,10 @@
     <Reference Include="TriAxis.RunSharp">
       <HintPath>..\Libraries\Framework Class Library Extension\Any CPU\TriAxis.RunSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Whathecode.Interop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="Whathecode.System">
       <HintPath>..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>
     </Reference>
