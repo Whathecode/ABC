@@ -58,13 +58,7 @@ namespace ABC.Applications.Explorer
 			Marshal.Copy( location.Pidl, 0, pidl, location.Pidl.Length );
 			
 			// Open an explorer window with the passed PIDL.
-			var executeInfo = new Shell32.ShellExecuteInfo
-			{
-				Type = Shell32.ShellExecuteInfoType.Pidl,
-				Pidl = pidl,
-				Show = User32.WindowState.ShowNoActivate,
-				StructSize = (uint)Marshal.SizeOf( typeof( Shell32.ShellExecuteInfo ) )
-			};
+			var executeInfo = Shell32.ShellExecuteInfo.ExecutePidl( pidl, User32.WindowState.ShowNoActivate );
 			Shell32.ShellExecuteEx( ref executeInfo );
 			
 			Marshal.Release( pidl );
