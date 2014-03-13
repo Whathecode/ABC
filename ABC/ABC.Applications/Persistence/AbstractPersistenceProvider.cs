@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using ABC.Common;
 using ABC.PInvoke.Process;
@@ -34,8 +35,8 @@ namespace ABC.Applications.Persistence
 		public List<PersistedApplication> Suspend( List<IWindow> windows )
 		{
 			var persistedApplications = (
-				from processWindows in windows.GroupBy( w => w.GetProcess() )
-				let process = processWindows.Key
+				from processWindows in windows.GroupBy( w => w.GetProcess().Id )
+				let process = Process.GetProcessById( processWindows.Key )
 				where process != null
 				let applicationPath = process.Modules[ 0 ].FileName
 				let persistor = GetPersistenceProviders().FirstOrDefault( p => p.ProcessName == process.ProcessName )

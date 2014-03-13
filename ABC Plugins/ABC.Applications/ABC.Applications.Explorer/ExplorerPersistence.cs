@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using ABC.Applications.Persistence;
+using ABC.Common;
 using SHDocVw;
 using Whathecode.Interop;
 using Whathecode.System.Extensions;
@@ -28,45 +30,57 @@ namespace ABC.Applications.Explorer
 
 		public override object Suspend( SuspendInformation toSuspend )
 		{
-			// TODO: Is there a safer way to guarantee that it is actually the internet explorer we expect it to be?
-			// Exactly one matching window should be found, otherwise something went wrong.
-			var shellWindows = new ShellWindows();
-			var window = shellWindows
+			var cabinetWindows = new ShellWindows()
 				.Cast<InternetExplorer>()
-				.First( e =>
-					Path.GetFileNameWithoutExtension( e.FullName ).IfNotNull( p => p.ToLower() ) == "explorer" // For some reason, the process CAN be both "Explorer", and "explorer".
-					&& toSuspend.Windows.First().Handle.Equals( new IntPtr( e.HWND ) ) );
+				// TODO: Is there a safer way to guarantee that it is actually the explorer we expect it to be?
+				// For some reason, the process CAN be both "Explorer", and "explorer".
+				.Where( e => Path.GetFileNameWithoutExtension( e.FullName ).IfNotNull( p => p.ToLower() ) == "explorer" )
+				.ToList();
 
-			var persistedData = new ExplorerLocation
+			var suspendedExplorerWindows = new List<ExplorerLocation>();
+			foreach ( IWindow window in toSuspend.Windows )
 			{
-				LocationName = window.LocationName,
-				LocationUrl = window.LocationURL,
-				Pidl = window.GetPidl()
-			};
+				// Check whether the window is an explorer cabinet window. (file browser)
+				InternetExplorer cabinetWindow = cabinetWindows.FirstOrDefault( e => window.Handle.Equals( new IntPtr( e.HWND ) ) );
+				if ( cabinetWindow != null )
+				{
+					var persistedData = new ExplorerLocation
+					{
+						LocationName = cabinetWindow.LocationName,
+						LocationUrl = cabinetWindow.LocationURL,
+						Pidl = cabinetWindow.GetPidl()
+					};
+					cabinetWindow.Quit();
+					suspendedExplorerWindows.Add( persistedData );
+				}
 
-			window.Quit();
+				// TODO: Support other explorer windows, e.g. property windows ...
+			}
 
-			return persistedData;
+			return suspendedExplorerWindows;
 		}
 
 		public override void Resume( string applicationPath, object persistedData )
 		{
-			var location = (ExplorerLocation)persistedData;
+			var locations = (List<ExplorerLocation>)persistedData;
 
-			// Copy the PIDL to unmanaged memory.
-			IntPtr pidl = Marshal.AllocHGlobal( location.Pidl.Length );
-			Marshal.Copy( location.Pidl, 0, pidl, location.Pidl.Length );
-			
-			// Open an explorer window with the passed PIDL.
-			var executeInfo = Shell32.ShellExecuteInfo.ExecutePidl( pidl, User32.WindowState.ShowNoActivate );
-			Shell32.ShellExecuteEx( ref executeInfo );
-			
-			Marshal.Release( pidl );
+			foreach ( ExplorerLocation location in locations )
+			{
+				// Copy the PIDL to unmanaged memory.
+				IntPtr pidl = Marshal.AllocHGlobal( location.Pidl.Length );
+				Marshal.Copy( location.Pidl, 0, pidl, location.Pidl.Length );
+
+				// Open an explorer window with the passed PIDL.
+				var executeInfo = Shell32.ShellExecuteInfo.ExecutePidl( pidl, User32.WindowState.ShowNoActivate );
+				Shell32.ShellExecuteEx( ref executeInfo );
+
+				Marshal.Release( pidl );
+			}
 		}
 
 		public override Type GetPersistedDataType()
 		{
-			return typeof( ExplorerLocation );
+			return typeof( List<ExplorerLocation> );
 		}
 	}
 }
