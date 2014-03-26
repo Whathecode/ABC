@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace ABC.Applications.Persistence
 	{
 		readonly ProcessTracker _processTracker;
 		// TODO: Persist the currently tracked command line parameters to allow suspending upon application restart.
-		readonly Dictionary<int, string> _commandLine = new Dictionary<int, string>();
+		readonly ConcurrentDictionary<int, string> _commandLine = new ConcurrentDictionary<int, string>();
 
 
 		protected AbstractPersistenceProvider()
@@ -27,7 +28,9 @@ namespace ABC.Applications.Persistence
 			{
 				_commandLine[ p.Id ] = p.CommandLine;
 			};
-			_processTracker.ProcessStopped += p => _commandLine.Remove( p.Id );
+
+			string removed;
+			_processTracker.ProcessStopped += p => _commandLine.TryRemove( p.Id, out removed );
 			_processTracker.Start();
 		}
 
@@ -55,7 +58,8 @@ namespace ABC.Applications.Persistence
 						Persistor = persistor.GetType().AssemblyQualifiedName
 					} ).ToList();
 
-			persistedApplications.ForEach( p => _commandLine.Remove( p.Process.Id ) );
+			string removed;
+			persistedApplications.ForEach( p => _commandLine.TryRemove( p.Process.Id, out removed ) );
 
 			return persistedApplications;
 		}
