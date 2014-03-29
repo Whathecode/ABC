@@ -12,6 +12,7 @@
   <!-- Type which can uniquely identify one particular window of a process. -->
   <xs:complexType name="Window">
     <xs:attribute name="ClassName" type="xs:string" />
+    <xs:attribute name="Title" type="xs:string" />
     <xs:attribute name="Visible" default="Both">
       <xs:simpleType>
         <xs:restriction base="xs:string">

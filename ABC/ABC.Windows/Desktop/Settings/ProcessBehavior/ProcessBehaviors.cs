@@ -63,7 +63,8 @@ namespace Generated.ProcessBehaviors
 		{
 			return
 				ClassName == window.GetClassName() &&
-				(Visible == WindowVisible.Both || (window.IsVisible() && Visible == WindowVisible.True));
+				( Visible == WindowVisible.Both || ( window.IsVisible() && Visible == WindowVisible.True ) ) &&
+				( Title == null || window.GetTitle() == Title );
 		}
 	}
 
