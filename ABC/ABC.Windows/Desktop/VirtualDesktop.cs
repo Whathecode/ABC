@@ -85,7 +85,7 @@ namespace ABC.Windows.Desktop
 		{
 			_persistedApplications = session.PersistedApplications.ToList();
 			IsSuspended = _persistedApplications.Count > 0;
-			_windows.AddRange( session.OpenWindows );
+			_windows.AddRange( session.OpenWindows.Where( w => !w.Info.IsDestroyed() ) );
 		}
 
 
