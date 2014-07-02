@@ -108,7 +108,7 @@
               </xs:sequence>
 
               <xs:attribute name="Name" type="xs:string" use="required" />
-              <xs:attribute name="CompanyName" type="xs:string" use="required" />
+              <xs:attribute name="CompanyName" type="xs:string" />
               <xs:attribute name="Version" type="xs:string" />
 
             </xs:complexType>
@@ -122,14 +122,6 @@
     <xs:unique name="UniqueProcess">
       <xs:selector xpath="pb:Process" />
       <xs:field xpath="@Name" />
-      <xs:field xpath="@CompanyName" />
-      <xs:field xpath="@Version" />
-    </xs:unique>
-
-    <xs:unique name="UniqueNameVendor">
-      <xs:selector xpath="pb:Process" />
-      <xs:field xpath="@Name" />
-      <xs:field xpath="@CompanyName" />
     </xs:unique>
 
   </xs:element>
