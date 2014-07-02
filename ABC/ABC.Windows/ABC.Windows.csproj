@@ -146,6 +146,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\internet_explorer.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\ms_office.xml" />
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\skype.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -153,16 +154,9 @@
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\visual_studio_2012.xml" />
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_7.xml" />
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_photo_viewer.xml" />
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\word.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\firefox.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\powerPoint.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\oneNote.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
