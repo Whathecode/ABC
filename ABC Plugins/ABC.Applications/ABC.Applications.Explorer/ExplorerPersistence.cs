@@ -41,7 +41,19 @@ namespace ABC.Applications.Explorer
 			foreach ( IWindow window in toSuspend.Windows )
 			{
 				// Check whether the window is an explorer cabinet window. (file browser)
-				InternetExplorer cabinetWindow = cabinetWindows.FirstOrDefault( e => window.Handle.Equals( new IntPtr( e.HWND ) ) );
+				InternetExplorer cabinetWindow = cabinetWindows.FirstOrDefault( e =>
+				{
+					try
+					{
+						return window.Handle.Equals( new IntPtr( e.HWND ) );
+					}
+					catch ( COMException )
+					{
+						// This exception is thrown when accessing 'HWND' for some windows.
+						// TODO: Why is this the case, and do we ever need to handle those windows?
+						return false;
+					}
+				} );
 				if ( cabinetWindow != null )
 				{
 					var persistedData = new ExplorerLocation
