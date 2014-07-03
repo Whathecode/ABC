@@ -1,0 +1,17 @@
+﻿<Window
+	x:Class="ABC.Applications.Chrome.NativeHost.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Title="ABC Toolkit Chrome Communication"
+	Width="500" Height="600"
+	Visibility="Collapsed">
+	
+	<Grid>
+		<ScrollViewer>
+			<TextBlock
+				Padding="5"
+				x:Name="Output" />
+		</ScrollViewer>
+	</Grid>
+	
+</Window>

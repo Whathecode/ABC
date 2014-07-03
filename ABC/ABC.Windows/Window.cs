@@ -27,12 +27,12 @@ namespace ABC.Windows
 		internal WindowInfo WindowInfo { get; private set; }
 
 
-		internal Window( WindowInfo windowInfo )
+		public Window( WindowInfo windowInfo )
 		{
 			WindowInfo = windowInfo;
 		}
 
-		internal Window( IntPtr windowInfo )
+		public Window( IntPtr windowInfo )
 			: this ( new WindowInfo( windowInfo ) )
 		{
 		}

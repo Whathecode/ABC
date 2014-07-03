@@ -1,0 +1,43 @@
+﻿<Window
+	x:Class="ABC.Debug.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Title="Debug ABC Plugins" Width="400" Height="500"
+	DataContext="{Binding RelativeSource={RelativeSource Self}}">
+	
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		
+		<TextBlock
+			Grid.Row="0">Application persistence plugins</TextBlock>
+		
+		<ListBox
+			x:Name="PersistenceProviderList"
+			Grid.Row="1"
+			ItemsSource="{Binding PersistenceProviders}" />
+		
+		<Grid
+			Height="50"
+			Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			
+			<Button
+				Content="Suspend"
+				Grid.Column="0"
+				Click="OnSuspend" />
+			<Button
+				x:Name="ResumeButton"
+				Content="Resume"
+				Grid.Column="1"
+				Click="OnResume" />
+		</Grid>
+	</Grid>
+	
+</Window>

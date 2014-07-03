@@ -1,0 +1,7 @@
+{
+  "name": "abc.applications.chrome.nativehost",
+  "description": "Native application which can communicate with the ABC toolkit.",
+  "path": "..\\ABC.Applications.Chrome.NativeHost\\bin\\Debug\\ABC.Applications.Chrome.NativeHost.exe",
+  "type": "stdio",
+  "allowed_origins": [ "chrome-extension://oiocmknnciheelafbndkgeicmbefnanc/" ]
+}
