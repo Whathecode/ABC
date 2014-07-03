@@ -24,7 +24,12 @@ namespace ABC.Common
 			};
 		}
 
-		public static CompositionContainer Compose( object toCompose, string pluginFolderPath )
+		/// <summary>
+		///   Create a composition container from assemblies located at a particular path.
+		/// </summary>
+		/// <param name = "toCompose">The object to compose a composition container for.</param>
+		/// <param name = "pluginFolderPath">The path where plugin assemblies are located.</param>
+		public static CompositionContainer ComposeFromPath( object toCompose, string pluginFolderPath )
 		{
 			// Set up plugin container.
 			if ( !Directory.Exists( pluginFolderPath ) )

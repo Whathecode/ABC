@@ -107,6 +107,7 @@ namespace ABC.Windows.Desktop
 			{
 				Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop )
 			};
+			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 			StartupDesktop.Show(); // The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
 			CurrentDesktop = StartupDesktop;
 			StartupDesktop.AddWindows( GetNewWindows() );

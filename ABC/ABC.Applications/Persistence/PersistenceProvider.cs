@@ -17,9 +17,13 @@ namespace ABC.Applications.Persistence
 		readonly List<AbstractApplicationPersistence> _persistenceProviders = new List<AbstractApplicationPersistence>();
 
 
+		/// <summary>
+		///   Create a new persistence provider with application persistence plugins loaded from the specified path.
+		/// </summary>
+		/// <param name = "pluginFolderPath">The path where application persistence plugins are located.</param>
 		public PersistenceProvider( string pluginFolderPath )
 		{
-			_pluginContainer = CompositionHelper.Compose( this, pluginFolderPath );
+			_pluginContainer = CompositionHelper.ComposeFromPath( this, pluginFolderPath );
 		}
 
 

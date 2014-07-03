@@ -23,7 +23,7 @@ namespace ABC.Interruptions
 
 		public InterruptionAggregator( string pluginFolderPath )
 		{
-			_pluginContainer = CompositionHelper.Compose( this, pluginFolderPath );
+			_pluginContainer = CompositionHelper.ComposeFromPath( this, pluginFolderPath );
 
 			// Initialize loaded interruption handlers.
 			foreach ( var handler in _interruptionTriggers )

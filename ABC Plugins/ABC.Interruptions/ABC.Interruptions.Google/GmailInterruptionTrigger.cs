@@ -139,7 +139,7 @@ namespace ABC.Interruptions.Google
 			namespaceManager.AddNamespace( "atom", "http://purl.org/atom/ns#" );
 
 			// Trigger an interruption for every unread email.
-			List<string> idsInFeed = new List<string>();
+			var idsInFeed = new List<string>();
 			XmlNodeList entries = doc.SelectNodes( "//atom:entry", namespaceManager );
 			if ( entries == null )
 			{
