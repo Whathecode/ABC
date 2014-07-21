@@ -17,7 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.PInvoke", "..\ABC\ABC.P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Interruptions", "..\ABC\ABC.Interruptions\ABC.Interruptions.csproj", "{582661FF-FF3D-4CD3-8A52-3C75447E9F69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Interruptions.Survey", "ABC.Interruptions\ABC.Interruptions.Survey\ABC.Interruptions.Survey.csproj", "{81012A5F-1519-45EE-98EE-49DDA871B57D}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Applications.Chrome", "ABC.Applications\ABC.Applications.Chrome\ABC.Applications.Chrome.csproj", "{92345979-B27E-49EA-8DD9-C99218471700}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Debug", "ABC.Debug\ABC.Debug.csproj", "{93E603DB-FA48-4186-8EB1-4BC8017B60B9}"
@@ -129,18 +128,6 @@ Global
 		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Release|x64.ActiveCfg = Release|Any CPU
 		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Release|x86.ActiveCfg = Release|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug With Project References|Any CPU.ActiveCfg = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug With Project References|Any CPU.Build.0 = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug With Project References|x64.ActiveCfg = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug With Project References|x86.ActiveCfg = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Release|x64.ActiveCfg = Release|Any CPU
-		{81012A5F-1519-45EE-98EE-49DDA871B57D}.Release|x86.ActiveCfg = Release|Any CPU
 		{92345979-B27E-49EA-8DD9-C99218471700}.Debug With Project References|Any CPU.ActiveCfg = Debug|Any CPU
 		{92345979-B27E-49EA-8DD9-C99218471700}.Debug With Project References|Any CPU.Build.0 = Debug|Any CPU
 		{92345979-B27E-49EA-8DD9-C99218471700}.Debug With Project References|x64.ActiveCfg = Debug|Any CPU
