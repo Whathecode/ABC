@@ -11,6 +11,7 @@
 			<Window ClassName="Messaging" />
 			<Window ClassName="Base_PowerMessageWindow" />
 			<Window ClassName="SWFlash_PlaceholderX" />
+			<Window ClassName="CSpNotify Notify Window" />
 		</IgnoreWindows>
 		<HideBehavior>
 			<Default Hide="SelectedWindow" />
