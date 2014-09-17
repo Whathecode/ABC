@@ -42,7 +42,7 @@ namespace ABC.Applications.Persistence
 				let process = Process.GetProcessById( processWindows.Key )
 				where process != null
 				let applicationPath = process.Modules[ 0 ].FileName
-				let persistor = GetPersistenceProviders().FirstOrDefault( p => p.ProcessName == process.ProcessName )
+				let persistor = GetPersistenceProviders().FirstOrDefault( p => p.Info.ProcessName == process.ProcessName )
 				where persistor != null
 				let persistedData = PluginHelper<AbstractApplicationPersistence>.SafePluginInvoke( persistor, p => p.Suspend(
 					new SuspendInformation
@@ -99,5 +99,12 @@ namespace ABC.Applications.Persistence
 
 
 		protected abstract List<AbstractApplicationPersistence> GetPersistenceProviders();
+
+		public List<PluginInformation> GetPersistenceProvidersInfo()
+		{
+			var infoCollection = new List<PluginInformation>();
+			GetPersistenceProviders().ForEach( pp => infoCollection.Add(pp.Info) );
+			return infoCollection;
+		}
 	}
 }

@@ -25,7 +25,7 @@ namespace ABC.Applications.Explorer
 	public class ExplorerPersistence : AbstractApplicationPersistence
 	{
 		public ExplorerPersistence()
-			: base( "explorer" ) {}
+			: base( new PluginInformation("explorer", "Microsoft Corporation", "Steven Jeuris") ) {}
 
 
 		public override object Suspend( SuspendInformation toSuspend )

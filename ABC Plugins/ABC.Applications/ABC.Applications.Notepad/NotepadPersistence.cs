@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text.RegularExpressions;
 using ABC.Applications.Persistence;
 using Whathecode.System.Diagnostics;
+using ABC.Common;
 
 
 namespace ABC.Applications.Notepad
@@ -11,7 +13,7 @@ namespace ABC.Applications.Notepad
 	public class NotepadPersistence : AbstractApplicationPersistence
 	{
 		public NotepadPersistence()
-			: base( "notepad" ) {}
+			: base( new PluginInformation("notepad", "Microsoft Corporation", "Steven Jeuris") ) {}
 
 
 		public override object Suspend( SuspendInformation toSuspend )

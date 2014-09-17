@@ -1,4 +1,5 @@
 ﻿using System;
+using ABC.Common;
 
 
 namespace ABC.Applications.Persistence
@@ -8,17 +9,15 @@ namespace ABC.Applications.Persistence
 	/// </summary>
 	public abstract class AbstractApplicationPersistence
 	{
+		protected AbstractApplicationPersistence( PluginInformation info )
+		{
+			Info = info;
+		}
+
 		/// <summary>
 		///   The name of the process this persistence provider can persist.
 		/// </summary>
-		public string ProcessName { get; private set; }
-
-
-		protected AbstractApplicationPersistence( string processName )
-		{
-			ProcessName = processName;
-		}
-
+		internal PluginInformation Info;
 
 		/// <summary>
 		///   Persists the current state of the application, and then suspends it.
