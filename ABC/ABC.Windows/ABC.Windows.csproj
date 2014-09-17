@@ -141,12 +141,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\asus.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\asus.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\chrome.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\internet_explorer.xml" />
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\ms_office.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\internet_explorer.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\ms_office.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\skype.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

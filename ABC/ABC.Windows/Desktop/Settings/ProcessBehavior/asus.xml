@@ -12,7 +12,7 @@
   </Process>
 
   <!-- Asus Splendid Video Enhancement Technology. Window is never shown. -->
-  <Process Name="ACMON" CompanyName="ASUS">
+  <Process Name="ACMON" CompanyName="ASUS" Author="Steven Jeuris" Version="3.0, 2.0">
     <IgnoreWindows>
       <Window ClassName="ACMON" />
     </IgnoreWindows>

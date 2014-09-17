@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <xs:schema
   id="ProcessBehaviors"
   targetNamespace="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
@@ -8,7 +9,7 @@
   xmlns:pb="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
   xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  
+
   <!-- Type which can uniquely identify one particular window of a process. -->
   <xs:complexType name="Window">
     <xs:attribute name="ClassName" type="xs:string" />
@@ -28,7 +29,7 @@
   <xs:complexType name="WindowList">
     <xs:sequence minOccurs="0" maxOccurs="unbounded">
       <xs:element name="Window" type="Window" />
-    </xs:sequence>    
+    </xs:sequence>
   </xs:complexType>
 
   <!-- Type which determines the windows which should be considered during a window operation. -->
@@ -40,13 +41,13 @@
     </xs:restriction>
   </xs:simpleType>
 
-  
+
   <!-- List of processes with desired behaviors on how the Virtual Desktop Manager should handle its containing windows. -->
   <xs:element name="ProcessBehaviors">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="CommonIgnoreWindows" type="WindowList" minOccurs="0" maxOccurs="1" />
-        
+
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
 
           <xs:element name="Process">
@@ -87,7 +88,8 @@
                                 </xs:restriction>
                               </xs:simpleType>
                             </xs:attribute>
-                            <xs:attribute name="ConsiderWindows" type="ConsiderWindows" default="CurrentDesktopWindowsOnly" />
+                            <xs:attribute name="ConsiderWindows" type="ConsiderWindows"
+                                          default="CurrentDesktopWindowsOnly" />
                           </xs:complexType>
                         </xs:element>
 
@@ -96,7 +98,8 @@
                           <xs:complexType>
                             <xs:complexContent>
                               <xs:extension base="WindowList">
-                                <xs:attribute name="ConsiderWindows" type="ConsiderWindows" default="CurrentDesktopWindowsOnly" />
+                                <xs:attribute name="ConsiderWindows" type="ConsiderWindows"
+                                              default="CurrentDesktopWindowsOnly" />
                               </xs:extension>
                             </xs:complexContent>
                           </xs:complexType>
@@ -110,19 +113,20 @@
               <xs:attribute name="Name" type="xs:string" use="required" />
               <xs:attribute name="CompanyName" type="xs:string" />
               <xs:attribute name="Version" type="xs:string" />
+              <xs:attribute name="Author" type="xs:string" />
 
             </xs:complexType>
 
           </xs:element>
 
-        </xs:sequence>        
+        </xs:sequence>
       </xs:sequence>
     </xs:complexType>
 
     <xs:unique name="UniqueProcess">
       <xs:selector xpath="pb:Process" />
-      <xs:field xpath="@Name" />	  
-	  <xs:field xpath="@CompanyName" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@CompanyName" />
       <xs:field xpath="@Version" />
     </xs:unique>
 
@@ -133,5 +137,5 @@
     </xs:unique>
 
   </xs:element>
-  
+
 </xs:schema>

@@ -35,7 +35,7 @@ namespace ABC.Windows.Desktop.Settings
 	public class LoadedSettings : ISettings
 	{
 		const string SettingsFiles = "ABC.Windows.Desktop.Settings.ProcessBehavior";
-		ProcessBehaviors _settings;
+		public ProcessBehaviors Settings { get; private set; }
 		readonly ProcessBehaviorsProcess _handleProcess = new ProcessBehaviorsProcess();
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
 		readonly Func<Window, bool> _windowManagerFilter;
@@ -101,30 +101,30 @@ namespace ABC.Windows.Desktop.Settings
 
 		void AddBehaviors( ProcessBehaviors newBehaviors )
 		{
-			if ( _settings == null )
+			if ( Settings == null )
 			{
-				_settings = newBehaviors;
+				Settings = newBehaviors;
 				return;
 			}
 
 			// Add new common behaviors.
 			foreach ( var newCommon in newBehaviors.CommonIgnoreWindows.Window )
 			{
-				if ( _settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( newCommon ) ) == null )
+				if ( Settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( newCommon ) ) == null )
 				{
-					_settings.CommonIgnoreWindows.Window.Add( newCommon );
+					Settings.CommonIgnoreWindows.Window.Add( newCommon );
 				}
 			}
 
 			// Add new or overwrite existing process behaviors.
 			foreach ( var newProcess in newBehaviors.Process )
 			{
-				var same = _settings.Process.FirstOrDefault( p => newProcess.Equals( p ) );
+				var same = Settings.Process.FirstOrDefault( p => newProcess.Equals( p ) );
 				if ( same != null )
 				{
-					_settings.Process.Remove( same );
+					Settings.Process.Remove( same );
 				}
-				_settings.Process.Add( newProcess );
+				Settings.Process.Add( newProcess );
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace ABC.Windows.Desktop.Settings
 			return w =>
 			{
 				// Custom filter and common windows to filter.
-				if ( !_windowManagerFilter( w ) || _settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) ) != null )
+				if ( !_windowManagerFilter( w ) || Settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) ) != null )
 				{
 					return false;
 				}
@@ -208,7 +208,7 @@ namespace ABC.Windows.Desktop.Settings
 			{
 				FileVersionInfo versionInfo = process.MainModule.FileVersionInfo;
 
-				var matches = _settings.Process.Where( p =>
+				var matches = Settings.Process.Where( p =>
 					p.Name == process.ProcessName &&
 					( p.Version == null || versionInfo.FileVersion.StartsWith( p.Version ) ) ).ToList();
 

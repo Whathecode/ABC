@@ -35,18 +35,20 @@ namespace Generated.ProcessBehaviors
 		public bool Equals( ProcessBehaviorsProcess other )
 		{
 			return
-				string.Equals( nameField, other.nameField ) &&
-				string.Equals( companyNameField, other.companyNameField ) &&
-				string.Equals( versionField, other.versionField );
+				string.Equals( Name, other.Name ) &&
+				string.Equals( CompanyName, other.CompanyName ) &&
+				string.Equals( Version, other.Version ) &&
+				string.Equals( Author, other.Author );
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				int hashCode = (nameField != null ? nameField.GetHashCode() : 0);
-				hashCode = (hashCode * 397) ^ (companyNameField != null ? companyNameField.GetHashCode() : 0);
-				hashCode = (hashCode * 397) ^ (versionField != null ? versionField.GetHashCode() : 0);
+				int hashCode = (Name != null ? Name.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (CompanyName != null ? CompanyName.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (Version != null ? Version.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (Author != null ? Author.GetHashCode() : 0);
 				return hashCode;
 			}
 		}
