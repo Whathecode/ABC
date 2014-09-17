@@ -38,6 +38,7 @@
     <Compile Include="PluginHelper.cs" />
     <Compile Include="CompositionHelper.cs" />
     <Compile Include="IWindow.cs" />
+    <Compile Include="PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
