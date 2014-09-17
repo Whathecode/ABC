@@ -14,7 +14,7 @@ using System.Windows.Threading;
 using System.Xml;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Threading;
-
+using ABC.Common;
 
 namespace ABC.Interruptions.Google
 {
@@ -36,7 +36,7 @@ namespace ABC.Interruptions.Google
 
 
 		public GmailInterruptionTrigger()
-			: base( TimeSpan.FromMinutes( 1 ) )
+			: base( TimeSpan.FromMinutes( 1 ), new PluginInformation("Gmail", "Google", "Steven Jeuris") )
 		{
 			_dispatcher = Dispatcher.CurrentDispatcher;
 

@@ -60,5 +60,12 @@ namespace ABC.Interruptions
 				.SelectMany( h => PluginHelper<AbstractInterruptionTrigger>.SafePluginInvoke( h, t => t.GetInterruptionTypes() ) )
 				.ToList();
 		}
+
+		public List<PluginInformation> GetInterruptionInfos()
+		{
+			var infos = new List<PluginInformation>();
+			_interruptionTriggers.ForEach( it => infos.Add( it.Info ) );
+			return infos;
+		}
 	}
 }
