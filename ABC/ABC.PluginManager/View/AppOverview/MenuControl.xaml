@@ -1,0 +1,157 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:binding="clr-namespace:PluginManager.ViewModel.AppOverview.Binding"
+	xmlns:commandFactory="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
+	xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
+	x:Class="PluginManager.View.AppOverview.MenuControl"
+	mc:Ignorable="d" Height="200" Width="202">
+	<Grid>
+		
+		<StackPanel Margin="1,1,1,1">
+			
+			<StackPanel
+				Name="Panel1"
+				Height="150"
+				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllApplications}}">
+
+				<Label
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="AvailablePlugins"
+					Foreground="White" FontWeight="Bold">
+					<Label.Background>
+						<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+							<GradientStop Color="#FF80CEF3" Offset="0.01" />
+							<GradientStop Color="#FF5588A0" Offset="1" />
+						</LinearGradientBrush>
+					</Label.Background>
+				</Label>
+
+				<Button
+					Content="All"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllApplications}}" />
+				<Button
+					Content="Installed"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowInstalledApps}}" />
+				
+				<!-- TODO: Implement function of showing applications installed on the system. -->
+				<!--<Button
+					Content="Installed on System"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowEmpty}}" />-->
+				<Button
+					Content="On-line"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAvailableApps}}" />
+				
+				<!-- TODO: Implement function of showing plug-ins that can be updated. -->
+				<!--<Button
+					Content="Updates"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowEmpty}}" />-->
+				
+				<StackPanel.Triggers>
+					<EventTrigger RoutedEvent="UIElement.MouseLeftButtonUp">
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="Panel1"
+									Storyboard.TargetProperty="Height"
+									To="150"
+									Duration="0:0:0.50"
+									AccelerationRatio="0.6"
+									DecelerationRatio="0.4" />
+								<DoubleAnimation
+									Storyboard.TargetName="Panel2"
+									Storyboard.TargetProperty="Height"
+									To="26"
+									Duration="0:0:0.50"
+									AccelerationRatio="0.6"
+									DecelerationRatio="0.4" />
+							</Storyboard>
+						</BeginStoryboard>
+					</EventTrigger>
+				</StackPanel.Triggers>
+				
+			</StackPanel>
+			
+			<StackPanel
+				Name="Panel2"
+				Height="25"
+				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllInterruptions}}">
+				
+				<Label
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="Interruptions"
+					Foreground="White" FontWeight="Bold">
+					<Label.Background>
+						<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+							<GradientStop Color="#FF80CEF3" Offset="0.01" />
+							<GradientStop Color="#FF5588A0" Offset="1" />
+						</LinearGradientBrush>
+					</Label.Background>
+				</Label>
+
+				<Button
+					Content="All"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllInterruptions}}" />
+				<Button
+					Content="Installed"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowInstalledInterruptions}}" />
+				<Button
+					Content="On-line"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAvailableInterruptions}}" />
+				<!-- TODO: Implement function of showing plug-ins that can be updated. -->
+				<!--<Button
+					Content="Updates"
+					HorizontalContentAlignment="Center"
+					Background="{x:Null}"
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowEmpty}}" />-->
+
+				<StackPanel.Triggers>
+					<EventTrigger RoutedEvent="UIElement.MouseLeftButtonUp">
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="Panel1"
+									Storyboard.TargetProperty="Height"
+									To="26"
+									Duration="0:0:0.50"
+									AccelerationRatio="0.6"
+									DecelerationRatio="0.4" />
+								<DoubleAnimation
+									Storyboard.TargetName="Panel2"
+									Storyboard.TargetProperty="Height"
+									To="150"
+									Duration="0:0:0.50"
+									AccelerationRatio="0.6"
+									DecelerationRatio="0.4" />
+							</Storyboard>
+						</BeginStoryboard>
+					</EventTrigger>
+				</StackPanel.Triggers>
+				
+			</StackPanel>
+			
+		</StackPanel>
+		
+	</Grid>
+	
+</UserControl>
