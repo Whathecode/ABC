@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using PluginManager.common;
 using PluginManager.Model;
-using PluginManager.ViewModel.AppOverview.Binding;
 using PluginManager.ViewModel.PluginDetails;
+using PluginManager.ViewModel.PluginsOverview.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Aspects.ViewModel;
@@ -13,28 +13,29 @@ using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 
 namespace PluginManager.ViewModel.PluginsOverview
 {
-	[ViewModel( typeof( AppOverview.Binding.Properties ), typeof( Commands ) )]
+	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class AppOverviewViewModel
 	{
-		[NotifyProperty( AppOverview.Binding.Properties.AvailibleApps )]
+		[NotifyProperty( Binding.Properties.AvailibleApps )]
 		public ObservableCollection<PluginDetailsViewModel> DisplayedPlugins { get; set; }
 
-		[NotifyProperty( AppOverview.Binding.Properties.SelectedApplication )]
+		[NotifyProperty( Binding.Properties.SelectedApplication )]
 		public PluginDetailsViewModel SelectedApplication { get; set; }
 
-		[NotifyProperty( AppOverview.Binding.Properties.State )]
+		[NotifyProperty( Binding.Properties.State )]
 		public OverviewState State { get; private set; }
 
 		readonly List<PluginDetailsViewModel> _installedApps = new List<PluginDetailsViewModel>();
 		readonly List<PluginDetailsViewModel> _availableApps = new List<PluginDetailsViewModel>();
 		readonly List<PluginDetailsViewModel> _availableInterruptions = new List<PluginDetailsViewModel>();
 		readonly List<PluginDetailsViewModel> _installedInterruptions = new List<PluginDetailsViewModel>();
+		readonly List<PluginDetailsViewModel> _installedOnSystem = new List<PluginDetailsViewModel>();
 
-		public AppOverviewViewModel( List<Plugin> available, List<Plugin> installed )
+		public AppOverviewViewModel( List<Plugin> available, List<Plugin> installed, List<Plugin> installedOnSystem )
 		{
 			// By default all application connected plug-ins are shown on a fist screen.
 			State = OverviewState.Applications;
-			
+
 			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>();
 
 			// Create two plug-ins collections of application and interruption type.
@@ -59,6 +60,8 @@ namespace PluginManager.ViewModel.PluginsOverview
 
 			// By default all application connected plug-ins are shown on the start screen.
 			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedApps.Concat( _availableApps ) ) );
+
+			installedOnSystem.ForEach( installedOnSys => _installedOnSystem.Add( new PluginDetailsViewModel( installedOnSys, PluginFilter.Availible ) ) );
 
 			SelectFirst();
 		}
@@ -109,6 +112,14 @@ namespace PluginManager.ViewModel.PluginsOverview
 		{
 			ChangeState( OverviewState.Interruptions );
 			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedInterruptions.Concat( _availableInterruptions ) ) );
+			SelectFirst();
+		}
+
+		[CommandExecute( Commands.ShowInstalledOnSystem )]
+		public void ShowInstalledOnSystem()
+		{
+			ChangeState( OverviewState.Applications );
+			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedOnSystem ) );
 			SelectFirst();
 		}
 

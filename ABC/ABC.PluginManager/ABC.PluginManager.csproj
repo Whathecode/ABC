@@ -70,6 +70,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -124,6 +125,7 @@
     <Compile Include="PluginManagment\AssemblyInfo.cs" />
     <Compile Include="PluginManagment\AvailablePluginTrigger.cs" />
     <Compile Include="PluginManagment\InstalledPluginTrigger.cs" />
+    <Compile Include="PluginManagment\ApplicationRegistryBrowse.cs" />
     <Compile Include="ViewModel\PluginDetails\PluginDetailsViewModel.cs" />
     <Compile Include="ViewModel\PluginDetails\Binding\Binding.cs" />
     <Compile Include="ViewModel\PluginsOverview\AppOverviewViewModel.cs" />

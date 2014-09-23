@@ -2,7 +2,6 @@
 using System.Windows;
 using PluginManager.PluginManagment;
 using PluginManager.View.AppOverview;
-using PluginManager.ViewModel.AppOverview;
 using PluginManager.ViewModel.PluginsOverview;
 
 
@@ -16,10 +15,12 @@ namespace PluginManager
 		protected override void OnStartup( StartupEventArgs e )
 		{
 			base.OnStartup( e );
+
 			string pluginsPath = e.Args[ 0 ];
 			if ( pluginsPath == null || !Directory.Exists( pluginsPath ) )
 			{
 				MessageBox.Show( "Please specify plug-in installation directory as a command line parameter." );
+				Current.Shutdown();
 				return;
 			}
 
@@ -29,8 +30,10 @@ namespace PluginManager
 			// Get all installed plug-ins.
 			var installed = new InstalledPluginTrigger( pluginsPath );
 
+			// Get all applications installed on system.
+			var sysInstalled = new ApplicationRegistryBrowse();
 
-			var appOverviewViewModel = new AppOverviewViewModel( available.AvailablePlugins, installed.InstalledPlugins );
+			var appOverviewViewModel = new AppOverviewViewModel( available.AvailablePlugins, installed.InstalledPlugins, sysInstalled.InstalledOnSystem );
 			var appOverview = new AppOverview { DataContext = appOverviewViewModel };
 			appOverview.Show();
 		}

@@ -1,4 +1,4 @@
-﻿namespace PluginManager.ViewModel.AppOverview.Binding
+﻿namespace PluginManager.ViewModel.PluginsOverview.Binding
 {
 	public enum Properties
 	{
@@ -14,6 +14,7 @@
 		ShowAvailableInterruptions,
 		ShowInstalledInterruptions,
 		ShowAllApplications,
-		ShowAllInterruptions
+		ShowAllInterruptions,
+		ShowInstalledOnSystem
 	}
 }

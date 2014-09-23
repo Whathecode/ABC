@@ -57,17 +57,17 @@
 					DataContext="{Binding InterruptionsListViewModel}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.State, 
 									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Interruptions}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"  />
+									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 				<pluginList:PluginList
 					DataContext="{Binding VdmListViewModel}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.State, 
 									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Applications}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"  />
+									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 				<pluginList:PluginList
 					DataContext="{Binding PersistanceListViewModel}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.State, 
 									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Applications}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"  />
+									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 
 			</StackPanel>
 		</ScrollViewer>
@@ -114,13 +114,15 @@
 			<ListView.ItemTemplate>
 				<DataTemplate>
 					<DockPanel
-						MinWidth="320"
+						MinWidth="400"
+						MaxWidth="400"
 						MinHeight="60">
 
 						<StackPanel
 							DockPanel.Dock="Left"
 							Orientation="Horizontal"
-							VerticalAlignment="Center">
+							VerticalAlignment="Center" HorizontalAlignment="Left">
+
 							<Image
 								Width="40"
 								Height="40"
@@ -130,11 +132,15 @@
 							<StackPanel Margin="5">
 								<TextBlock
 									Text="{Binding Plugin.Name}"
+									HorizontalAlignment="Left"
 									VerticalAlignment="Center"
 									FontWeight="Bold"
-									FontSize="15" />
-								<TextBlock Text="{Binding Plugin.CompanyName}" />
+									TextWrapping="Wrap"
+									FontSize="14"
+									MaxWidth="300" />
+								<TextBlock Text="{Binding Plugin.CompanyName}" FontSize="12" />
 							</StackPanel>
+
 						</StackPanel>
 
 						<!--TODO: Buttons that will be used to control plug-ins.-->
