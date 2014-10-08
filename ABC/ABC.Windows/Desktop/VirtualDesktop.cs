@@ -83,7 +83,11 @@ namespace ABC.Windows.Desktop
 		internal VirtualDesktop( StoredSession session, AbstractPersistenceProvider persistenceProvider )
 			: this( persistenceProvider )
 		{
-			_persistedApplications = session.PersistedApplications.ToList();
+			// Null check in case of loading old activities, session.PersistedApplications can be null since activities schema has changed.
+			if ( session.PersistedApplications != null )
+			{
+				_persistedApplications = session.PersistedApplications.ToList();
+			}
 			IsSuspended = _persistedApplications.Count > 0;
 			_windows.AddRange( session.OpenWindows.Where( w => !w.Info.IsDestroyed() ) );
 		}
