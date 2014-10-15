@@ -158,7 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\spotifyhelper.xml" />
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\visual_studio_2012.xml" />
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_7.xml" />
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_7.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\windows_photo_viewer.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +168,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\tortoisegit.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\card_detector.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
