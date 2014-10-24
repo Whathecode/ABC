@@ -7,6 +7,7 @@ namespace ABC.PInvoke.Process
 {
 	public class ProcessTracker : AbstractDisposable
 	{
+		bool _hasStarted;
 		ManagementEventWatcher _startWatcher;
 		ManagementEventWatcher _stopWatcher;
 
@@ -37,10 +38,16 @@ namespace ABC.PInvoke.Process
 			_stopWatcher.Start();
 			_stopWatcher.EventArrived += OnStopEventArrived;
 
+			_hasStarted = true;
 		}
 
 		public void Stop()
 		{
+			if ( !_hasStarted )
+			{
+				return;
+			}
+
 			_startWatcher.Stop();
 			_stopWatcher.Stop();
 		}
