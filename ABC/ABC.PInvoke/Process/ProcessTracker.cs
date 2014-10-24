@@ -50,6 +50,7 @@ namespace ABC.PInvoke.Process
 
 			_startWatcher.Stop();
 			_stopWatcher.Stop();
+			_hasStarted = false;
 		}
 
 		void OnStartEventArrived( object sender, EventArrivedEventArgs e )
