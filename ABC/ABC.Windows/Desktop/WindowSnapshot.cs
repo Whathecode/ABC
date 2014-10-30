@@ -29,6 +29,7 @@ namespace ABC.Windows.Desktop
 	{
 		internal VirtualDesktop Desktop { get; private set; }
 		internal bool IsResponding { get; private set; }
+		internal bool IsBusy { get; private set; }
 
 		/// <summary>
 		///   Can be set to true when the user decides to ignore a certain window.
@@ -42,7 +43,10 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   The window this is a snapshot of.
 		/// </summary>
-		public Window Window { get { return new Window( Info ); } }
+		public Window Window
+		{
+			get { return new Window( Info ); }
+		}
 
 		[DataMember]
 		internal bool Visible { get; private set; }
@@ -77,8 +81,13 @@ namespace ABC.Windows.Desktop
 			{
 				Visible = Info.IsVisible();
 			}
+			
+			IsResponding = Info.IsResponding( 100 );
+		}
 
-			IsResponding = !Info.HasTimedOut( 1000 );
+		internal void CheckIfBusy()
+		{
+			IsBusy = Info.IsBusy( 100 );
 		}
 
 		internal void ChangeDesktop( VirtualDesktop newDesktop )
@@ -89,12 +98,7 @@ namespace ABC.Windows.Desktop
 		public override bool Equals( object obj )
 		{
 			var other = obj as WindowSnapshot;
-			if ( other == null )
-			{
-				return false;
-			}
-
-			return Equals( other );
+			return other != null && Equals( other );
 		}
 
 		protected bool Equals( WindowSnapshot other )

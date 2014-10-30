@@ -170,9 +170,7 @@
     <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\tortoisegit.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\card_detector.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Desktop\Settings\ProcessBehavior\card_detector.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -53,7 +53,8 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public bool IsSuspended { get; private set; }
 
-		List<PersistedApplication>  _persistedApplications = new List<PersistedApplication>();
+		List<PersistedApplication> _persistedApplications = new List<PersistedApplication>();
+
 		internal ReadOnlyCollection<PersistedApplication> PersistedApplications
 		{
 			get { return _persistedApplications.AsReadOnly(); }
@@ -98,18 +99,22 @@ namespace ABC.Windows.Desktop
 		{
 			// Perform operation, and only continue when it didn't complete on time.
 			Task operations = Task.Factory.StartNew( action );
-			bool completed = operations.Wait( TimeSpan.FromSeconds( 2 ) );
+			bool completed = operations.Wait( TimeSpan.FromSeconds( 1 ) );
 			if ( completed )
 			{
 				return;
 			}
 
 			// Notify application which windows are unresponsive.
-			_windows.ForEach( w => w.Update() );
-			List<WindowSnapshot> unresponsive = _windows.Where( w => !w.IsResponding ).ToList();
+			_windows.ForEach( w =>
+			{
+				w.Update();
+				w.CheckIfBusy();
+			} );
+			List<WindowSnapshot> unresponsive = _windows.Where( w => !w.IsResponding || w.IsBusy ).ToList();
 			throw new UnresponsiveWindowsException( this, unresponsive );
 		}
-		
+
 		/// <summary>
 		///   Adds the passed new windows and shows them in case the desktop is visible.
 		/// </summary>
