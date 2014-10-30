@@ -145,6 +145,8 @@ namespace ABC.Windows.Desktop
 		{
 			ThrowExceptionIfDisposed();
 
+			session.EnsureBackwardsCompatibility();
+
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			List<WindowSnapshot> otherWindows = StartupDesktop.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
