@@ -37,13 +37,25 @@ namespace ABC.Windows.Desktop
 		///   Holds the persisted application data.
 		/// </summary>
 		[DataMember]
-		internal readonly ReadOnlyCollection<PersistedApplication> PersistedApplications;
+		internal ReadOnlyCollection<PersistedApplication> PersistedApplications;
 
 
 		internal StoredSession( VirtualDesktop desktop )
 		{
 			OpenWindows = desktop.WindowSnapshots;
 			PersistedApplications = desktop.PersistedApplications;
+		}
+
+
+		/// <summary>
+		///   Updates the loaded data contract data within this stored session to be fully compatible with the current version of the ABC toolkit.
+		/// </summary>
+		internal void EnsureBackwardsCompatibility()
+		{
+			if ( PersistedApplications == null )
+			{
+				PersistedApplications = new ReadOnlyCollection<PersistedApplication>( new PersistedApplication[] {} );
+			}
 		}
 	}
 }

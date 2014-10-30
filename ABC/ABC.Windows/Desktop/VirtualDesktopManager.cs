@@ -6,6 +6,7 @@ using System.Security.Principal;
 using ABC.Applications.Persistence;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
+using Whathecode.System;
 using Whathecode.System.Extensions;
 using Whathecode.System.Security.Principal;
 using Whathecode.System.Windows;
@@ -31,7 +32,7 @@ namespace ABC.Windows.Desktop
 	///   You should have received a copy of the GNU General Public License
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
-	public class VirtualDesktopManager
+	public class VirtualDesktopManager : AbstractDisposable
 	{
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
@@ -48,6 +49,7 @@ namespace ABC.Windows.Desktop
 		public VirtualDesktop CurrentDesktop { get; private set; }
 
 		readonly List<VirtualDesktop> _desktops = new List<VirtualDesktop>();
+		bool _isClosed;
 
 		public IReadOnlyCollection<VirtualDesktop> Desktops
 		{
@@ -126,6 +128,8 @@ namespace ABC.Windows.Desktop
 		/// <returns>The newly created virtual desktop.</returns>
 		public VirtualDesktop CreateEmptyDesktop( string folder = null )
 		{
+			ThrowExceptionIfDisposed();
+
 			var newDesktop = new VirtualDesktop( _persistenceProvider ) { Folder = folder };
 			_desktops.Add( newDesktop );
 
@@ -139,6 +143,10 @@ namespace ABC.Windows.Desktop
 		/// <param name = "folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
 		public VirtualDesktop CreateDesktopFromSession( StoredSession session, string folder = null )
 		{
+			ThrowExceptionIfDisposed();
+
+			session.EnsureBackwardsCompatibility();
+
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			List<WindowSnapshot> otherWindows = StartupDesktop.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
@@ -168,6 +176,8 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void UpdateWindowAssociations()
 		{
+			ThrowExceptionIfDisposed();
+
 			// The desktop needs to be visible in order to update window associations.
 			if ( !CurrentDesktop.IsVisible )
 			{
@@ -196,6 +206,8 @@ namespace ABC.Windows.Desktop
 		/// <param name="desktop">The desktop to switch to.</param>
 		public void SwitchToDesktop( VirtualDesktop desktop )
 		{
+			ThrowExceptionIfDisposed();
+
 			if ( CurrentDesktop == desktop )
 			{
 				return;
@@ -230,6 +242,8 @@ namespace ABC.Windows.Desktop
 		{
 			Contract.Requires( from != null && to != null && from != to );
 
+			ThrowExceptionIfDisposed();
+
 			if ( from == StartupDesktop )
 			{
 				CloseAndThrow( new ArgumentException( "Can't remove the startup desktop.", "from" ) );
@@ -248,8 +262,13 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void Close()
 		{
+			ThrowExceptionIfDisposed();
+
 			try
 			{
+				_isClosed = true;
+
+				_persistenceProvider.Dispose();
 				_desktops.ForEach( d => d.Show() );
 
 				// Show all cut windows again.
@@ -320,6 +339,8 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void CutWindow( Window window )
 		{
+			ThrowExceptionIfDisposed();
+
 			UpdateWindowAssociations(); // Newly added windows might need to be cut too, so update associations first.
 
 			if ( !_windowFilter( window ) )
@@ -337,10 +358,22 @@ namespace ABC.Windows.Desktop
 		/// </summary>
 		public void PasteWindows()
 		{
+			ThrowExceptionIfDisposed();
+
 			UpdateWindowAssociations(); // There might be newly added windows of which the z-order isn't known yet, so update associations first.
 
 			CurrentDesktop.AddWindows( WindowClipboard.ToList() );
 			WindowClipboard.Clear();
+		}
+
+		protected override void FreeManagedResources()
+		{
+			Close();
+		}
+
+		protected override void FreeUnmanagedResources()
+		{
+			// Nothing to do.
 		}
 	}
 }
