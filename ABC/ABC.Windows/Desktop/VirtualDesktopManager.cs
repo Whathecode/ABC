@@ -65,9 +65,7 @@ namespace ABC.Windows.Desktop
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
 		public VirtualDesktopManager( ISettings settings )
-			: this( settings, new CollectionPersistenceProvider() )
-		{
-		}
+			: this( settings, new CollectionPersistenceProvider() ) {}
 
 		/// <summary>
 		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
@@ -212,25 +210,37 @@ namespace ABC.Windows.Desktop
 			{
 				return;
 			}
-
+			
+			// Stores icon set connected to given desktop.
 			CurrentDesktop.Icons = DesktopManager.SaveDestopIcons();
-
+			
 			// Hide windows and show those from the new desktop.
 			UpdateWindowAssociations();
-			CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
-			desktop.Show();
-			
-			// Update desktop icons.
-			if ( desktop.Folder != null )
-			{
-				DesktopManager.ChangeDesktopFolder( desktop.Folder );
-			}
-			if ( desktop.Icons != null )
-			{
-				DesktopManager.ArrangeDesktopIcons( desktop.Icons );
-			}
 
-			CurrentDesktop = desktop;
+			// TODO: Think how application should behave if unresponsive exception is thrown during hide?
+			CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
+
+			// Try-finally block in case of unresponsive exception is thrown during the show method.
+			// Activity switch in each case has to be completed, leaving virtual desktop in a consistent state.
+			try
+			{
+				desktop.Show();
+			}
+			finally
+			{
+				// Update desktop icons.
+				if ( desktop.Folder != null )
+				{
+					DesktopManager.ChangeDesktopFolder( desktop.Folder );
+				}
+				if ( desktop.Icons != null )
+				{
+
+					DesktopManager.ArrangeDesktopIcons( desktop.Icons );
+				}
+
+				CurrentDesktop = desktop;
+			}
 		}
 
 		/// <summary>
@@ -311,8 +321,8 @@ namespace ABC.Windows.Desktop
 		{
 			List<WindowInfo> newWindows = WindowManager.GetWindows().Except(
 				_desktops.SelectMany( d => d.WindowSnapshots ).Concat( WindowClipboard )
-						 .Select( w => w.Info )
-						 .Concat( _invalidWindows ) ).ToList();
+					.Select( w => w.Info )
+					.Concat( _invalidWindows ) ).ToList();
 
 			var validWindows = new List<WindowSnapshot>();
 			foreach ( var w in newWindows )
