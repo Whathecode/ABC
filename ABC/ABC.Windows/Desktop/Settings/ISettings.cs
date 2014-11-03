@@ -25,6 +25,12 @@ namespace ABC.Windows.Desktop.Settings
 	public interface ISettings
 	{
 		/// <summary>
+		///   Setting to determine whether desktop icons and its layout should be stored individually for every virtual desktop. False by default.
+		/// </summary>
+		/// <returns>True when desktop icons and its layout are stored individually for every virtual desktop, false otherwise.</returns>
+		bool StoreDesktopIcons { get; }
+		
+		/// <summary>
 		///   Setting to determine whether windows with higher privileges than the running application should be ignored or not. False by default.
 		/// </summary>
 		/// <returns>True when windows with higher privileges than the running application are ignored, false otherwise.</returns>

@@ -40,16 +40,19 @@ namespace ABC.Windows.Desktop.Settings
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
 		readonly Func<Window, bool> _windowManagerFilter;
 		readonly bool _ignoreRequireElevatedPrivileges;
+		readonly bool _storeDesktopIcons;
 
 
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
 		/// </summary>
+		/// <param name="storeDesktopIcons">Setting to determine if desktop icons and its layout should be stored individually for each virtual desktop.</param>
 		/// <param name = "ignoreRequireElevatedPrivileges">Setting to determine whether windows with higher privileges than the running application should be ignored or not.</param>
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
-		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null )
+		public LoadedSettings( bool storeDesktopIcons = false, bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null )
 		{
+			_storeDesktopIcons = storeDesktopIcons;
 			_ignoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
 
 			if ( loadDefaultSettings )
@@ -83,7 +86,10 @@ namespace ABC.Windows.Desktop.Settings
 				_windowManagerFilter = customWindowFilter;
 			}
 		}
-
+		public bool StoreDesktopIcons
+		{
+			get { return _storeDesktopIcons; }
+		}
 
 		public bool IgnoreRequireElevatedPrivileges
 		{

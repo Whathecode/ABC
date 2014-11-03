@@ -50,6 +50,7 @@ namespace ABC.Windows.Desktop
 
 		readonly List<VirtualDesktop> _desktops = new List<VirtualDesktop>();
 		bool _isClosed;
+		readonly bool _storeDesktopIcons;
 
 		public IReadOnlyCollection<VirtualDesktop> Desktops
 		{
@@ -79,6 +80,7 @@ namespace ABC.Windows.Desktop
 		{
 			Contract.Requires( settings != null );
 
+			_storeDesktopIcons = settings.StoreDesktopIcons;
 			_persistenceProvider = persistenceProvider;
 
 			if ( !settings.IgnoreRequireElevatedPrivileges )
@@ -103,10 +105,12 @@ namespace ABC.Windows.Desktop
 			_hideBehavior = settings.CreateHideBehavior();
 
 			// Initialize startup desktop.
-			StartupDesktop = new VirtualDesktop( _persistenceProvider )
+			StartupDesktop = new VirtualDesktop( _persistenceProvider );
+			if ( _storeDesktopIcons )
 			{
-				Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop )
-			};
+				StartupDesktop.Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
+			}
+
 			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 			StartupDesktop.Show(); // The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
 			CurrentDesktop = StartupDesktop;
@@ -128,7 +132,12 @@ namespace ABC.Windows.Desktop
 		{
 			ThrowExceptionIfDisposed();
 
-			var newDesktop = new VirtualDesktop( _persistenceProvider ) { Folder = folder };
+			var newDesktop = new VirtualDesktop( _persistenceProvider );
+			if ( _storeDesktopIcons )
+			{
+				newDesktop.Folder = folder ?? Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
+				newDesktop.Icons = DesktopManager.SaveDestopIcons();
+			}
 			_desktops.Add( newDesktop );
 
 			return newDesktop;
@@ -161,7 +170,12 @@ namespace ABC.Windows.Desktop
 				StartupDesktop.RemoveWindows( otherWindows );
 			}
 
-			var restored = new VirtualDesktop( session, _persistenceProvider ) { Folder = folder };
+			var restored = new VirtualDesktop( session, _persistenceProvider );
+			if ( _storeDesktopIcons )
+			{
+				restored.Folder = folder ?? Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
+				restored.Icons = DesktopManager.SaveDestopIcons();
+			}
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
 			_desktops.Add( restored );
 
@@ -210,10 +224,7 @@ namespace ABC.Windows.Desktop
 			{
 				return;
 			}
-			
-			// Stores icon set connected to given desktop.
-			CurrentDesktop.Icons = DesktopManager.SaveDestopIcons();
-			
+
 			// Hide windows and show those from the new desktop.
 			UpdateWindowAssociations();
 
@@ -228,14 +239,12 @@ namespace ABC.Windows.Desktop
 			}
 			finally
 			{
-				// Update desktop icons.
-				if ( desktop.Folder != null )
+				if ( _storeDesktopIcons )
 				{
+					// Stores the icons.
+					CurrentDesktop.Icons = DesktopManager.SaveDestopIcons();
+					// Update desktop icons.
 					DesktopManager.ChangeDesktopFolder( desktop.Folder );
-				}
-				if ( desktop.Icons != null )
-				{
-
 					DesktopManager.ArrangeDesktopIcons( desktop.Icons );
 				}
 
