@@ -99,19 +99,14 @@ namespace ABC.Windows.Desktop
 		{
 			// Perform operation, and only continue when it didn't complete on time.
 			Task operations = Task.Factory.StartNew( action );
-			bool completed = operations.Wait( TimeSpan.FromSeconds( 1 ) );
+			bool completed = operations.Wait( TimeSpan.FromSeconds( 2 ) );
 			if ( completed )
 			{
 				return;
 			}
 
 			// Notify application which windows are unresponsive.
-			_windows.ForEach( w =>
-			{
-				w.Update();
-				w.CheckIfBusy();
-			} );
-			List<WindowSnapshot> unresponsive = _windows.Where( w => !w.IsResponding || w.IsBusy ).ToList();
+			List<WindowSnapshot> unresponsive = _windows.Where( w => !w.IsResponding() ).ToList();
 			throw new UnresponsiveWindowsException( this, unresponsive );
 		}
 

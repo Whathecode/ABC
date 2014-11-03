@@ -49,7 +49,6 @@ namespace ABC.Windows.Desktop
 		public VirtualDesktop CurrentDesktop { get; private set; }
 
 		readonly List<VirtualDesktop> _desktops = new List<VirtualDesktop>();
-		bool _isClosed;
 		readonly bool _storeDesktopIcons;
 
 		public IReadOnlyCollection<VirtualDesktop> Desktops
@@ -285,8 +284,6 @@ namespace ABC.Windows.Desktop
 
 			try
 			{
-				_isClosed = true;
-
 				_persistenceProvider.Dispose();
 				_desktops.ForEach( d => d.Show() );
 

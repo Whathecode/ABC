@@ -28,8 +28,6 @@ namespace ABC.Windows.Desktop
 	public class WindowSnapshot
 	{
 		internal VirtualDesktop Desktop { get; private set; }
-		internal bool IsResponding { get; private set; }
-		internal bool IsBusy { get; private set; }
 
 		/// <summary>
 		///   Can be set to true when the user decides to ignore a certain window.
@@ -81,13 +79,15 @@ namespace ABC.Windows.Desktop
 			{
 				Visible = Info.IsVisible();
 			}
-			
-			IsResponding = Info.IsResponding( 100 );
 		}
 
-		internal void CheckIfBusy()
+		/// <summary>
+		///   Verifies whether or not the window is responsive.
+		/// </summary>
+		/// <returns></returns>
+		internal bool IsResponding()
 		{
-			IsBusy = Info.IsBusy( 100 );
+			return Info.IsRespondingWithin( 100 );
 		}
 
 		internal void ChangeDesktop( VirtualDesktop newDesktop )
