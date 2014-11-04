@@ -50,7 +50,6 @@ namespace ABC.Windows.Desktop
 
 		readonly List<VirtualDesktop> _desktops = new List<VirtualDesktop>();
 		bool _isClosed;
-		readonly bool _storeDesktopIcons;
 
 		public IReadOnlyCollection<VirtualDesktop> Desktops
 		{
@@ -80,7 +79,6 @@ namespace ABC.Windows.Desktop
 		{
 			Contract.Requires( settings != null );
 
-			_storeDesktopIcons = settings.StoreDesktopIcons;
 			_persistenceProvider = persistenceProvider;
 
 			if ( !settings.IgnoreRequireElevatedPrivileges )
@@ -106,10 +104,7 @@ namespace ABC.Windows.Desktop
 
 			// Initialize startup desktop.
 			StartupDesktop = new VirtualDesktop( _persistenceProvider );
-			if ( _storeDesktopIcons )
-			{
-				StartupDesktop.Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
-			}
+
 
 			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 			StartupDesktop.Show(); // The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
@@ -126,18 +121,13 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Create an empty virtual desktop with no windows assigned to it.
 		/// </summary>
-		/// <param name = "folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
 		/// <returns>The newly created virtual desktop.</returns>
-		public VirtualDesktop CreateEmptyDesktop( string folder = null )
+		public VirtualDesktop CreateEmptyDesktop()
 		{
 			ThrowExceptionIfDisposed();
 
 			var newDesktop = new VirtualDesktop( _persistenceProvider );
-			if ( _storeDesktopIcons )
-			{
-				newDesktop.Folder = folder ?? Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
-				newDesktop.Icons = DesktopManager.SaveDestopIcons();
-			}
+
 			_desktops.Add( newDesktop );
 
 			return newDesktop;
@@ -147,8 +137,8 @@ namespace ABC.Windows.Desktop
 		///   Creates a new desktop from a stored session.
 		/// </summary>
 		/// <param name = "session">The newly created virtual desktop.</param>
-		/// <param name = "folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
-		public VirtualDesktop CreateDesktopFromSession( StoredSession session, string folder = null )
+		/// <returns>The restored virtual desktop.</returns>
+		public VirtualDesktop CreateDesktopFromSession( StoredSession session )
 		{
 			ThrowExceptionIfDisposed();
 
@@ -171,11 +161,7 @@ namespace ABC.Windows.Desktop
 			}
 
 			var restored = new VirtualDesktop( session, _persistenceProvider );
-			if ( _storeDesktopIcons )
-			{
-				restored.Folder = folder ?? Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
-				restored.Icons = DesktopManager.SaveDestopIcons();
-			}
+
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
 			_desktops.Add( restored );
 
@@ -239,15 +225,6 @@ namespace ABC.Windows.Desktop
 			}
 			finally
 			{
-				if ( _storeDesktopIcons )
-				{
-					// Stores the icons.
-					CurrentDesktop.Icons = DesktopManager.SaveDestopIcons();
-					// Update desktop icons.
-					DesktopManager.ChangeDesktopFolder( desktop.Folder );
-					DesktopManager.ArrangeDesktopIcons( desktop.Icons );
-				}
-
 				CurrentDesktop = desktop;
 			}
 		}

@@ -9,7 +9,7 @@ using Interop = Whathecode.Interop.User32;
 
 namespace ABC.Windows
 {
-    public class DesktopManager
+    public class IconManager
     {
 
         /// <summary>
