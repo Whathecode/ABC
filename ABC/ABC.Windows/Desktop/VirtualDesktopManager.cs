@@ -213,18 +213,32 @@ namespace ABC.Windows.Desktop
 			// Hide windows and show those from the new desktop.
 			UpdateWindowAssociations();
 
-			// TODO: Think how application should behave if unresponsive exception is thrown during hide?
-			CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
-
-			// Try-finally block in case of unresponsive exception is thrown during the show method.
-			// Activity switch in each case has to be completed, leaving virtual desktop in a consistent state.
+			
+			// Catch unresponsive windows during hide and show operations then aggregate and re-throw the exception.
+ 			// Switch desktop operation code block (show, hide and change of current desktop) has to be executed entirely.
+			var unresponsiveWindows = new List<WindowSnapshot>();
+			try
+			{
+				CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
+			}
+			catch ( UnresponsiveWindowsException e ) 
+			{
+				unresponsiveWindows.AddRange( e.UnresponsiveWindows );
+			}
 			try
 			{
 				desktop.Show();
 			}
-			finally
+			catch ( UnresponsiveWindowsException e ) 
 			{
-				CurrentDesktop = desktop;
+				unresponsiveWindows = unresponsiveWindows.Union( e.UnresponsiveWindows ).ToList();
+			}
+
+			CurrentDesktop = desktop;
+
+			if ( unresponsiveWindows.Count > 0 )
+			{
+				throw new UnresponsiveWindowsException( desktop, unresponsiveWindows );
 			}
 		}
 
