@@ -81,15 +81,6 @@ namespace ABC.Windows.Desktop
 			}
 		}
 
-		/// <summary>
-		///   Verifies whether or not the window is responsive.
-		/// </summary>
-		/// <returns></returns>
-		internal bool IsResponding()
-		{
-			return Info.IsRespondingWithin( 100 );
-		}
-
 		internal void ChangeDesktop( VirtualDesktop newDesktop )
 		{
 			Desktop = newDesktop;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using ABC.Applications.Persistence;
 using ABC.Common;
 using Whathecode.System.Extensions;
@@ -91,23 +90,28 @@ namespace ABC.Windows.Desktop
 
 
 		/// <summary>
-		///   When windows don't process Win32 messages, they can lock up the VDM.
-		///   This method runs the passed operation, and suggests recovering when the operation lasts too long by ignoring the offending applications in subsequent calls.
+		///   Reposition a set of windows.
 		/// </summary>
-		/// <param name="action">The window operation to perform.</param>
-		void SafeWindowOperation( Action action )
+		/// <param name="toPosition">The windows which are being repositioned.</param>
+		/// <param name="changeZOrder">
+		///   When true, the windows's Z orders are changed to reflect the order of the toPosition list.
+		///   The first item in the list will appear at the top, while the last item will appear at the bottom.
+		/// </param>
+		/// <returns>A list of unresponsive windows which could not be repositioned.</returns>
+		List<WindowSnapshot> RepositionWindows( IEnumerable<RepositionWindowInfo> toPosition, bool changeZOrder )
 		{
-			// Perform operation, and only continue when it didn't complete on time.
-			Task operations = Task.Factory.StartNew( action );
-			bool completed = operations.Wait( TimeSpan.FromSeconds( 2 ) );
-			if ( completed )
+			var unresponsive = new List<WindowSnapshot>();
+
+			try
 			{
-				return;
+				WindowManager.RepositionWindows( toPosition.ToList(), true, changeZOrder );
+			}
+			catch ( Whathecode.System.Windows.UnresponsiveWindowsException e )
+			{
+				unresponsive = e.UnresponsiveWindows.Select( u => _windows.First( w => w.Info.Equals( u ) ) ).ToList();
 			}
 
-			// Notify application which windows are unresponsive.
-			List<WindowSnapshot> unresponsive = _windows.Where( w => !w.IsResponding() ).ToList();
-			throw new UnresponsiveWindowsException( this, unresponsive );
+			return unresponsive;
 		}
 
 		/// <summary>
@@ -125,6 +129,7 @@ namespace ABC.Windows.Desktop
 			// Make sure to show the newly added windows in case they were hidden.
 			if ( IsVisible && toAdd.Any( w => w.Visible && !w.Info.IsVisible() ) )
 			{
+				// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 				Show();
 			}
 		}
@@ -135,13 +140,15 @@ namespace ABC.Windows.Desktop
 		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
 		internal void RemoveWindows( List<WindowSnapshot> toRemove )
 		{
+			var unresponsiveWindows = new List<WindowSnapshot>();
+
 			if ( IsVisible && toRemove.Any() )
 			{
 				// Hide windows.
-				var hideWindows = toRemove
+				IEnumerable<RepositionWindowInfo> hideWindows = toRemove
 					.Where( w => !w.Ignore && !w.Info.IsDestroyed() )
 					.Select( w => new RepositionWindowInfo( w.Info ) { Visible = false } );
-				SafeWindowOperation( () => WindowManager.RepositionWindows( hideWindows.ToList() ) );
+				unresponsiveWindows = RepositionWindows( hideWindows, false );
 			}
 
 			toRemove.ForEach( w =>
@@ -149,6 +156,8 @@ namespace ABC.Windows.Desktop
 				w.ChangeDesktop( null );
 				_windows.Remove( w );
 			} );
+
+			ThrowIfUnresponsive( unresponsiveWindows );
 		}
 
 		/// <summary>
@@ -158,6 +167,8 @@ namespace ABC.Windows.Desktop
 		{
 			IsVisible = true;
 
+			var unresponsiveWindows = new List<WindowSnapshot>();
+
 			// Reposition windows.
 			// Topmost windows are repositioned separately in order to prevent non-topmost windows from becoming topmost when moving them above topmost windows in the z-order.
 			var allWindows = _windows
@@ -166,17 +177,19 @@ namespace ABC.Windows.Desktop
 			allWindows.ForEach( group =>
 			{
 				var showWindows = group.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
-				SafeWindowOperation( () => WindowManager.RepositionWindows( showWindows.ToList(), true ) );
+				unresponsiveWindows.AddRange( RepositionWindows( showWindows, true ) );
 			} );
 
 			// Activate top window.
 			// TODO: Is the topmost window always the previous active one? Possibly a better check is needed.
 			// TODO: Which window to activate when desktops are merged?
-			WindowSnapshot first = _windows.FirstOrDefault( w => w.Visible );
+			WindowSnapshot first = _windows.FirstOrDefault( w => w.Visible && !unresponsiveWindows.Contains( w ) );
 			if ( first != null )
 			{
 				first.Info.SetForegroundWindow();
 			}
+
+			ThrowIfUnresponsive( unresponsiveWindows );
 		}
 
 		/// <summary>
@@ -191,11 +204,24 @@ namespace ABC.Windows.Desktop
 			// Find windows to hide using process specific hide behaviors.
 			var toHide = _windows
 				.Where( w => !w.Ignore && w.Visible )
-				.SelectMany( w => hideBehavior( w.Info ) );
+				.SelectMany( w => hideBehavior( w.Info ) )
+				.ToList();
 
 			// Hide windows.
 			var hideWindows = toHide.Select( w => new RepositionWindowInfo( w ) { Visible = false } );
-			SafeWindowOperation( () => WindowManager.RepositionWindows( hideWindows.ToList() ) );
+			List<WindowSnapshot> unresponsiveWindows = RepositionWindows( hideWindows, false );
+
+			ThrowIfUnresponsive( unresponsiveWindows );
+		}
+
+		void ThrowIfUnresponsive( List<WindowSnapshot> unresponsiveWindows )
+		{
+			if ( unresponsiveWindows.Count == 0 )
+			{
+				return;
+			}
+
+			throw new UnresponsiveWindowsException( this, unresponsiveWindows );
 		}
 
 		/// <summary>
@@ -275,6 +301,7 @@ namespace ABC.Windows.Desktop
 			}
 
 			List<WindowSnapshot> snapshots = toTransfer.Select( w => new WindowSnapshot( this, w.WindowInfo ) ).ToList();
+			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 			RemoveWindows( snapshots );
 			destination.AddWindows( snapshots );
 		}

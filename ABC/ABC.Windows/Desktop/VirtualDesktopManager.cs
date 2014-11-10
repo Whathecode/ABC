@@ -183,6 +183,7 @@ namespace ABC.Windows.Desktop
 
 			// Update window associations for the currently open desktop.
 			CurrentDesktop.AddWindows( GetNewWindows() );
+			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 			CurrentDesktop.RemoveWindows( CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() );
 			CurrentDesktop.WindowSnapshots.ForEach( w => w.Update() );
 
@@ -210,12 +211,8 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			// Hide windows and show those from the new desktop.
+			// Hide windows for current desktop and show those from the new desktop.
 			UpdateWindowAssociations();
-
-			
-			// Catch unresponsive windows during hide and show operations then aggregate and re-throw the exception.
- 			// Switch desktop operation code block (show, hide and change of current desktop) has to be executed entirely.
 			var unresponsiveWindows = new List<WindowSnapshot>();
 			try
 			{
@@ -236,6 +233,7 @@ namespace ABC.Windows.Desktop
 
 			CurrentDesktop = desktop;
 
+			// If there were any unresponsive windows during the hide or show operation, rethrow an aggregated exception.
 			if ( unresponsiveWindows.Count > 0 )
 			{
 				throw new UnresponsiveWindowsException( desktop, unresponsiveWindows );
@@ -276,6 +274,7 @@ namespace ABC.Windows.Desktop
 			try
 			{
 				_persistenceProvider.Dispose();
+				// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 				_desktops.ForEach( d => d.Show() );
 
 				// Show all cut windows again.
@@ -357,6 +356,7 @@ namespace ABC.Windows.Desktop
 
 			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( CurrentDesktop, w.WindowInfo ) ).ToList();
 			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
+			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 			CurrentDesktop.RemoveWindows( cutWindows );
 		}
 
