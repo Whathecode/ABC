@@ -74,6 +74,9 @@ namespace ABC.Windows.Desktop
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
 		/// <param name = "persistenceProvider">Allows state of applications to be persisted and restored.</param>
+		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
+		/// <exception cref="BadImageFormatException">Thrown when other than x64 VDM is run to operate on x64 platform.</exception>
+		/// <exception cref="NotSupportedException">Thrown when VDM is not started without necessary privileges.</exception>
 		public VirtualDesktopManager( ISettings settings, AbstractPersistenceProvider persistenceProvider )
 		{
 			Contract.Requires( settings != null );
@@ -104,17 +107,41 @@ namespace ABC.Windows.Desktop
 			// Initialize startup desktop.
 			StartupDesktop = new VirtualDesktop( _persistenceProvider );
 
-
-			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
-			StartupDesktop.Show(); // The desktop was shown before startup, but make sure the VirtualDesktop instance knows this as well.
-			CurrentDesktop = StartupDesktop;
-			StartupDesktop.AddWindows( GetNewWindows() );
-
-			_desktops.Add( CurrentDesktop );
+			var postException = new Action( () =>
+			{
+				CurrentDesktop = StartupDesktop;
+				StartupDesktop.AddWindows( GetNewWindows() );
+				_desktops.Add( CurrentDesktop );
+				UpdateWindowAssociations();
+			} );
 
 			_monitorServer = new MonitorVdmPipeServer( this );
 
-			UpdateWindowAssociations();
+			SafeWindowOperation( () => StartupDesktop.Show(), true, postException );
+		}
+
+		List<WindowSnapshot> SafeWindowOperation( Action unsafeOperation, bool throwException, Action postOperation = null )
+		{
+			var unresponsiveWindows = new List<WindowSnapshot>();
+			try
+			{
+				unsafeOperation();
+			}
+			catch ( UnresponsiveWindowsException exception )
+			{
+				unresponsiveWindows.AddRange( exception.UnresponsiveWindows );
+			}
+
+			if ( postOperation != null )
+			{
+				postOperation();
+			}
+
+			if ( unresponsiveWindows.Count != 0 && throwException )
+			{
+				throw new UnresponsiveWindowsException( CurrentDesktop, unresponsiveWindows );
+			}
+			return unresponsiveWindows;
 		}
 
 		/// <summary>
@@ -146,21 +173,11 @@ namespace ABC.Windows.Desktop
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			List<WindowSnapshot> otherWindows = StartupDesktop.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
-			try
-			{
-				StartupDesktop.RemoveWindows( otherWindows );
-			}
-			catch ( UnresponsiveWindowsException e )
-			{
-				// TODO: For now simply ignore hanging windows from loaded sessions.
-				// This is quite rare, as it only occurs when restarting the app while the hanging application is still running on any other desktop than the startup desktop.
-				// Ideally however, the API user is notified of this and is given a choice.
-				e.IgnoreAllWindows();
-				StartupDesktop.RemoveWindows( otherWindows );
-			}
+
+			// Remove windows and not throw an exception in case of unresponsive window, API user will have to handle unresponsive window later.
+			SafeWindowOperation( () => StartupDesktop.RemoveWindows( otherWindows ), false );
 
 			var restored = new VirtualDesktop( session, _persistenceProvider );
-
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
 			_desktops.Add( restored );
 
@@ -171,6 +188,7 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Update which windows are associated to the current virtual desktop.
 		/// </summary>
+		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
 		public void UpdateWindowAssociations()
 		{
 			ThrowExceptionIfDisposed();
@@ -183,25 +201,31 @@ namespace ABC.Windows.Desktop
 
 			// Update window associations for the currently open desktop.
 			CurrentDesktop.AddWindows( GetNewWindows() );
-			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
-			CurrentDesktop.RemoveWindows( CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() );
-			CurrentDesktop.WindowSnapshots.ForEach( w => w.Update() );
 
-			// Remove destroyed windows from places where they are cached.
-			var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
-			foreach ( var w in destroyedWindows )
+			var postException = new Action( () =>
 			{
-				lock ( _invalidWindows )
+				CurrentDesktop.WindowSnapshots.ForEach( w => w.Update() );
+
+				// Remove destroyed windows from places where they are cached.
+				var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
+				foreach ( var w in destroyedWindows )
 				{
-					_invalidWindows.Remove( w );
+					lock ( _invalidWindows )
+					{
+						_invalidWindows.Remove( w );
+					}
 				}
-			}
+			} );
+
+			SafeWindowOperation( () => CurrentDesktop.RemoveWindows(
+				CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() ), true, postException );
 		}
 
 		/// <summary>
 		///   Switch to the given virtual desktop.
 		/// </summary>
 		/// <param name="desktop">The desktop to switch to.</param>
+		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
 		public void SwitchToDesktop( VirtualDesktop desktop )
 		{
 			ThrowExceptionIfDisposed();
@@ -211,32 +235,22 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			// Hide windows for current desktop and show those from the new desktop.
+
 			UpdateWindowAssociations();
-			var unresponsiveWindows = new List<WindowSnapshot>();
-			try
-			{
-				CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
-			}
-			catch ( UnresponsiveWindowsException e ) 
-			{
-				unresponsiveWindows.AddRange( e.UnresponsiveWindows );
-			}
-			try
-			{
-				desktop.Show();
-			}
-			catch ( UnresponsiveWindowsException e ) 
-			{
-				unresponsiveWindows = unresponsiveWindows.Union( e.UnresponsiveWindows ).ToList();
-			}
+
+			// Hide windows for current desktop and show those from the new desktop.
+			var unresponsiveWindows = SafeWindowOperation( () =>
+				CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() ), false ).ToList();
+
+			// Show windows from the new desktop.
+			unresponsiveWindows = unresponsiveWindows.Union( SafeWindowOperation( desktop.Show, false ) ).ToList();
 
 			CurrentDesktop = desktop;
 
-			// If there were any unresponsive windows during the hide or show operation, rethrow an aggregated exception.
+			// If there were any unresponsive windows during the hide or show unsafeOperation, re throw an aggregated exception.
 			if ( unresponsiveWindows.Count > 0 )
 			{
-				throw new UnresponsiveWindowsException( desktop, unresponsiveWindows );
+				throw new UnresponsiveWindowsException( CurrentDesktop, unresponsiveWindows );
 			}
 		}
 
@@ -270,23 +284,22 @@ namespace ABC.Windows.Desktop
 		public void Close()
 		{
 			ThrowExceptionIfDisposed();
+			_persistenceProvider.Dispose();
 
+			// TODO: Decide what to do with unresponsive windows.
+			var unresponsiveWindows = new List<WindowSnapshot>();
+			_desktops.ForEach( d => unresponsiveWindows.AddRange( SafeWindowOperation( d.Show, false ) ) );
+
+			// Show all cut windows again.
+			var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } ).ToList();
 			try
 			{
-				_persistenceProvider.Dispose();
-				// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
-				_desktops.ForEach( d => d.Show() );
-
-				// Show all cut windows again.
-				var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } );
-				WindowManager.RepositionWindows( showWindows.ToList(), true );
+				// TODO: This is the case that reposition could be called without exception throwing (exception at this point does not to be handled- try catch is not needed).
+				WindowManager.RepositionWindows( showWindows, true, true );
 			}
 			catch ( UnresponsiveWindowsException e )
 			{
-				e.IgnoreAllWindows();
-
-				// Try again now that the problematic windows are ignored.
-				Close();
+				// TODO: Decide if re-throw unresponsive exception (during close it might be pointless).
 			}
 		}
 
@@ -343,6 +356,7 @@ namespace ABC.Windows.Desktop
 		///   Cut a given window from the currently open desktop and store it in a clipboard.
 		///   TODO: What if a window from a different desktop is passed? Should this be supported?
 		/// </summary>
+		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
 		public void CutWindow( Window window )
 		{
 			ThrowExceptionIfDisposed();
@@ -356,8 +370,8 @@ namespace ABC.Windows.Desktop
 
 			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( CurrentDesktop, w.WindowInfo ) ).ToList();
 			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
-			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
-			CurrentDesktop.RemoveWindows( cutWindows );
+
+			SafeWindowOperation( () => CurrentDesktop.RemoveWindows( cutWindows ), true );
 		}
 
 		/// <summary>
