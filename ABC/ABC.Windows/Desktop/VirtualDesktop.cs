@@ -31,6 +31,13 @@ namespace ABC.Windows.Desktop
 	/// </license>
 	public class VirtualDesktop
 	{
+		internal delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
+
+		/// <summary>
+		///   Event which is triggered when unresponsive windows are detected.
+		/// </summary>
+		internal event UnresponsiveWindowsHandler UnresponsiveWindowDetectedEvent;
+
 		List<WindowSnapshot> _windows = new List<WindowSnapshot>();
 		readonly AbstractPersistenceProvider _persistenceProvider;
 
@@ -116,6 +123,7 @@ namespace ABC.Windows.Desktop
 
 		/// <summary>
 		///   Adds the passed new windows and shows them in case the desktop is visible.
+		///   Unresponsive window event is triggered when newly added, hidden window is detected as unresponsive.
 		/// </summary>
 		/// <param name = "newWindows">New windows associated to this virtual desktop.</param>
 		internal void AddWindows( List<WindowSnapshot> newWindows )
@@ -129,13 +137,13 @@ namespace ABC.Windows.Desktop
 			// Make sure to show the newly added windows in case they were hidden.
 			if ( IsVisible && toAdd.Any( w => w.Visible && !w.Info.IsVisible() ) )
 			{
-				// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 				Show();
 			}
 		}
 
 		/// <summary>
 		///   Remove windows which no longer belong to this desktop.
+		///   Unresponsive event is triggered when any unresponsive windows are detected during remove operation.
 		/// </summary>
 		/// <param name = "toRemove">Windows which no longer belong to the desktop.</param>
 		internal void RemoveWindows( List<WindowSnapshot> toRemove )
@@ -157,15 +165,22 @@ namespace ABC.Windows.Desktop
 				_windows.Remove( w );
 			} );
 
-			ThrowIfUnresponsive( unresponsiveWindows );
+			TriggerIfUnresponsive( unresponsiveWindows );
 		}
 
 		/// <summary>
 		///   Show all windows associated with this virtual desktop.
+		///   Unresponsive window event is triggered when any unresponsive windows are detected during show operation.
 		/// </summary>
 		internal void Show()
 		{
 			IsVisible = true;
+
+			// Early out when virtual desktop has not windows.
+			if ( _windows.Count == 0 )
+			{
+				return;
+			}
 
 			var unresponsiveWindows = new List<WindowSnapshot>();
 
@@ -189,11 +204,12 @@ namespace ABC.Windows.Desktop
 				first.Info.SetForegroundWindow();
 			}
 
-			ThrowIfUnresponsive( unresponsiveWindows );
+			TriggerIfUnresponsive( unresponsiveWindows );
 		}
 
 		/// <summary>
-		///   Hide all windows associated with this virtual desktop.
+		/// Hide all windows associated with this virtual desktop.
+		/// Unresponsive window event is triggered when any unresponsive windows are detected during hide operation.
 		/// </summary>
 		internal void Hide( Func<WindowInfo, List<WindowInfo>> hideBehavior )
 		{
@@ -211,17 +227,17 @@ namespace ABC.Windows.Desktop
 			var hideWindows = toHide.Select( w => new RepositionWindowInfo( w ) { Visible = false } );
 			List<WindowSnapshot> unresponsiveWindows = RepositionWindows( hideWindows, false );
 
-			ThrowIfUnresponsive( unresponsiveWindows );
+			TriggerIfUnresponsive( unresponsiveWindows );
 		}
 
-		void ThrowIfUnresponsive( List<WindowSnapshot> unresponsiveWindows )
+		void TriggerIfUnresponsive( List<WindowSnapshot> unresponsiveWindows )
 		{
 			if ( unresponsiveWindows.Count == 0 )
 			{
 				return;
 			}
 
-			throw new UnresponsiveWindowsException( this, unresponsiveWindows );
+			UnresponsiveWindowDetectedEvent( unresponsiveWindows, this );
 		}
 
 		/// <summary>
@@ -301,7 +317,6 @@ namespace ABC.Windows.Desktop
 			}
 
 			List<WindowSnapshot> snapshots = toTransfer.Select( w => new WindowSnapshot( this, w.WindowInfo ) ).ToList();
-			// TODO: An UnresponsiveWindowsException can be thrown here which is not handled!
 			RemoveWindows( snapshots );
 			destination.AddWindows( snapshots );
 		}

@@ -34,6 +34,13 @@ namespace ABC.Windows.Desktop
 	/// </license>
 	public class VirtualDesktopManager : AbstractDisposable
 	{
+		public delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
+
+		/// <summary>
+		///   Event which is triggered when in any virtual desktop unresponsive windows are detected.
+		/// </summary>
+		public event UnresponsiveWindowsHandler UnresponsiveWindowDetectedEvent;
+
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
 		readonly Func<Window, bool> _windowFilter;
@@ -49,6 +56,7 @@ namespace ABC.Windows.Desktop
 		public VirtualDesktop CurrentDesktop { get; private set; }
 
 		readonly List<VirtualDesktop> _desktops = new List<VirtualDesktop>();
+
 
 		public IReadOnlyCollection<VirtualDesktop> Desktops
 		{
@@ -74,9 +82,8 @@ namespace ABC.Windows.Desktop
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
 		/// <param name = "persistenceProvider">Allows state of applications to be persisted and restored.</param>
-		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
-		/// <exception cref="BadImageFormatException">Thrown when other than x64 VDM is run to operate on x64 platform.</exception>
-		/// <exception cref="NotSupportedException">Thrown when VDM is not started without necessary privileges.</exception>
+		/// <exception cref="BadImageFormatException">Thrown when other than x64 virtual desktop manager is run to operate on x64 platform.</exception>
+		/// <exception cref="NotSupportedException">Thrown when virtual desktop manager is started without necessary privileges.</exception>
 		public VirtualDesktopManager( ISettings settings, AbstractPersistenceProvider persistenceProvider )
 		{
 			Contract.Requires( settings != null );
@@ -104,44 +111,22 @@ namespace ABC.Windows.Desktop
 			_windowFilter = settings.CreateWindowFilter();
 			_hideBehavior = settings.CreateHideBehavior();
 
-			// Initialize startup desktop.
+			// Initialize visible startup desktop.
 			StartupDesktop = new VirtualDesktop( _persistenceProvider );
-
-			var postException = new Action( () =>
-			{
-				CurrentDesktop = StartupDesktop;
-				StartupDesktop.AddWindows( GetNewWindows() );
-				_desktops.Add( CurrentDesktop );
-				UpdateWindowAssociations();
-			} );
+			CurrentDesktop = StartupDesktop;
+			StartupDesktop.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
+			StartupDesktop.Show(); // Make virtual desktop visible.
+			StartupDesktop.AddWindows( GetNewWindows() );
+			_desktops.Add( CurrentDesktop );
 
 			_monitorServer = new MonitorVdmPipeServer( this );
 
-			SafeWindowOperation( () => StartupDesktop.Show(), true, postException );
+			UpdateWindowAssociations();
 		}
 
-		List<WindowSnapshot> SafeWindowOperation( Action unsafeOperation, bool throwException, Action postOperation = null )
+		void OnUnresponsiveWindowDetected( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop )
 		{
-			var unresponsiveWindows = new List<WindowSnapshot>();
-			try
-			{
-				unsafeOperation();
-			}
-			catch ( UnresponsiveWindowsException exception )
-			{
-				unresponsiveWindows.AddRange( exception.UnresponsiveWindows );
-			}
-
-			if ( postOperation != null )
-			{
-				postOperation();
-			}
-
-			if ( unresponsiveWindows.Count != 0 && throwException )
-			{
-				throw new UnresponsiveWindowsException( CurrentDesktop, unresponsiveWindows );
-			}
-			return unresponsiveWindows;
+			UnresponsiveWindowDetectedEvent( unresponsiveWindows, desktop );
 		}
 
 		/// <summary>
@@ -153,6 +138,7 @@ namespace ABC.Windows.Desktop
 			ThrowExceptionIfDisposed();
 
 			var newDesktop = new VirtualDesktop( _persistenceProvider );
+			newDesktop.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
 
 			_desktops.Add( newDesktop );
 
@@ -160,7 +146,7 @@ namespace ABC.Windows.Desktop
 		}
 
 		/// <summary>
-		///   Creates a new desktop from a stored session.
+		/// Creates a new desktop from a stored session.
 		/// </summary>
 		/// <param name = "session">The newly created virtual desktop.</param>
 		/// <returns>The restored virtual desktop.</returns>
@@ -173,11 +159,10 @@ namespace ABC.Windows.Desktop
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			List<WindowSnapshot> otherWindows = StartupDesktop.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
-
-			// Remove windows and not throw an exception in case of unresponsive window, API user will have to handle unresponsive window later.
-			SafeWindowOperation( () => StartupDesktop.RemoveWindows( otherWindows ), false );
+			StartupDesktop.RemoveWindows( otherWindows );
 
 			var restored = new VirtualDesktop( session, _persistenceProvider );
+			restored.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
 			_desktops.Add( restored );
 
@@ -188,7 +173,6 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Update which windows are associated to the current virtual desktop.
 		/// </summary>
-		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
 		public void UpdateWindowAssociations()
 		{
 			ThrowExceptionIfDisposed();
@@ -202,30 +186,24 @@ namespace ABC.Windows.Desktop
 			// Update window associations for the currently open desktop.
 			CurrentDesktop.AddWindows( GetNewWindows() );
 
-			var postException = new Action( () =>
+			CurrentDesktop.RemoveWindows( CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() );
+			CurrentDesktop.WindowSnapshots.ForEach( w => w.Update() );
+
+			// Remove destroyed windows from places where they are cached.
+			var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
+			foreach ( var w in destroyedWindows )
 			{
-				CurrentDesktop.WindowSnapshots.ForEach( w => w.Update() );
-
-				// Remove destroyed windows from places where they are cached.
-				var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
-				foreach ( var w in destroyedWindows )
+				lock ( _invalidWindows )
 				{
-					lock ( _invalidWindows )
-					{
-						_invalidWindows.Remove( w );
-					}
+					_invalidWindows.Remove( w );
 				}
-			} );
-
-			SafeWindowOperation( () => CurrentDesktop.RemoveWindows(
-				CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() ), true, postException );
+			}
 		}
 
 		/// <summary>
 		///   Switch to the given virtual desktop.
 		/// </summary>
 		/// <param name="desktop">The desktop to switch to.</param>
-		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
 		public void SwitchToDesktop( VirtualDesktop desktop )
 		{
 			ThrowExceptionIfDisposed();
@@ -235,23 +213,13 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-
 			UpdateWindowAssociations();
 
 			// Hide windows for current desktop and show those from the new desktop.
-			var unresponsiveWindows = SafeWindowOperation( () =>
-				CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() ), false ).ToList();
-
-			// Show windows from the new desktop.
-			unresponsiveWindows = unresponsiveWindows.Union( SafeWindowOperation( desktop.Show, false ) ).ToList();
+			CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
+			desktop.Show();
 
 			CurrentDesktop = desktop;
-
-			// If there were any unresponsive windows during the hide or show unsafeOperation, re throw an aggregated exception.
-			if ( unresponsiveWindows.Count > 0 )
-			{
-				throw new UnresponsiveWindowsException( CurrentDesktop, unresponsiveWindows );
-			}
 		}
 
 		/// <summary>
@@ -280,26 +248,25 @@ namespace ABC.Windows.Desktop
 
 		/// <summary>
 		///   Closes the virtual desktop manager by restoring all windows.
+		///   Unresponsive window event is triggered when previously cut windows become unresponsive during show operation.
 		/// </summary>
 		public void Close()
 		{
 			ThrowExceptionIfDisposed();
 			_persistenceProvider.Dispose();
 
-			// TODO: Decide what to do with unresponsive windows.
-			var unresponsiveWindows = new List<WindowSnapshot>();
-			_desktops.ForEach( d => unresponsiveWindows.AddRange( SafeWindowOperation( d.Show, false ) ) );
+			// Show all windows from all virtual desktops.
+			_desktops.ForEach( d => d.Show() );
 
 			// Show all cut windows again.
 			var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } ).ToList();
 			try
 			{
-				// TODO: This is the case that reposition could be called without exception throwing (exception at this point does not to be handled- try catch is not needed).
 				WindowManager.RepositionWindows( showWindows, true, true );
 			}
-			catch ( UnresponsiveWindowsException e )
+			catch ( Whathecode.System.Windows.UnresponsiveWindowsException e )
 			{
-				// TODO: Decide if re-throw unresponsive exception (during close it might be pointless).
+				UnresponsiveWindowDetectedEvent( e.UnresponsiveWindows.Select( info => new WindowSnapshot( CurrentDesktop, info ) ).ToList(), CurrentDesktop );
 			}
 		}
 
@@ -371,7 +338,7 @@ namespace ABC.Windows.Desktop
 			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( CurrentDesktop, w.WindowInfo ) ).ToList();
 			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
 
-			SafeWindowOperation( () => CurrentDesktop.RemoveWindows( cutWindows ), true );
+			CurrentDesktop.RemoveWindows( cutWindows );
 		}
 
 		/// <summary>
@@ -384,7 +351,6 @@ namespace ABC.Windows.Desktop
 			UpdateWindowAssociations(); // There might be newly added windows of which the z-order isn't known yet, so update associations first.
 
 			CurrentDesktop.AddWindows( WindowClipboard.ToList() );
-			WindowClipboard.Clear();
 		}
 
 		protected override void FreeManagedResources()
