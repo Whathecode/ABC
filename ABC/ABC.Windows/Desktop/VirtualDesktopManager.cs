@@ -323,7 +323,6 @@ namespace ABC.Windows.Desktop
 		///   Cut a given window from the currently open desktop and store it in a clipboard.
 		///   TODO: What if a window from a different desktop is passed? Should this be supported?
 		/// </summary>
-		/// <exception cref="UnresponsiveWindowsException">Thrown when any unresponsive window is detected.</exception>
 		public void CutWindow( Window window )
 		{
 			ThrowExceptionIfDisposed();
