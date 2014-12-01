@@ -4,7 +4,7 @@
 namespace PluginManager.common
 {
 	[Flags]
-	public enum PluginFilter
+	public enum PluginState
 	{
 		/// <summary>
 		/// Show only installed plug-ins grouped as applications.
@@ -12,13 +12,13 @@ namespace PluginManager.common
 		Installed = 1,
 
 		/// <summary>
-		/// Show available plug-ins that are not installed as applications.
-		/// </summary>
-		Availible = 2,
-
-		/// <summary>
 		/// Show updates for installed plug-ins.
 		/// </summary>
-		Updates = 4,
+		Updates = 3,
+
+		/// <summary>
+		/// Show available plug-ins that are not installed as applications.
+		/// </summary>
+		Availible = 4
 	}
 }

@@ -44,24 +44,24 @@ namespace PluginManager.ViewModel.PluginsOverview
 			{
 				if ( plugin.Interruptions.Count == 0 )
 				{
-					_availableApps.Add( new PluginDetailsViewModel( plugin, PluginFilter.Availible ) );
+					_availableApps.Add( new PluginDetailsViewModel( plugin, PluginState.Availible ) );
 				}
 				else
 				{
-					_availableInterruptions.Add( new PluginDetailsViewModel( plugin, PluginFilter.Availible ) );
+					_availableInterruptions.Add( new PluginDetailsViewModel( plugin, PluginState.Availible ) );
 				}
 			}
 
 			GiveDisplayId( installed );
 
 			// Populate installed applications plug-ins and interruptions.
-			installed.Where( app => app.Interruptions.Count != 0 ).ForEach( i => _installedInterruptions.Add( new PluginDetailsViewModel( i, PluginFilter.Installed ) ) );
-			installed.Where( app => app.Interruptions.Count == 0 ).ForEach( a => _installedApps.Add( new PluginDetailsViewModel( a, PluginFilter.Installed ) ) );
+			installed.Where( app => app.Interruptions.Count != 0 ).ForEach( i => _installedInterruptions.Add( new PluginDetailsViewModel( i, PluginState.Installed ) ) );
+			installed.Where( app => app.Interruptions.Count == 0 ).ForEach( a => _installedApps.Add( new PluginDetailsViewModel( a, PluginState.Installed ) ) );
 
 			// By default all application connected plug-ins are shown on the start screen.
 			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedApps.Concat( _availableApps ) ) );
 
-			installedOnSystem.ForEach( installedOnSys => _installedOnSystem.Add( new PluginDetailsViewModel( installedOnSys, PluginFilter.Availible ) ) );
+			installedOnSystem.ForEach( installedOnSys => _installedOnSystem.Add( new PluginDetailsViewModel( installedOnSys, PluginState.Availible ) ) );
 
 			SelectFirst();
 		}

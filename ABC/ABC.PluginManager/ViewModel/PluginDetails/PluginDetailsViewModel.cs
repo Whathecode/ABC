@@ -17,7 +17,7 @@ namespace PluginManager.ViewModel.PluginDetails
 		public Configuration SelectedConfigurationItem { get; set; }
 
 		[NotifyProperty( Binding.Properties.State )]
-		public PluginFilter State { get; private set; }
+		public PluginState State { get; private set; }
 
 		public Plugin Plugin { get; set; }
 		public PluginListViewModel VdmListViewModel { get; private set; }
@@ -25,23 +25,23 @@ namespace PluginManager.ViewModel.PluginDetails
 		public PluginListViewModel PersistanceListViewModel { get; private set; }
 
 
-		public PluginDetailsViewModel( Plugin plugin, PluginFilter state )
+		public PluginDetailsViewModel( Plugin plugin, PluginState state )
 		{
 			Plugin = plugin;
 			State = state;
 
 			// Initialize confutations collections.
-			if (plugin.Vdm != null)
+			if ( plugin.Vdm != null )
 			{
-				VdmListViewModel = new PluginListViewModel("VDM", plugin.Vdm, this);
+				VdmListViewModel = new PluginListViewModel( "VDM", plugin.Vdm, this );
 			}
-			if (plugin.Interruptions != null)
+			if ( plugin.Interruptions != null )
 			{
-				InterruptionsListViewModel = new PluginListViewModel("Interruptions", plugin.Interruptions, this);
+				InterruptionsListViewModel = new PluginListViewModel( "Interruptions", plugin.Interruptions, this );
 			}
-			if (plugin.Persistence != null)
+			if ( plugin.Persistence != null )
 			{
-				PersistanceListViewModel = new PluginListViewModel("Persistence", plugin.Persistence, this);
+				PersistanceListViewModel = new PluginListViewModel( "Persistence", plugin.Persistence, this );
 			}
 
 			// Select first element in ordered configurations collections. 

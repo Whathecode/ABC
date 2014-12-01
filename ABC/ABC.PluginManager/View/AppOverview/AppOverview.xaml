@@ -1,7 +1,7 @@
 ﻿<Window
 	x:Name="Window"
 	Title="Plugin Manager"
-	Width="1300"
+	Width="1420"
 	x:Class="PluginManager.View.AppOverview.AppOverview"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,17 +9,19 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
-	xmlns:converters="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
-	xmlns:appOverview1="clr-namespace:PluginManager.View.AppOverview"
+	xmlns:local="clr-namespace:PluginManager.View.AppOverview"
 	xmlns:pluginList="clr-namespace:PluginManager.View.PluginList"
 	xmlns:pluginsOverview="clr-namespace:PluginManager.ViewModel.PluginsOverview"
 	xmlns:pluginDetails="clr-namespace:PluginManager.ViewModel.PluginDetails"
+	xmlns:converters="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
 	MinWidth="940"
 	MinHeight="600">
-
+	<Window.Resources>
+		<local:StateToBrushConverter x:Key="StateToBrushConverter" />
+	</Window.Resources>
 	<DockPanel LastChildFill="True">
 
-		<appOverview1:MenuControl
+		<local:MenuControl
 			HorizontalAlignment="Left"
 			Margin="5"
 			Height="auto"
@@ -31,12 +33,12 @@
 
 			<StackPanel
 				Margin="10, 10, 10, 0"
+				Name="Plugins"
 				DataContext="{Binding SelectedItem, ElementName=AppsListView}"
 				d:DataContext="{d:DesignInstance Type=pluginDetails:PluginDetailsViewModel}"
 				Visibility="{Binding ElementName=Window, Path=DataContext.DisplayedPlugins.Count,
 									Converter={converters:SingleConditionConverter Expression='[0] > 0', 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Hidden}}}"
-				Name="Plugins">
+									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Hidden}}}">
 
 				<StackPanel.Resources>
 					<Style TargetType="StackPanel">
@@ -118,18 +120,18 @@
 						MaxWidth="400"
 						MinHeight="60">
 
-						<StackPanel
-							DockPanel.Dock="Left"
-							Orientation="Horizontal"
-							VerticalAlignment="Center" HorizontalAlignment="Left">
+						<Image
+							Width="40"
+							Height="40"
+							Source="{Binding Plugin.Icon}"
+							Margin="5"
+							DockPanel.Dock="Left" />
 
-							<Image
-								Width="40"
-								Height="40"
-								Source="{Binding Plugin.Icon}"
-								Margin="5" />
+						<Grid Margin="5">
 
-							<StackPanel Margin="5">
+							<StackPanel
+								VerticalAlignment="Center"
+								HorizontalAlignment="Left">
 								<TextBlock
 									Text="{Binding Plugin.Name}"
 									HorizontalAlignment="Left"
@@ -138,10 +140,38 @@
 									TextWrapping="Wrap"
 									FontSize="14"
 									MaxWidth="300" />
-								<TextBlock Text="{Binding Plugin.CompanyName}" FontSize="12" />
+								<TextBlock
+									Text="{Binding Plugin.CompanyName}"
+									FontSize="12"
+									VerticalAlignment="Bottom" />
 							</StackPanel>
 
-						</StackPanel>
+							<StackPanel
+								Orientation="Horizontal"
+								VerticalAlignment="Bottom"
+								HorizontalAlignment="Right">
+
+								<local:PluginIcon
+									Visibility="{Binding Plugin.Vdm.Count,
+										Converter={converters:SingleConditionConverter Expression='[0] > 0', IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
+									IconText="V"
+									IconBackground1="{Binding State, Converter={StaticResource StateToBrushConverter}}" />
+
+								<local:PluginIcon
+									Visibility="{Binding Plugin.Persistence.Count,
+										Converter={converters:SingleConditionConverter Expression='[0] > 0', IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
+									IconText="P"
+									IconBackground1="{Binding State, Converter={StaticResource StateToBrushConverter}}" />
+
+								<local:PluginIcon
+									Visibility="{Binding Plugin.Interruptions.Count,
+										Converter={converters:SingleConditionConverter Expression='[0] > 0', IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
+									IconText="I"
+									IconBackground1="{Binding State, Converter={StaticResource StateToBrushConverter}}" />
+
+							</StackPanel>
+						</Grid>
+
 
 						<!--TODO: Buttons that will be used to control plug-ins.-->
 						<!--<StackPanel
@@ -209,7 +239,6 @@
 					</Style.Triggers>
 				</Style>
 			</ListView.Style>
-
 		</ListView>
 
 	</DockPanel>

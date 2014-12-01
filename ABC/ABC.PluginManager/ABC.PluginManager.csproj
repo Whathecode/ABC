@@ -114,7 +114,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Common\PluginFilter.cs" />
+    <Compile Include="Common\PluginState.cs" />
     <Compile Include="Model\Plugins.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\PluginElement.cs" />
@@ -140,6 +140,10 @@
     <Compile Include="View\AppOverview\MenuControl.xaml.cs">
       <DependentUpon>MenuControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\AppOverview\PluginIcon.xaml.cs">
+      <DependentUpon>PluginIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AppOverview\StateToBrushConverter.cs" />
     <Compile Include="View\PluginList\PluginList.xaml.cs">
       <DependentUpon>PluginList.xaml</DependentUpon>
     </Compile>
@@ -148,6 +152,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\AppOverview\MenuControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\AppOverview\PluginIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
