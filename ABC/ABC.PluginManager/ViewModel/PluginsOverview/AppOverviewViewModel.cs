@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using PluginManager.common;
@@ -27,6 +28,7 @@ namespace PluginManager.ViewModel.PluginsOverview
 
 		readonly List<PluginDetailsViewModel> _installedApps = new List<PluginDetailsViewModel>();
 		readonly List<PluginDetailsViewModel> _availableApps = new List<PluginDetailsViewModel>();
+		readonly List<PluginDetailsViewModel> _installedAndAvailableApps = new List<PluginDetailsViewModel>();
 		readonly List<PluginDetailsViewModel> _availableInterruptions = new List<PluginDetailsViewModel>();
 		readonly List<PluginDetailsViewModel> _installedInterruptions = new List<PluginDetailsViewModel>();
 		readonly List<PluginDetailsViewModel> _installedOnSystem = new List<PluginDetailsViewModel>();
@@ -58,8 +60,35 @@ namespace PluginManager.ViewModel.PluginsOverview
 			installed.Where( app => app.Interruptions.Count != 0 ).ForEach( i => _installedInterruptions.Add( new PluginDetailsViewModel( i, PluginState.Installed ) ) );
 			installed.Where( app => app.Interruptions.Count == 0 ).ForEach( a => _installedApps.Add( new PluginDetailsViewModel( a, PluginState.Installed ) ) );
 
+			// Merge available application with installed to show them together in "all" view.
+			_availableApps.ForEach( availableApp =>
+			{
+				PluginDetailsViewModel pluginDetails = null;
+				var vdmList = new List<Configuration>();
+				var persistenceList = new List<Configuration>();
+				_installedApps.ForEach( installedApp =>
+				{
+					if ( availableApp.Plugin.Name.Equals( installedApp.Plugin.Name, StringComparison.CurrentCultureIgnoreCase ) )
+					{
+						vdmList = availableApp.VdmList.PluginList.Concat( installedApp.VdmList.PluginList ).ToList();
+						persistenceList = availableApp.PersistanceList.PluginList.Concat( installedApp.PersistanceList.PluginList ).ToList();
+					}
+					var plugin = new Plugin
+					{
+						Icon = availableApp.Plugin.Icon,
+						Name = availableApp.Plugin.Name,
+						CompanyName = availableApp.Plugin.CompanyName,
+						Persistence = persistenceList,
+						Vdm = vdmList
+					};
+					pluginDetails = new PluginDetailsViewModel( plugin, PluginState.Installed, PluginState.Installed, PluginState.Availible );
+				} );
+				_installedAndAvailableApps.Add( pluginDetails ?? availableApp );
+			} );
+			_installedAndAvailableApps = SortByAppName( _installedAndAvailableApps.Union( _installedApps, new PluginComparer() ) ).ToList();
+
 			// By default all application connected plug-ins are shown on the start screen.
-			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedApps.Concat( _availableApps ) ) );
+			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( _installedAndAvailableApps );
 
 			installedOnSystem.ForEach( installedOnSys => _installedOnSystem.Add( new PluginDetailsViewModel( installedOnSys, PluginState.Availible ) ) );
 
@@ -103,7 +132,7 @@ namespace PluginManager.ViewModel.PluginsOverview
 		public void ShowAllApplications()
 		{
 			ChangeState( OverviewState.Applications );
-			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedApps.Concat( _availableApps ) ) );
+			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( _installedAndAvailableApps );
 			SelectFirst();
 		}
 

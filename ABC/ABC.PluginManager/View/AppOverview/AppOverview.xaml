@@ -56,17 +56,17 @@
 				</StackPanel.Resources>
 
 				<pluginList:PluginList
-					DataContext="{Binding InterruptionsListViewModel}"
+					DataContext="{Binding InterruptionsList}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.State, 
 									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Interruptions}, 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 				<pluginList:PluginList
-					DataContext="{Binding VdmListViewModel}"
+					DataContext="{Binding VdmList}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.State, 
 									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Applications}, 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 				<pluginList:PluginList
-					DataContext="{Binding PersistanceListViewModel}"
+					DataContext="{Binding PersistanceList}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.State, 
 									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Applications}, 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
@@ -152,22 +152,22 @@
 								HorizontalAlignment="Right">
 
 								<local:PluginIcon
-									Visibility="{Binding Plugin.Vdm.Count,
+									Visibility="{Binding VdmList.PluginList.Count,
 										Converter={converters:SingleConditionConverter Expression='[0] > 0', IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
 									IconText="V"
-									IconBackground1="{Binding State, Converter={StaticResource StateToBrushConverter}}" />
+									IconBackground1="{Binding VdmState, Converter={StaticResource StateToBrushConverter}}" />
 
 								<local:PluginIcon
-									Visibility="{Binding Plugin.Persistence.Count,
+									Visibility="{Binding PersistanceList.PluginList.Count,
 										Converter={converters:SingleConditionConverter Expression='[0] > 0', IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
 									IconText="P"
-									IconBackground1="{Binding State, Converter={StaticResource StateToBrushConverter}}" />
+									IconBackground1="{Binding PersistanceState, Converter={StaticResource StateToBrushConverter}}" />
 
 								<local:PluginIcon
-									Visibility="{Binding Plugin.Interruptions.Count,
+									Visibility="{Binding InterruptionsList.PluginList.Count,
 										Converter={converters:SingleConditionConverter Expression='[0] > 0', IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
 									IconText="I"
-									IconBackground1="{Binding State, Converter={StaticResource StateToBrushConverter}}" />
+									IconBackground1="{Binding InterruptionsState, Converter={StaticResource StateToBrushConverter}}" />
 
 							</StackPanel>
 						</Grid>

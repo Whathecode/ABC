@@ -19,30 +19,36 @@ namespace PluginManager.ViewModel.PluginDetails
 		[NotifyProperty( Binding.Properties.State )]
 		public PluginState State { get; private set; }
 
-		public Plugin Plugin { get; set; }
-		public PluginListViewModel VdmListViewModel { get; private set; }
-		public PluginListViewModel InterruptionsListViewModel { get; private set; }
-		public PluginListViewModel PersistanceListViewModel { get; private set; }
+		[NotifyProperty( Binding.Properties.VdmState )]
+		public PluginState VdmState { get; private set; }
 
+		[NotifyProperty( Binding.Properties.PersistanceState )]
+		public PluginState PersistanceState { get; private set; }
+
+		[NotifyProperty( Binding.Properties.InterruptionsState )]
+		public PluginState InterruptionsState { get; private set; }
+
+		public Plugin Plugin { get; private set; }
+		public PluginListViewModel VdmList { get; private set; }
+		public PluginListViewModel InterruptionsList { get; private set; }
+		public PluginListViewModel PersistanceList { get; private set; }
 
 		public PluginDetailsViewModel( Plugin plugin, PluginState state )
+			: this( plugin, state, state, state ) {}
+
+
+		public PluginDetailsViewModel( Plugin plugin, PluginState vdmState , PluginState interruptionsState, PluginState persistenceState)
 		{
 			Plugin = plugin;
-			State = state;
-
-			// Initialize confutations collections.
-			if ( plugin.Vdm != null )
-			{
-				VdmListViewModel = new PluginListViewModel( "VDM", plugin.Vdm, this );
-			}
-			if ( plugin.Interruptions != null )
-			{
-				InterruptionsListViewModel = new PluginListViewModel( "Interruptions", plugin.Interruptions, this );
-			}
-			if ( plugin.Persistence != null )
-			{
-				PersistanceListViewModel = new PluginListViewModel( "Persistence", plugin.Persistence, this );
-			}
+			VdmState = vdmState;
+			PersistanceState = persistenceState;
+			InterruptionsState = interruptionsState;
+			
+			// Initialize configurations collections.
+			VdmList = new PluginListViewModel( "VDM", plugin.Vdm, this );
+			InterruptionsList = new PluginListViewModel( "Interruptions", plugin.Interruptions, this );
+			PersistanceList = new PluginListViewModel( "Persistence", plugin.Persistence, this );
+			
 
 			// Select first element in ordered configurations collections. 
 			if ( plugin.Interruptions != null && plugin.Interruptions.Any() )

@@ -130,6 +130,9 @@
     <Compile Include="ViewModel\PluginsOverview\OverviewState.cs" />
     <Compile Include="ViewModel\PluginList\Binding\Binding.cs" />
     <Compile Include="ViewModel\PluginList\PluginListViewModel.cs" />
+    <Compile Include="ViewModel\PluginsOverview\PluginComparer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="View\AppOverview\AppOverview.xaml.cs">
       <DependentUpon>AppOverview.xaml</DependentUpon>
     </Compile>

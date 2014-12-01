@@ -3,7 +3,10 @@
 	public enum Properties
 	{
 		State,
-		SelectedConfigurationItem
+		SelectedConfigurationItem,
+		VdmState,
+		PersistanceState,
+		InterruptionsState
 	}
 
 	public enum Commands
