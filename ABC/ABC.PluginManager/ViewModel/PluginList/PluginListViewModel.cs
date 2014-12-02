@@ -10,27 +10,27 @@ using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 
 namespace PluginManager.ViewModel.PluginList
 {
-	[ViewModel(typeof (Binding.Properties), typeof (Commands))]
+	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class PluginListViewModel
 	{
-		[NotifyProperty(Binding.Properties.ApplicationDatails)]
+		[NotifyProperty( Binding.Properties.ApplicationDatails )]
 		public PluginDetailsViewModel ApplicationDatails { get; set; }
 
-		[NotifyProperty(Binding.Properties.SelectedConfigurationItem)]
+		[NotifyProperty( Binding.Properties.SelectedConfigurationItem )]
 		public Configuration SelectedConfigurationItem { get; set; }
 
-		[NotifyPropertyChanged(Binding.Properties.SelectedConfigurationItem)]
-		public void OnSelectedConfigurationItemChanged(Configuration oldConfiguration, Configuration newConfiguration)
+		[NotifyPropertyChanged( Binding.Properties.SelectedConfigurationItem )]
+		public void OnSelectedConfigurationItemChanged( Configuration oldConfiguration, Configuration newConfiguration )
 		{
-			if (newConfiguration != null)
+			if ( newConfiguration != null )
 			{
 				ApplicationDatails.SelectedConfigurationItem = newConfiguration;
 			}
 		}
 
 		public string PluginListName { get; private set; }
-		
-		[NotifyProperty(Binding.Properties.PluginList)]
+
+		[NotifyProperty( Binding.Properties.PluginList )]
 		public ObservableCollection<Configuration> PluginList { get; private set; }
 
 		public PluginListViewModel()
@@ -38,10 +38,10 @@ namespace PluginManager.ViewModel.PluginList
 			Initialize();
 		}
 
-		public PluginListViewModel(string name, IEnumerable<Configuration> configurations, PluginDetailsViewModel pluginViewModel)
+		public PluginListViewModel( string name, IEnumerable<Configuration> configurations, PluginDetailsViewModel pluginViewModel )
 		{
 			PluginListName = name;
-			PluginList = new ObservableCollection<Configuration>(configurations);
+			PluginList = new ObservableCollection<Configuration>( configurations );
 			ApplicationDatails = pluginViewModel;
 		}
 
@@ -50,7 +50,7 @@ namespace PluginManager.ViewModel.PluginList
 			PluginList = new ObservableCollection<Configuration>();
 		}
 
-		[CommandExecute(Commands.DownloadAndOpenConfig)]
+		[CommandExecute( Commands.DownloadAndOpenConfig )]
 		public void DownloadAndOpenConfig()
 		{
 			// TODO: Possible implementation of download config plug-in control.
@@ -63,7 +63,7 @@ namespace PluginManager.ViewModel.PluginList
 			//}
 		}
 
-		[CommandExecute(Commands.DownloadAndOpenInstaller)]
+		[CommandExecute( Commands.DownloadAndOpenInstaller )]
 		public void DownloadAndOpenInstaller()
 		{
 			// TODO: Possible implementation of install method for plug-in control.

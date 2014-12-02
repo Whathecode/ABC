@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using PluginManager.common;
+
 
 namespace PluginManager.Model
 {
-	[System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+	[System.Xml.Serialization.XmlTypeAttribute( AnonymousType = true )]
 	public class Configuration : PluginElement
 	{
 		public Configuration()
 		{
-			Icon = new Uri("pack://application:,,,/View/icons/conf.png").AbsolutePath;
+			Icon = new Uri( "pack://application:,,,/View/icons/conf.png" ).AbsolutePath;
 			SupportedVersions = new List<string> { "-" };
 		}
 
@@ -16,9 +18,11 @@ namespace PluginManager.Model
 
 		public string Installer { get; set; }
 
-		[System.Xml.Serialization.XmlArrayItemAttribute("Version", IsNullable = false)]
+		[System.Xml.Serialization.XmlArrayItemAttribute( "Version", IsNullable = false )]
 		public List<string> SupportedVersions { get; set; }
 
 		public string Icon { get; set; }
+
+		public PluginState State { get; set; }
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using PluginManager.common;
@@ -35,62 +34,43 @@ namespace PluginManager.ViewModel.PluginsOverview
 
 		public AppOverviewViewModel( List<Plugin> available, List<Plugin> installed, List<Plugin> installedOnSystem )
 		{
-			// By default all application connected plug-ins are shown on a fist screen.
-			State = OverviewState.Applications;
-
-			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>();
-
-			// Create two plug-ins collections of application and interruption type.
-			GiveDisplayId( available );
-			foreach ( var plugin in available )
+			installed.ForEach( plugin =>
 			{
-				if ( plugin.Interruptions.Count == 0 )
-				{
-					_availableApps.Add( new PluginDetailsViewModel( plugin, PluginState.Availible ) );
-				}
-				else
-				{
-					_availableInterruptions.Add( new PluginDetailsViewModel( plugin, PluginState.Availible ) );
-				}
-			}
+				plugin.Vdm.ForEach( vdm => vdm.State = PluginState.Installed );
+				plugin.Persistence.ForEach( persistence => persistence.State = PluginState.Installed );
+				plugin.Interruptions.ForEach( interruption => interruption.State = PluginState.Installed );
+			} );
 
 			GiveDisplayId( installed );
+			installed = MergePlugins( installed );
+
+			available.ForEach( plugin =>
+			{
+				plugin.Vdm.ForEach( vdm => vdm.State = PluginState.Availible );
+				plugin.Persistence.ForEach( persistence => persistence.State = PluginState.Availible );
+				plugin.Interruptions.ForEach( interruption => interruption.State = PluginState.Availible );
+			} );
+
+			GiveDisplayId( available );
+			available = MergePlugins( available );
+
+			// Create two plug-ins collections of application and interruption type.
+			available.Where( app => app.Interruptions.Count != 0 ).ForEach( i => _availableInterruptions.Add( new PluginDetailsViewModel( i ) ) );
+			available.Where( app => app.Interruptions.Count == 0 ).ForEach( a => _availableApps.Add( new PluginDetailsViewModel( a ) ) );
 
 			// Populate installed applications plug-ins and interruptions.
-			installed.Where( app => app.Interruptions.Count != 0 ).ForEach( i => _installedInterruptions.Add( new PluginDetailsViewModel( i, PluginState.Installed ) ) );
-			installed.Where( app => app.Interruptions.Count == 0 ).ForEach( a => _installedApps.Add( new PluginDetailsViewModel( a, PluginState.Installed ) ) );
+			installed.Where( app => app.Interruptions.Count != 0 ).ForEach( i => _installedInterruptions.Add( new PluginDetailsViewModel( i ) ) );
+			installed.Where( app => app.Interruptions.Count == 0 ).ForEach( a => _installedApps.Add( new PluginDetailsViewModel( a ) ) );
 
-			// Merge available application with installed to show them together in "all" view.
-			_availableApps.ForEach( availableApp =>
-			{
-				PluginDetailsViewModel pluginDetails = null;
-				var vdmList = new List<Configuration>();
-				var persistenceList = new List<Configuration>();
-				_installedApps.ForEach( installedApp =>
-				{
-					if ( availableApp.Plugin.Name.Equals( installedApp.Plugin.Name, StringComparison.CurrentCultureIgnoreCase ) )
-					{
-						vdmList = availableApp.VdmList.PluginList.Concat( installedApp.VdmList.PluginList ).ToList();
-						persistenceList = availableApp.PersistanceList.PluginList.Concat( installedApp.PersistanceList.PluginList ).ToList();
-					}
-					var plugin = new Plugin
-					{
-						Icon = availableApp.Plugin.Icon,
-						Name = availableApp.Plugin.Name,
-						CompanyName = availableApp.Plugin.CompanyName,
-						Persistence = persistenceList,
-						Vdm = vdmList
-					};
-					pluginDetails = new PluginDetailsViewModel( plugin, PluginState.Installed, PluginState.Installed, PluginState.Availible );
-				} );
-				_installedAndAvailableApps.Add( pluginDetails ?? availableApp );
-			} );
-			_installedAndAvailableApps = SortByAppName( _installedAndAvailableApps.Union( _installedApps, new PluginComparer() ) ).ToList();
+			// Merge available applications with installed to show them together in "all" view.
+			var installedAndAvailable = MergePlugins( installed.Where( app => app.Interruptions.Count == 0 ).Concat( available.Where( app => app.Interruptions.Count == 0 ) ) );
+			installedAndAvailable.ForEach( a => _installedAndAvailableApps.Add( new PluginDetailsViewModel( a ) ) );
 
-			// By default all application connected plug-ins are shown on the start screen.
-			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( _installedAndAvailableApps );
+			// By default all application-connected plug-ins are shown on the start screen.
+			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedAndAvailableApps ) );
+			State = OverviewState.Applications;
 
-			installedOnSystem.ForEach( installedOnSys => _installedOnSystem.Add( new PluginDetailsViewModel( installedOnSys, PluginState.Availible ) ) );
+			installedOnSystem.ForEach( installedOnSys => _installedOnSystem.Add( new PluginDetailsViewModel( installedOnSys ) ) );
 
 			SelectFirst();
 		}
@@ -132,7 +112,7 @@ namespace PluginManager.ViewModel.PluginsOverview
 		public void ShowAllApplications()
 		{
 			ChangeState( OverviewState.Applications );
-			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( _installedAndAvailableApps );
+			DisplayedPlugins = new ObservableCollection<PluginDetailsViewModel>( SortByAppName( _installedAndAvailableApps ) );
 			SelectFirst();
 		}
 
@@ -155,6 +135,32 @@ namespace PluginManager.ViewModel.PluginsOverview
 		static IEnumerable<PluginDetailsViewModel> SortByAppName( IEnumerable<PluginDetailsViewModel> listToSort )
 		{
 			return listToSort.OrderBy( element => element.Plugin.Name );
+		}
+
+		List<Plugin> MergePlugins( IEnumerable<Plugin> installed )
+		{
+			var grouped = installed.GroupBy( plugin => plugin.Name.ToLower() ).ToList();
+
+			var merged = new List<Plugin>();
+			grouped.ForEach( duplicate =>
+			{
+				if ( duplicate.Count() > 1 )
+				{
+					var newPlugin = new Plugin( duplicate.First() );
+					foreach ( var plugin in duplicate )
+					{
+						newPlugin.Vdm.AddRange( plugin.Vdm );
+						newPlugin.Persistence.AddRange( plugin.Persistence );
+						newPlugin.Interruptions.AddRange( plugin.Interruptions );
+					}
+					merged.Add( newPlugin );
+				}
+				else
+				{
+					merged.Add( duplicate.First() );
+				}
+			} );
+			return merged;
 		}
 
 		void ChangeState( OverviewState state )

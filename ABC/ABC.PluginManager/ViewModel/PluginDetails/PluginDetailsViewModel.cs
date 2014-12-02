@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using PluginManager.common;
 using PluginManager.Model;
 using PluginManager.ViewModel.PluginDetails.Binding;
@@ -33,36 +34,41 @@ namespace PluginManager.ViewModel.PluginDetails
 		public PluginListViewModel InterruptionsList { get; private set; }
 		public PluginListViewModel PersistanceList { get; private set; }
 
-		public PluginDetailsViewModel( Plugin plugin, PluginState state )
-			: this( plugin, state, state, state ) {}
 
-
-		public PluginDetailsViewModel( Plugin plugin, PluginState vdmState , PluginState interruptionsState, PluginState persistenceState)
+		public PluginDetailsViewModel( Plugin plugin )
 		{
 			Plugin = plugin;
-			VdmState = vdmState;
-			PersistanceState = persistenceState;
-			InterruptionsState = interruptionsState;
-			
+			VdmState = VerifyPluginsState( plugin.Vdm );
+			PersistanceState = VerifyPluginsState( plugin.Persistence );
+			InterruptionsState = VerifyPluginsState( plugin.Interruptions );
+
 			// Initialize configurations collections.
 			VdmList = new PluginListViewModel( "VDM", plugin.Vdm, this );
 			InterruptionsList = new PluginListViewModel( "Interruptions", plugin.Interruptions, this );
 			PersistanceList = new PluginListViewModel( "Persistence", plugin.Persistence, this );
-			
 
 			// Select first element in ordered configurations collections. 
-			if ( plugin.Interruptions != null && plugin.Interruptions.Any() )
+			if ( plugin.Interruptions.Any() )
 			{
 				SelectedConfigurationItem = plugin.Interruptions.First();
 			}
-			else if ( plugin.Vdm != null && plugin.Vdm.Any() )
+			else if ( plugin.Vdm.Any() )
 			{
 				SelectedConfigurationItem = plugin.Vdm.First();
 			}
-			else if ( plugin.Persistence != null && plugin.Persistence.Any() )
+			else if ( plugin.Persistence.Any() )
 			{
 				SelectedConfigurationItem = plugin.Persistence.First();
 			}
+		}
+
+		PluginState VerifyPluginsState( IEnumerable<Configuration> pluList )
+		{
+			if ( pluList.Any( cfg => cfg.State == PluginState.Installed ) )
+			{
+				return PluginState.Installed;
+			}
+			return PluginState.Availible;
 		}
 
 		[CommandExecute( Commands.CreateNewConfiguartion )]
