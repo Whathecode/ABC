@@ -88,10 +88,10 @@
 										Margin="5"
 										Cursor="Hand"
 										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadAndOpenConfig}, ElementName=Control}" />
-									<StackPanel Margin="5">
+									<StackPanel Margin="5" VerticalAlignment="Center">
 										<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
-										<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" VerticalAlignment="Center" />
-										<TextBlock Text="{Binding SupportedVersions[0], StringFormat='Supported Version: {0}'}" />
+										<TextBlock Text="{Binding Author, StringFormat='Author: {0}', FallbackValue='Author: -', TargetNullValue='Author: -'}" />
+										<TextBlock Text="{Binding SupportedVersions[0], StringFormat='Supported Version: {0}', FallbackValue='Supported Version: -', TargetNullValue='Supported Version: -'}" />
 									</StackPanel>
 								</StackPanel>
 
