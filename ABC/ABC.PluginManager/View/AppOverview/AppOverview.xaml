@@ -188,8 +188,7 @@
 							Width="40"
 							Height="40"
 							Source="{Binding Plugin.Icon}"
-							Margin="5"
-							DockPanel.Dock="Left" />
+							Margin="5"/>
 
 						<Grid Margin="5">
 

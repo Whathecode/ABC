@@ -8,6 +8,8 @@
              xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
              xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginList.Binding"
              xmlns:pluginList="clr-namespace:PluginManager.ViewModel.PluginList"
+             xmlns:data="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
+             xmlns:common="clr-namespace:PluginManager.common"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance Type=pluginList:PluginListViewModel}">
@@ -61,7 +63,7 @@
 													Text="No items found."
 													Margin="20"
 													HorizontalAlignment="Center"
-													VerticalAlignment="Center"/>
+													VerticalAlignment="Center" />
 											</Border>
 										</ControlTemplate>
 									</Setter.Value>
@@ -73,25 +75,40 @@
 
 				<ListView.ItemTemplate>
 					<DataTemplate>
-						<DockPanel LastChildFill="False" MinWidth="320">
-							<StackPanel
-								DockPanel.Dock="Left"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-								<Image
-									Width="24"
-									Height="24"
-									Source="{Binding Icon}"
-									Margin="5"
-									Cursor="Hand"
-									behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadAndOpenConfig}, ElementName=Control}" />
-								<StackPanel Margin="5">
-									<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
-									<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" VerticalAlignment="Center" />
-									<TextBlock Text="{Binding SupportedVersions[0], StringFormat='Supported Version: {0}'}" />
+						<DockPanel MinWidth="320">
+							<Grid Margin="2">
+								<StackPanel
+									Orientation="Horizontal"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch">
+									<Image
+										Width="24"
+										Height="24"
+										Source="{Binding Icon}"
+										Margin="5"
+										Cursor="Hand"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadAndOpenConfig}, ElementName=Control}" />
+									<StackPanel Margin="5">
+										<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
+										<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" VerticalAlignment="Center" />
+										<TextBlock Text="{Binding SupportedVersions[0], StringFormat='Supported Version: {0}'}" />
+									</StackPanel>
 								</StackPanel>
-							</StackPanel>
-							
+
+								<StackPanel
+									Orientation="Horizontal"
+									VerticalAlignment="Bottom"
+									HorizontalAlignment="Right">
+									<Image
+										Source="../icons/ok.ico"
+										Width="25"
+										Height="25"
+										Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
+								</StackPanel>
+
+							</Grid>
 							<!--TODO: Buttons that will be used to control plug-ins.-->
 							<!--<StackPanel
 								DockPanel.Dock="Right"
