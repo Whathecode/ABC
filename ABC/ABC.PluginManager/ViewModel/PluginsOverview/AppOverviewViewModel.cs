@@ -142,12 +142,12 @@ namespace PluginManager.ViewModel.PluginsOverview
 			var grouped = installed.GroupBy( plugin => plugin.Name.ToLower() ).ToList();
 
 			var merged = new List<Plugin>();
-			grouped.ForEach( duplicate =>
+			grouped.ForEach( groupedElement =>
 			{
-				if ( duplicate.Count() > 1 )
+				if ( groupedElement.Count() > 1 )
 				{
-					var newPlugin = new Plugin( duplicate.First() );
-					foreach ( var plugin in duplicate )
+					var newPlugin = new Plugin( groupedElement.First() );
+					foreach ( var plugin in groupedElement )
 					{
 						newPlugin.Vdm.AddRange( plugin.Vdm );
 						newPlugin.Persistence.AddRange( plugin.Persistence );
@@ -157,7 +157,7 @@ namespace PluginManager.ViewModel.PluginsOverview
 				}
 				else
 				{
-					merged.Add( duplicate.First() );
+					merged.Add( groupedElement.First() );
 				}
 			} );
 			return merged;

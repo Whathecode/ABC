@@ -13,13 +13,13 @@ namespace PluginManager.View.AppOverview
 			switch ( value )
 			{
 				case PluginState.Availible:
-					return new SolidColorBrush( Color.FromArgb( 255, 23, 150, 235 ) );
+					return PluginIcon.AvailableColorBrush;
 				case PluginState.Installed:
-					return new SolidColorBrush( Color.FromArgb( 255, 25, 128, 42 ) );
+					return PluginIcon.InstalledColorBrush;
 				case PluginState.Updates:
-					return new SolidColorBrush( Color.FromArgb( 255, 230, 224, 62 ) );
+					return PluginIcon.UpdateColorBrush;
 				default:
-					return new SolidColorBrush( Color.FromArgb( 255, 23, 150, 235 ) );
+					return PluginIcon.AvailableColorBrush;
 			}
 		}
 

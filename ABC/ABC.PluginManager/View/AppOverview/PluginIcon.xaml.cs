@@ -26,7 +26,11 @@ namespace PluginManager.View.AppOverview
 
 		[DependencyProperty( Properties.IconText )]
 		public string IconText { get; set; }
-		
+
+		public static SolidColorBrush AvailableColorBrush = new SolidColorBrush( Color.FromArgb( 255, 23, 150, 235 ));
+		public static SolidColorBrush InstalledColorBrush = new SolidColorBrush( Color.FromArgb(  255, 25, 128, 42 ));
+		public static SolidColorBrush UpdateColorBrush = new SolidColorBrush( Color.FromArgb( 255, 230, 224, 62 ));
+
 		// The dependency property which will be accessible on the UserControl
 		public static readonly DependencyProperty IconBackground1Property =
 			DependencyProperty.Register( "IconBackground1", typeof( Brush ), typeof( PluginIcon ) );
