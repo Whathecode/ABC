@@ -7,9 +7,6 @@ namespace PluginManager.Model
 	{
 		public PluginElement()
 		{
-			Name = "Unknown ProcessName";
-			Version = "1.0";
-			Author = "Unknown Author";
 			TimeStamp = DateTime.Now.ToShortDateString();
 		}
 

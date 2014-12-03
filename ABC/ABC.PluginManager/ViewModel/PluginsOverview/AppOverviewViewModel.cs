@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using PluginManager.common;
@@ -53,6 +54,12 @@ namespace PluginManager.ViewModel.PluginsOverview
 
 			GiveDisplayId( available );
 			available = MergePlugins( available );
+
+			available.Concat( installed ).Concat( installedOnSystem ).ForEach( plugin =>
+			{
+				plugin.CompanyName = plugin.CompanyName ?? "Unknown company";
+				plugin.Icon = plugin.Icon ?? new Uri( "pack://application:,,,/View/icons/defaultApp.png" ).AbsolutePath;
+			} );
 
 			// Create two plug-ins collections of application and interruption type.
 			available.Where( app => app.Interruptions.Count != 0 ).ForEach( i => _availableInterruptions.Add( new PluginDetailsViewModel( i ) ) );

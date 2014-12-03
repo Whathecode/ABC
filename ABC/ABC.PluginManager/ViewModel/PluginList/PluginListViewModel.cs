@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using PluginManager.Model;
 using PluginManager.ViewModel.PluginDetails;
 using PluginManager.ViewModel.PluginList.Binding;
@@ -38,9 +40,20 @@ namespace PluginManager.ViewModel.PluginList
 			Initialize();
 		}
 
-		public PluginListViewModel( string name, IEnumerable<Configuration> configurations, PluginDetailsViewModel pluginViewModel )
+		public PluginListViewModel( string name, List<Configuration> configurations, PluginDetailsViewModel pluginViewModel )
 		{
 			PluginListName = name;
+
+			// Check if configurations data contains all values.
+			configurations.ForEach( configuration =>
+			{
+				configuration.Icon = configuration.Icon ?? new Uri( "pack://application:,,,/View/icons/conf.png" ).AbsolutePath;
+				configuration.Version = configuration.Version ?? "1.0";
+				configuration.Author = configuration.Author ?? "Unknown author";
+				configuration.SupportedVersions = configuration.SupportedVersions.Any() && configuration.SupportedVersions != null 
+					? configuration.SupportedVersions : new List<string> { "Any" };
+			} );
+
 			PluginList = new ObservableCollection<Configuration>( configurations );
 			ApplicationDatails = pluginViewModel;
 		}
