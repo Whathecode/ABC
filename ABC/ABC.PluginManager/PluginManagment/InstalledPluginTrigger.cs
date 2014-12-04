@@ -17,25 +17,15 @@ namespace PluginManager.PluginManagment
 		public List<Plugin> InstalledPlugins { get; private set; }
 		readonly LoadedSettings _vdmSettings;
 
-		// Names of directories containing plug-ins.
-		public readonly string InterruptionsPluginLibrary;
-		public readonly string PersistencePluginLibrary;
-		public readonly string VdmSettingsPluginLibrary;
-
-		public InstalledPluginTrigger( string pluginDirectoryPath )
+		public InstalledPluginTrigger()
 		{
 			InstalledPlugins = new List<Plugin>();
 			_vdmSettings = new LoadedSettings( true );
 
-			// Construct folder paths.
-			InterruptionsPluginLibrary = Path.Combine( pluginDirectoryPath, "InterruptionHandlers" );
-			PersistencePluginLibrary = Path.Combine( pluginDirectoryPath, "ApplicationPersistence" );
-			VdmSettingsPluginLibrary = Path.Combine( pluginDirectoryPath, "VdmSettings" );
-
 			// Add all plug-ins from target directories to installed applications. 
-			AddInterruption( InterruptionsPluginLibrary );
-			AddPersistance( PersistencePluginLibrary );
-			AddVdm( VdmSettingsPluginLibrary );
+			AddInterruption( App.InterruptionsPluginLibrary );
+			AddPersistance( App.PersistencePluginLibrary );
+			AddVdm( App.VdmPluginLibrary );
 		}
 
 		void AddInterruption( string path )

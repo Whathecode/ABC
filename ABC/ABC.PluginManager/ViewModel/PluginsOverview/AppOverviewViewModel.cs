@@ -42,8 +42,8 @@ namespace PluginManager.ViewModel.PluginsOverview
 				plugin.Interruptions.ForEach( interruption => interruption.State = PluginState.Installed );
 			} );
 
-			GiveDisplayId( installed );
 			installed = MergePlugins( installed );
+			GiveDisplayId( installed );
 
 			available.ForEach( plugin =>
 			{
@@ -52,8 +52,8 @@ namespace PluginManager.ViewModel.PluginsOverview
 				plugin.Interruptions.ForEach( interruption => interruption.State = PluginState.Availible );
 			} );
 
-			GiveDisplayId( available );
 			available = MergePlugins( available );
+			GiveDisplayId( available );
 
 			available.Concat( installed ).Concat( installedOnSystem ).ForEach( plugin =>
 			{
@@ -71,6 +71,7 @@ namespace PluginManager.ViewModel.PluginsOverview
 
 			// Merge available applications with installed to show them together in "all" view.
 			var installedAndAvailable = MergePlugins( installed.Where( app => app.Interruptions.Count == 0 ).Concat( available.Where( app => app.Interruptions.Count == 0 ) ) );
+			GiveDisplayId( installedAndAvailable );
 			installedAndAvailable.ForEach( a => _installedAndAvailableApps.Add( new PluginDetailsViewModel( a ) ) );
 
 			// By default all application-connected plug-ins are shown on the start screen.

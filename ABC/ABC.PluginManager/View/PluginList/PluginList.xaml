@@ -1,19 +1,24 @@
-﻿<UserControl Name="Control"
-             x:Class="PluginManager.View.PluginList.PluginList"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:commandFactory="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
-             xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
-             xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginList.Binding"
-             xmlns:pluginList="clr-namespace:PluginManager.ViewModel.PluginList"
-             xmlns:data="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
-             xmlns:common="clr-namespace:PluginManager.common"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance Type=pluginList:PluginListViewModel}">
+﻿<UserControl
+	Name="Control"
+	x:Class="PluginManager.View.PluginList.PluginList"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:commandFactory="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
+	xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
+	xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginList.Binding"
+	xmlns:pluginList="clr-namespace:PluginManager.ViewModel.PluginList"
+	xmlns:data="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
+	xmlns:common="clr-namespace:PluginManager.common"
+	xmlns:pluginList1="clr-namespace:PluginManager.View.PluginList"
+	mc:Ignorable="d"
+	d:DesignHeight="300" d:DesignWidth="300"
+	d:DataContext="{d:DesignInstance Type=pluginList:PluginListViewModel}">
 
+	<UserControl.Resources>
+		<pluginList1:InstallButtonVisibilityConverter x:Key="InstallButtonVisibilityConverter" />
+	</UserControl.Resources>
 	<StackPanel>
 		<TextBlock
 			Text="{Binding PluginListName}"
@@ -86,8 +91,7 @@
 										Height="24"
 										Source="{Binding Icon}"
 										Margin="5"
-										Cursor="Hand"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadAndOpenConfig}, ElementName=Control}" />
+										Cursor="Hand" />
 									<StackPanel Margin="5" VerticalAlignment="Center">
 										<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
 										<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
@@ -106,61 +110,30 @@
 										Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
+									
+									<Image
+										Source="../icons/install.png"
+										Width="25"
+										Height="25"
+										Cursor="Hand"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.InstallPlugin}, 
+											ElementName=Control}">
+										<Image.Visibility>
+											<MultiBinding
+												UpdateSourceTrigger="PropertyChanged"
+												Converter="{StaticResource InstallButtonVisibilityConverter}">
+												<Binding
+													ElementName="Control"
+													Path="DataContext.ApplicationDatails.SelectedConfigurationItem.Id" />
+												<Binding Path="Id" />
+												<Binding Path="State" />
+											</MultiBinding>
+										</Image.Visibility>
+									</Image>
 								</StackPanel>
 
 							</Grid>
-							<!--TODO: Buttons that will be used to control plug-ins.-->
-							<!--<StackPanel
-								DockPanel.Dock="Right"
-								MinWidth="83"
-								Margin="3"
-								VerticalAlignment="Center">
 
-								--><!-- Buttons panel is shown only when user click on given configuration. --><!--
-								<StackPanel.Visibility>
-									<MultiBinding
-										UpdateSourceTrigger="PropertyChanged"
-										Converter="{StaticResource ButtonsVisibilityConverter}">
-										<Binding
-											ElementName="Control"
-											Path="DataContext.ApplicationDatails.SelectedConfigurationItem.Id" />
-										<Binding Path="Id" />
-									</MultiBinding>
-								</StackPanel.Visibility>
-								
-
-								<Button
-									Content="Install"
-									Margin="0,0,0,5"
-									Visibility="{Binding ElementName=Control, Path=DataContext.ApplicationDatails.State, 
-									Converter={data:EnumHasFlagConverter Flag={x:Static common:AppFilter.Availible}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-									Command="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadAndOpenInstaller}, 
-									ElementName=Control}" />
-								<Button
-									Content="Open"
-									Visibility="{Binding ElementName=Control, Path=DataContext.ApplicationDatails.State, 
-									Converter={data:EnumHasFlagConverter Flag={x:Static common:AppFilter.Availible}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-									Command="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadAndOpenConfig}, 
-									ElementName=Control}" />
-								<Button
-									Content="Update"
-									Visibility="{Binding ElementName=Control, Path=DataContext.ApplicationDatails.State, 
-									Converter={data:EnumHasFlagConverter Flag={x:Static common:AppFilter.Updates}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
-								<Button
-									Content="Uninstall"
-									Margin="0,0,0,5"
-									Visibility="{Binding ElementName=Control, Path=DataContext.ApplicationDatails.State, 
-									Converter={data:EnumHasFlagConverter Flag={x:Static common:AppFilter.Installed}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
-								<Button
-									Content="Enable/Disable"
-									Visibility="{Binding ElementName=Control, Path=DataContext.ApplicationDatails.State, 
-									Converter={data:EnumHasFlagConverter Flag={x:Static common:AppFilter.Installed}, 
-									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
-							</StackPanel>-->
 						</DockPanel>
 					</DataTemplate>
 				</ListView.ItemTemplate>
