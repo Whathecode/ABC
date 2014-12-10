@@ -50,27 +50,18 @@ namespace ABC.Windows.Desktop
 		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
 		///   This desktop is accessible through the <see cref="CurrentDesktop" /> property.
 		/// </summary>
-		/// <param name = "settings">
-		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
-		/// </param>
-		/// <param name="storeDesktopIcons">Determines whether desktop icons and its layout should be stored individually for every virtual desktop.
-		///  True by default.</param>
+		/// <param name = "settings">Contains settings for how the desktop manager should behave. E.g. which windows to ignore.</param>
+		/// <param name = "storeDesktopIcons">Determines whether desktop icons and its layout should be stored individually for every virtual desktop. True by default.</param>
 		public WorkspaceManager( ISettings settings, bool storeDesktopIcons = true )
-		{
-			_desktopManager = new VirtualDesktopManager( settings );
-			_storeDesktopIcons = storeDesktopIcons;
-		}
+			: this( settings, new CollectionPersistenceProvider(), storeDesktopIcons ) {}
 
 		/// <summary>
 		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
 		///   This desktop is accessible through the <see cref="CurrentDesktop" /> property.
 		/// </summary>
-		/// <param name = "settings">
-		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
-		/// </param>
+		/// <param name = "settings">Contains settings for how the desktop manager should behave. E.g. which windows to ignore.</param>
 		/// <param name = "persistenceProvider">Allows state of applications to be persisted and restored.</param>
-		/// <param name="storeDesktopIcons">Determines whether desktop icons and its layout should be stored individually for every virtual desktop.
-		///  True by default.</param>
+		/// <param name = "storeDesktopIcons">Determines whether desktop icons and its layout should be stored individually for every virtual desktop. True by default.</param>
 		public WorkspaceManager( ISettings settings, AbstractPersistenceProvider persistenceProvider, bool storeDesktopIcons = true )
 		{
 			_desktopManager = new VirtualDesktopManager( settings, persistenceProvider )
