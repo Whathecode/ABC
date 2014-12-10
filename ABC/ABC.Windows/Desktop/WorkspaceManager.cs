@@ -87,7 +87,7 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Creates a new desktop from a stored session.
 		/// </summary>
-		/// <param name = "session">The newly created virtual desktop.</param>
+		/// <param name = "session">The stored session.</param>
 		/// <param name = "folder">The folder associated with this desktop, which is used to populate the desktop icons.</param>
 		/// <returns>The restored virtual desktop.</returns>
 		public VirtualDesktop CreateDesktopFromSession( StoredSession session, string folder = null )
@@ -139,7 +139,6 @@ namespace ABC.Windows.Desktop
 		///   Merges all windows from one desktop with those from another, and removes the original desktop.
 		///   You can't merge the <see cref="StartupDesktop"/> with another desktop.
 		/// </summary>
-		/// <returns>A new virtual desktop which has windows of both passed desktops assigned to it.</returns>
 		public void Merge( VirtualDesktop from, VirtualDesktop to )
 		{
 			_desktopManager.Merge( from, to );
