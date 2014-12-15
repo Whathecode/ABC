@@ -15,7 +15,7 @@ namespace ABC.Applications.Persistence
 		}
 
 		/// <summary>
-		///   The name of the process this persistence provider can persist.
+		///   Plug-in detailed information.
 		/// </summary>
 		internal PluginInformation Info;
 
