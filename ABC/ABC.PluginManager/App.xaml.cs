@@ -20,8 +20,8 @@ namespace PluginManager
 		{
 			base.OnStartup( e );
 
-			PluginManagerDirectory = e.Args[ 0 ];
-			if ( PluginManagerDirectory == null || !Directory.Exists( PluginManagerDirectory ) )
+			string pluginsPath = e.Args.Length > 0 ? e.Args[ 0 ] : null;
+			if ( pluginsPath == null || !Directory.Exists( pluginsPath ) )
 			{
 				MessageBox.Show( "Please specify plug-in installation directory as a command line parameter." );
 				Current.Shutdown();
