@@ -10,6 +10,6 @@
 	public enum Commands
 	{
 		DownloadAndOpenConfig,
-		DownloadAndOpenInstaller
+		InstallPlugin
 	}
 }

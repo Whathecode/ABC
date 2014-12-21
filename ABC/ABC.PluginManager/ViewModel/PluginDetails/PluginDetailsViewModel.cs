@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PluginManager.common;
+using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.ViewModel.PluginDetails.Binding;
 using PluginManager.ViewModel.PluginList;
@@ -43,9 +44,9 @@ namespace PluginManager.ViewModel.PluginDetails
 			InterruptionsState = VerifyPluginsState( plugin.Interruptions );
 
 			// Initialize configurations collections.
-			VdmList = new PluginListViewModel( "VDM", plugin.Vdm, this );
-			InterruptionsList = new PluginListViewModel( "Interruptions", plugin.Interruptions, this );
-			PersistanceList = new PluginListViewModel( "Persistence", plugin.Persistence, this );
+			VdmList = new PluginListViewModel( PluginType.Vdm, plugin.Vdm, this );
+			InterruptionsList = new PluginListViewModel( PluginType.Interruptions, plugin.Interruptions, this );
+			PersistanceList = new PluginListViewModel( PluginType.Persistence, plugin.Persistence, this );
 
 			// Select first element in ordered configurations collections. 
 			if ( plugin.Interruptions.Any() )

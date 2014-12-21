@@ -13,15 +13,11 @@ namespace PluginManager.Model
 			Interruptions = new List<Configuration>();
 			Vdm = new List<Configuration>();
 			Persistence = new List<Configuration>();
-			Icon = new Uri( "pack://application:,,,/View/icons/defaultApp.png" ).AbsolutePath;
 			TimeStamp = DateTime.Now.ToShortDateString();
 		}
 
-		public Plugin( Plugin plugin )
+		public Plugin( Plugin plugin ) : this()
 		{
-			Interruptions = new List<Configuration>();
-			Vdm = new List<Configuration>();
-			Persistence = new List<Configuration>();
 			Icon = plugin.Icon;
 			TimeStamp = plugin.TimeStamp;
 			CompanyName = plugin.CompanyName;

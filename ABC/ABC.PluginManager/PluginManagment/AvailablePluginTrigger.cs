@@ -12,11 +12,6 @@ namespace PluginManager.PluginManagment
 	{
 		private const string AppsFeed = "http://members.upcpoczta.pl/z.grondziowska/AvailableAppsSmall.xml";
 
-		// TODO : List of already installed applications, they should be excluded from available applications list.
-
-		/// <summary>
-		/// Available application plug-ins.
-		/// </summary>
 		public List<Plugin> AvailablePlugins { get; private set; }
 
 		public AvailablePluginTrigger()

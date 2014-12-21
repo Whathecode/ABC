@@ -115,6 +115,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\PluginState.cs" />
+    <Compile Include="Common\PluginType.cs" />
     <Compile Include="Model\Plugins.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\PluginElement.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="PluginManagment\AvailablePluginTrigger.cs" />
     <Compile Include="PluginManagment\InstalledPluginTrigger.cs" />
     <Compile Include="PluginManagment\ApplicationRegistryBrowse.cs" />
+    <Compile Include="PluginManagment\ConfigurationInstaller.cs" />
     <Compile Include="ViewModel\PluginDetails\PluginDetailsViewModel.cs" />
     <Compile Include="ViewModel\PluginDetails\Binding\Binding.cs" />
     <Compile Include="ViewModel\PluginsOverview\AppOverviewViewModel.cs" />
@@ -137,6 +139,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\PluginList\InstallButtonVisibilityConverter.cs" />
     <Compile Include="View\AppOverview\MenuControl.xaml.cs">
       <DependentUpon>MenuControl.xaml</DependentUpon>
     </Compile>
@@ -257,6 +260,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="plugin.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\icons\install.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\PostSharp.3.1.48\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.3.1.48\tools\PostSharp.targets')" />

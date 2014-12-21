@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
+using PluginManager.Common;
 using PluginManager.Model;
+using PluginManager.PluginManagment;
 using PluginManager.ViewModel.PluginDetails;
 using PluginManager.ViewModel.PluginList.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
@@ -33,64 +38,39 @@ namespace PluginManager.ViewModel.PluginList
 		[NotifyProperty( Binding.Properties.PluginList )]
 		public ObservableCollection<Configuration> PluginList { get; private set; }
 
-		public PluginListViewModel()
-		{
-			Initialize();
-		}
+		readonly PluginType _pluginType;
 
-		public PluginListViewModel( string name, IEnumerable<Configuration> configurations, PluginDetailsViewModel pluginViewModel )
+		public PluginListViewModel( PluginType pluginType, List<Configuration> configurations, PluginDetailsViewModel pluginViewModel )
 		{
-			PluginListName = name;
+			_pluginType = pluginType;
+			PluginListName = _pluginType.ToString();
+
+			// Check if configurations data contains all values.
+			configurations.ForEach( configuration =>
+			{
+				configuration.Icon = configuration.Icon ?? new Uri( "pack://application:,,,/View/icons/conf.png" ).AbsolutePath;
+				configuration.Version = configuration.Version ?? "1.0";
+				configuration.Author = configuration.Author ?? "Unknown author";
+				configuration.SupportedVersions = configuration.SupportedVersions.Any() && configuration.SupportedVersions != null 
+					? configuration.SupportedVersions : new List<string> { "Any" };
+			} );
+
 			PluginList = new ObservableCollection<Configuration>( configurations );
 			ApplicationDatails = pluginViewModel;
-		}
-
-		void Initialize()
-		{
-			PluginList = new ObservableCollection<Configuration>();
 		}
 
 		[CommandExecute( Commands.DownloadAndOpenConfig )]
 		public void DownloadAndOpenConfig()
 		{
-			// TODO: Possible implementation of download config plug-in control.
-			//if (ApplicationDatails.SelectedConfigurationItem.ConfigFile != null)
-			//{
-			//	const string fileName = "configurationFile.xml";
-			//	var webClient = new WebClient();
-			//	webClient.DownloadFileCompleted += (sender, args) => System.Diagnostics.Process.Start(fileName);
-			//	webClient.DownloadFileAsync(new Uri(ApplicationDatails.SelectedConfigurationItem.ConfigFile), fileName);
-			//}
 		}
 
-		[CommandExecute( Commands.DownloadAndOpenInstaller )]
-		public void DownloadAndOpenInstaller()
+		[CommandExecute( Commands.InstallPlugin )]
+		public void InstallPlugin()
 		{
-			// TODO: Possible implementation of install method for plug-in control.
-			//if (ApplicationDatails.SelectedConfigurationItem.Installer != null)
-			//{
-			//	const string fileName = "installerfile.zip";
-			//	const string installerDir = "installer";
-
-			//	var webClient = new WebClient();
-			//	webClient.DownloadFileCompleted += (sender, args) =>
-			//	{
-			//		var downloadedMessageInfo = new DirectoryInfo(installerDir);
-			//		foreach (var file in downloadedMessageInfo.GetFiles())
-			//		{
-			//			file.Delete();
-			//		}
-			//		foreach (var dir in downloadedMessageInfo.GetDirectories())
-			//		{
-			//			dir.Delete(true);
-			//		}
-
-			//		ZipFile.ExtractToDirectory(fileName, installerDir);
-			//		System.Diagnostics.Process.Start(installerDir + "\\setup.exe");
-			//	};
-
-			//	webClient.DownloadFileAsync(new Uri(ApplicationDatails.SelectedConfigurationItem.Installer), fileName);
-			//}
+			var installer = new PluginInstaller( SelectedConfigurationItem, _pluginType );
+			installer.PluginInstalledEvent += ( configuration, message ) => MessageBox.Show( message + "\n Please restart connected programs to see an effect." );
+			installer.Install();
+			
 		}
 	}
 }

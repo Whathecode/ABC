@@ -17,25 +17,15 @@ namespace PluginManager.PluginManagment
 		public List<Plugin> InstalledPlugins { get; private set; }
 		readonly LoadedSettings _vdmSettings;
 
-		// Names of directories containing plug-ins.
-		public readonly string InterruptionsPluginLibrary;
-		public readonly string PersistencePluginLibrary;
-		public readonly string VdmSettingsPluginLibrary;
-
-		public InstalledPluginTrigger( string pluginDirectoryPath )
+		public InstalledPluginTrigger()
 		{
 			InstalledPlugins = new List<Plugin>();
 			_vdmSettings = new LoadedSettings( true );
 
-			// Construct folder paths.
-			InterruptionsPluginLibrary = Path.Combine( pluginDirectoryPath, "InterruptionHandlers" );
-			PersistencePluginLibrary = Path.Combine( pluginDirectoryPath, "ApplicationPersistence" );
-			VdmSettingsPluginLibrary = Path.Combine( pluginDirectoryPath, "VdmSettings" );
-
 			// Add all plug-ins from target directories to installed applications. 
-			AddInterruption( InterruptionsPluginLibrary );
-			AddPersistance( PersistencePluginLibrary );
-			AddVdm( VdmSettingsPluginLibrary );
+			AddInterruption( App.InterruptionsPluginLibrary );
+			AddPersistence( App.PersistencePluginLibrary );
+			AddVdm( App.VdmPluginLibrary );
 		}
 
 		void AddInterruption( string path )
@@ -45,36 +35,36 @@ namespace PluginManager.PluginManagment
 			var dllsPaths = Directory.EnumerateFiles( path, "*.dll" ).ToList();
 			interruptionAggregator.GetInterruptionInfos().ForEach( interruption =>
 			{
-				var app = CheckIfPluginExistsAndReturn( interruption );
+				var app = CheckIfExists( interruption );
 
 				AddConfiguration( app.Interruptions, interruption, dllsPaths, interruptionNumber );
 				++interruptionNumber;
 			} );
 		}
 
-		void AddPersistance( string path )
+		void AddPersistence( string path )
 		{
 			var persistenceProvider = new PersistenceProvider( path );
 			var persistenceNumber = 0;
 			var dllsPaths = Directory.EnumerateFiles( path, "*.dll" ).ToList();
 			persistenceProvider.GetPersistenceProvidersInfo().ForEach( persistance =>
 			{
-				var app = CheckIfPluginExistsAndReturn( persistance );
+				var app = CheckIfExists( persistance );
 				AddConfiguration( app.Persistence, persistance, dllsPaths, persistenceNumber );
 				++persistenceNumber;
 			} );
 			persistenceProvider.Dispose();
 		}
 
-		Plugin CheckIfPluginExistsAndReturn( PluginInformation interruption )
+		Plugin CheckIfExists( PluginInformation pluginInfo )
 		{
-			var plugin = InstalledPlugins.FirstOrDefault( installedApp => installedApp.Name == interruption.ProcessName );
+			var plugin = InstalledPlugins.FirstOrDefault( installedApp => installedApp.Name == pluginInfo.ProcessName );
 			if ( plugin != null ) return plugin;
 
 			plugin = new Plugin
 			{
-				Name = interruption.ProcessName,
-				CompanyName = interruption.CompanyName,
+				Name = pluginInfo.ProcessName,
+				CompanyName = pluginInfo.CompanyName,
 			};
 			AddPlugin( plugin );
 
