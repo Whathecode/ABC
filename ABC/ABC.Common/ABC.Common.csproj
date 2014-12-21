@@ -7,7 +7,7 @@
     <ProjectGuid>{D53F1095-6DC0-4950-982F-3322AAE74A50}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ABC.Common</RootNamespace>
+    <RootNamespace>ABC</RootNamespace>
     <AssemblyName>ABC.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -32,17 +32,25 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Whathecode.System">
+      <HintPath>..\..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractWorkspaceManager.cs" />
+    <Compile Include="IWorkspace.cs" />
     <Compile Include="IWorkspaceManager.cs" />
-    <Compile Include="PluginException.cs" />
-    <Compile Include="PluginHelper.cs" />
-    <Compile Include="CompositionHelper.cs" />
-    <Compile Include="IWindow.cs" />
-    <Compile Include="PluginInformation.cs" />
+    <Compile Include="NonGenericWorkspaceManager.cs" />
+    <Compile Include="Common\PluginException.cs" />
+    <Compile Include="Common\PluginHelper.cs" />
+    <Compile Include="Common\CompositionHelper.cs" />
+    <Compile Include="Common\IWindow.cs" />
+    <Compile Include="Common\PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workspace.cs" />
     <Compile Include="WorkspaceManager.cs" />
+    <Compile Include="WorkspaceSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
