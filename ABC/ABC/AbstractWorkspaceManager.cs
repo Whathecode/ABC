@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Linq;
 using Whathecode.System;
+using Whathecode.System.Extensions;
 
 
 namespace ABC
@@ -24,22 +25,30 @@ namespace ABC
 		/// </summary>
 		public TWorkspace CurrentWorkspace { get; private set; }
 
-		readonly List<TWorkspace> _workspaces = new List<TWorkspace>(); 
+		readonly HashSet<TWorkspace> _workspaces = new HashSet<TWorkspace>();
+		readonly List<TWorkspace> _orderedWorkspaces = new List<TWorkspace>(); 
 		/// <summary>
 		///   A list of all workspaces managed by this workspace manager.
 		/// </summary>
-		public IReadOnlyCollection<TWorkspace> Workspaces { get { return _workspaces; } }
+		public IReadOnlyCollection<TWorkspace> Workspaces { get { return _orderedWorkspaces; } }
 
 
 		/// <summary>
 		///   Sets the passed workspace as the initial and current workspace, indicating it is the currently visible one.
 		///   This needs to be called from the constructor in derived types in order to correctly initialize this class.
 		/// </summary>
-		/// <param name="workspace">The workspace to be used as <see cref="StartupWorkspace" />.</param>
+		/// <param name = "workspace">The workspace to be used as <see cref = "StartupWorkspace" />.</param>
 		protected void SetStartupWorkspace( TWorkspace workspace )
 		{
+			if ( StartupWorkspace != null )
+			{
+				string msg = String.Format( "\"SetStartupWorkspace\" should only be called once in {0}.", GetType() );
+				throw new InvalidImplementationException( msg );
+			}
+
 			StartupWorkspace = workspace;
 			CurrentWorkspace = StartupWorkspace;
+			_orderedWorkspaces.Add( workspace );
 			_workspaces.Add( workspace );
 		}
 
@@ -54,8 +63,8 @@ namespace ABC
 			// Properly initialized.
 			if ( StartupWorkspace == null )
 			{
-				string msg = String.Format( "\"SetStartupWorkspace\" isn't called in {0} and needs to be called in deriving types.", GetType() );
-				throw new InvalidOperationException( msg );
+				string msg = String.Format( "\"SetStartupWorkspace\" isn't called in {0} and needs to be called in the constructor of deriving types.", GetType() );
+				throw new InvalidImplementationException( msg );
 			}
 		}
 
@@ -69,6 +78,7 @@ namespace ABC
 			VerifyValidState();
 
 			TWorkspace workspace = CreateEmptyWorkspaceInner();
+			_orderedWorkspaces.Add( workspace );
 			_workspaces.Add( workspace );
 
 			return workspace;
@@ -90,6 +100,7 @@ namespace ABC
 			VerifyValidState();
 
 			TWorkspace workspace = CreateWorkspaceFromSessionInner( session );
+			_orderedWorkspaces.Add( workspace );
 			_workspaces.Add( workspace );
 
 			return workspace;
@@ -105,10 +116,15 @@ namespace ABC
 		/// <summary>
 		///   Switch to the given workspace, making it the current desktop.
 		/// </summary>
-		/// <param name="workspace">The workspace to switch to.</param>
+		/// <param name = "workspace">The workspace to switch to.</param>
 		public void SwitchToWorkspace( TWorkspace workspace )
 		{
 			VerifyValidState();
+
+			if ( !_workspaces.Contains( workspace ) )
+			{
+				CloseAndThrow( new ArgumentException( "The passed workspace is not managed by this workspace manager.", "workspace" ) );
+			}
 
 			if ( CurrentWorkspace == workspace )
 			{
@@ -131,9 +147,18 @@ namespace ABC
 		/// </summary>
 		public void Merge( TWorkspace from, TWorkspace to )
 		{
-			Contract.Requires( from != null && to != null && from != to );
-
 			VerifyValidState();
+
+			if ( !_workspaces.Contains( from ) || !_workspaces.Contains( to ) )
+			{
+				CloseAndThrow( new ArgumentException( "The passed workspaces need to be managed by this workspace manager." ) );
+			}
+
+			if ( from == to )
+			{
+				// Merging a workspace with itself means nothing needs to be done.
+				return;
+			}
 
 			if ( from == StartupWorkspace )
 			{
@@ -145,6 +170,7 @@ namespace ABC
 			}
 
 			MergeInner( from, to );
+			_orderedWorkspaces.Remove( from );
 			_workspaces.Remove( from );
 		}
 
@@ -155,18 +181,22 @@ namespace ABC
 
 		/// <summary>
 		///   Closes the workspace manager by restoring content from all workspaces as if they weren't separate workspaces.
+		///   All workspaces are merged to the startup workspace.
 		/// </summary>
 		public void Close()
 		{
 			VerifyValidState();
 
-			CloseInner();
+			SwitchToWorkspace( StartupWorkspace );
+			_orderedWorkspaces.Except( new [] { StartupWorkspace } ).ToList().ForEach( w => Merge( w, StartupWorkspace ) );
+
+			CloseAdditional();
 		}
 
 		/// <summary>
-		///   Closes the workspace manager by restoring content from all workspaces as if they weren't separate workspaces.
+		///   After having merged all workspaces to the startup workspace, this is called to allow closing any additional resources.
 		/// </summary>
-		protected abstract void CloseInner();
+		protected abstract void CloseAdditional();
 
 		/// <summary>
 		///   Throw an exception, but close the workspace first so that no content is lost.

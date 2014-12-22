@@ -91,9 +91,9 @@ namespace ABC
 		/// <summary>
 		///   Closes the workspace manager by restoring content from all workspaces as if they weren't separate workspaces.
 		/// </summary>
-		protected override void CloseInner()
+		protected override void CloseAdditional()
 		{
-			_managers.ForEach( m => m.Close() );
+			// Nothing to do.
 		}
 
 		protected override void FreeUnmanagedResources()

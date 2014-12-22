@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.PluginManager", "ABC.Pl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC", "ABC\ABC.csproj", "{D53F1095-6DC0-4950-982F-3322AAE74A50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Tests", "ABC.Tests\ABC.Tests.csproj", "{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,14 @@ Global
 		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Release|x64.ActiveCfg = Release|Any CPU
 		{D53F1095-6DC0-4950-982F-3322AAE74A50}.Release|x86.ActiveCfg = Release|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Release|x64.ActiveCfg = Release|Any CPU
+		{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
