@@ -62,6 +62,7 @@
     <Compile Include="TestSession.cs" />
     <Compile Include="TestWorkspace.cs" />
     <Compile Include="TestWorkspaceManager.cs" />
+    <Compile Include="WorkspaceManagerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABC\ABC.csproj">

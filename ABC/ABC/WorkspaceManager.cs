@@ -23,6 +23,8 @@ namespace ABC
 		public WorkspaceManager( IEnumerable<IWorkspaceManager> workspaceManagers )
 		{
 			_managers = workspaceManagers.ToList();
+
+			SetStartupWorkspace( new Workspace( _managers.Select( w => Tuple.Create( w.GetType(), w.StartupWorkspace) ) ) );
 		}
 
 

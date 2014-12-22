@@ -32,7 +32,7 @@ namespace ABC
 
 		public IWorkspace CreateWorkspaceFromSession( object session )
 		{
-			if ( !(session is TSession) )
+			if ( session != null && !(session is TSession) )
 			{
 				string msg = String.Format( "Invalid stored session passed. Object of type \"{0}\" expected.", typeof( TSession ) );
 				throw new ArgumentException( msg, "session" );

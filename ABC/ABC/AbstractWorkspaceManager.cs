@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Whathecode.System;
-using Whathecode.System.Extensions;
 
 
 namespace ABC
@@ -15,6 +14,11 @@ namespace ABC
 	public abstract class AbstractWorkspaceManager<TWorkspace, TSession> : AbstractDisposable
 		where TWorkspace : class, IWorkspace
 	{
+		/// <summary>
+		///   Exposes this workspace manager as a non-generic <see cref = "IWorkspaceManager" />.
+		/// </summary>
+		public IWorkspaceManager NonGeneric { get; private set; }
+
 		/// <summary>
 		///   The workspace which is created when the workspace manager is first initialized.
 		/// </summary>
@@ -40,6 +44,8 @@ namespace ABC
 		/// <param name = "workspace">The workspace to be used as <see cref = "StartupWorkspace" />.</param>
 		protected void SetStartupWorkspace( TWorkspace workspace )
 		{
+			NonGeneric = new NonGenericWorkspaceManager<TWorkspace, TSession>( this );
+
 			if ( StartupWorkspace != null )
 			{
 				string msg = String.Format( "\"SetStartupWorkspace\" should only be called once in {0}.", GetType() );

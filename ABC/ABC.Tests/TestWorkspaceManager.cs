@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace ABC.Tests
+﻿namespace ABC.Tests
 {
 	class TestWorkspaceManager : AbstractWorkspaceManager<TestWorkspace, TestSession>
 	{
