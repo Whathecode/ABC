@@ -1,8 +1,8 @@
 ﻿namespace ABC.Tests
 {
-	class TestWorkspace : IWorkspace
+	class TestWorkspace : AbstractWorkspace<TestSession>
 	{
-		public object Store()
+		public override TestSession Store()
 		{
 			return new TestSession();
 		}

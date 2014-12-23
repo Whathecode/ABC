@@ -12,7 +12,7 @@ namespace ABC
 	/// <typeparam name = "TWorkspace">The type of workspace this workspace manager manages.</typeparam>
 	/// <typeparam name = "TSession">The type which is used to serialize workspaces as a session.</typeparam>
 	public abstract class AbstractWorkspaceManager<TWorkspace, TSession> : AbstractDisposable
-		where TWorkspace : class, IWorkspace
+		where TWorkspace : AbstractWorkspace<TSession>
 	{
 		/// <summary>
 		///   Exposes this workspace manager as a non-generic <see cref = "IWorkspaceManager" />.
@@ -37,6 +37,12 @@ namespace ABC
 		public IReadOnlyCollection<TWorkspace> Workspaces { get { return _orderedWorkspaces; } }
 
 
+		protected AbstractWorkspaceManager()
+		{
+			NonGeneric = new NonGenericWorkspaceManager<TWorkspace, TSession>( this );
+		}
+
+
 		/// <summary>
 		///   Sets the passed workspace as the initial and current workspace, indicating it is the currently visible one.
 		///   This needs to be called from the constructor in derived types in order to correctly initialize this class.
@@ -44,8 +50,6 @@ namespace ABC
 		/// <param name = "workspace">The workspace to be used as <see cref = "StartupWorkspace" />.</param>
 		protected void SetStartupWorkspace( TWorkspace workspace )
 		{
-			NonGeneric = new NonGenericWorkspaceManager<TWorkspace, TSession>( this );
-
 			if ( StartupWorkspace != null )
 			{
 				string msg = String.Format( "\"SetStartupWorkspace\" should only be called once in {0}.", GetType() );

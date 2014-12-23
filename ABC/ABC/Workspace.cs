@@ -8,7 +8,7 @@ namespace ABC
 	/// <summary>
 	///   Represents one workspace managed by <see cref="WorkspaceManager" />.
 	/// </summary>
-	public class Workspace : IWorkspace
+	public class Workspace : AbstractWorkspace<WorkspaceSession>
 	{
 		readonly TupleList<Type, IWorkspace> _workspaces;
 
@@ -24,7 +24,7 @@ namespace ABC
 		}
 
 
-		public object Store()
+		public override WorkspaceSession Store()
 		{
 			return new WorkspaceSession( this );
 		}

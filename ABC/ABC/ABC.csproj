@@ -38,9 +38,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractWorkspace.cs" />
     <Compile Include="AbstractWorkspaceManager.cs" />
     <Compile Include="IWorkspace.cs" />
     <Compile Include="IWorkspaceManager.cs" />
+    <Compile Include="NonGenericWorkspace.cs" />
     <Compile Include="NonGenericWorkspaceManager.cs" />
     <Compile Include="Common\PluginException.cs" />
     <Compile Include="Common\PluginHelper.cs" />

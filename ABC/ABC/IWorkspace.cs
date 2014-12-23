@@ -1,5 +1,8 @@
 ﻿namespace ABC
 {
+	/// <summary>
+	///   A workspace which is managed by a <see cref = "IWorkspaceManager" />.
+	/// </summary>
 	public interface IWorkspace
 	{
 		/// <summary>
