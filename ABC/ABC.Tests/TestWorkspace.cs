@@ -4,7 +4,7 @@
 	{
 		public object Store()
 		{
-			return null;
+			return new TestSession();
 		}
 	}
 }

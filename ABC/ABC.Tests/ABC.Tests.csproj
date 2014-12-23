@@ -39,6 +39,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.XML" />
     <Reference Include="Whathecode.Microsoft.VisualStudio.QualityTools.Unit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.Microsoft.VisualStudio.QualityTools.Unit.dll</HintPath>
@@ -63,6 +65,7 @@
     <Compile Include="TestWorkspace.cs" />
     <Compile Include="TestWorkspaceManager.cs" />
     <Compile Include="WorkspaceManagerTest.cs" />
+    <Compile Include="WorkspaceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABC\ABC.csproj">

@@ -16,12 +16,14 @@ namespace ABC
 		///   List of serialized workspaces, along with the types of the workspace managers which manage them.
 		/// </summary>
 		[DataMember]
-		internal TupleList<Type, object> StoredWorkspaces;
+		internal TupleList<string, object> StoredWorkspaces;
 
 
 		public WorkspaceSession( Workspace workspace )
 		{
-			StoredWorkspaces = new TupleList<Type, object>( workspace.Workspaces.Select( w => Tuple.Create( w.Item1, w.Item2.Store() ) ) );
+			StoredWorkspaces = new TupleList<string, object>(
+				workspace.Workspaces.Select( w => Tuple.Create( w.Item1.FullName, w.Item2.Store() ) )
+			);
 		}
 	}
 }

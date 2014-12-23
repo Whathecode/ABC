@@ -47,7 +47,7 @@ namespace ABC
 			var stored = _managers.Zip( session.StoredWorkspaces, (m, w) => new { Manager = m, Workspace = w } ).ToList();
 
 			// Verify whether the stored session contains the same workspace managers.
-			if ( session.StoredWorkspaces.Count != _managers.Count || stored.Any( s => s.Manager.GetType() != s.Workspace.Item1 ) )
+			if ( session.StoredWorkspaces.Count != _managers.Count || stored.Any( s => s.Manager.GetType() != Type.GetType( s.Workspace.Item1 ) ) )
 			{
 				var ex = new ArgumentException(
 					"The passed WorkspaceSession does not contain sessions which can be loaded by the workspace managers passed to this WorkspaceManager.",
@@ -55,7 +55,9 @@ namespace ABC
 				CloseAndThrow( ex );
 			}
 
-			return new Workspace( stored.Select( s => Tuple.Create( s.Workspace.Item1, s.Manager.CreateWorkspaceFromSession( s.Workspace.Item2 ) ) ) );
+			return new Workspace( stored.Select(
+				s => Tuple.Create( Type.GetType( s.Workspace.Item1 ), s.Manager.CreateWorkspaceFromSession( s.Workspace.Item2 ) )
+			) );
 		}
 
 		/// <summary>
