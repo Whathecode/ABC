@@ -68,11 +68,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DesktopIcon.cs" />
+    <Compile Include="Desktop\VirtualDesktopManager.cs" />
     <Compile Include="IconManager.cs" />
     <Compile Include="Desktop\Server\IMonitorVdmService.cs" />
     <Compile Include="Desktop\Server\MonitorVdmServer.cs" />
     <Compile Include="Desktop\Server\MonitorVdmService.cs" />
-    <Compile Include="Desktop\VirtualDesktopManager.cs" />
     <Compile Include="Desktop\Settings\ISettings.cs" />
     <Compile Include="Desktop\Settings\LoadedSettings.cs" />
     <Compile Include="Desktop\Settings\ProcessBehavior\ProcessBehaviors.cs">

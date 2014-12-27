@@ -29,7 +29,7 @@ namespace ABC.Windows.Desktop
 	///   You should have received a copy of the GNU General Public License
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
-	public class VirtualDesktop
+	public class VirtualDesktop : AbstractWorkspace<StoredSession>
 	{
 		internal delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
 
@@ -267,7 +267,7 @@ namespace ABC.Windows.Desktop
 		///   Serialize the current desktop to a structure, allowing to restore it at a later time.
 		/// </summary>
 		/// <returns>A structure holding the relevant information for this desktop.</returns>
-		public StoredSession Store()
+		public override StoredSession Store()
 		{
 			return new StoredSession( this );
 		}

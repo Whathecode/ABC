@@ -33,17 +33,17 @@ namespace ABC.Windows.Desktop
 
 		public VirtualDesktop StartupDesktop
 		{
-			get { return _desktopManager.StartupDesktop; }
+			get { return _desktopManager.StartupWorkspace; }
 		}
 
 		public VirtualDesktop CurrentDesktop
 		{
-			get { return _desktopManager.CurrentDesktop; }
+			get { return _desktopManager.CurrentWorkspace; }
 		}
 
 		public IReadOnlyCollection<VirtualDesktop> Desktops
 		{
-			get { return _desktopManager.Desktops; }
+			get { return _desktopManager.Workspaces; }
 		}
 
 		/// <summary>
@@ -64,11 +64,8 @@ namespace ABC.Windows.Desktop
 		/// <param name = "storeDesktopIcons">Determines whether desktop icons and its layout should be stored individually for every virtual desktop. True by default.</param>
 		public WorkspaceManager( ISettings settings, AbstractPersistenceProvider persistenceProvider, bool storeDesktopIcons = true )
 		{
-			_desktopManager = new VirtualDesktopManager( settings, persistenceProvider )
-			{
-				// Set folder for the startup desktop.
-				StartupDesktop = { Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop ) }
-			};
+			_desktopManager = new VirtualDesktopManager( settings, persistenceProvider );
+			_desktopManager.StartupWorkspace.Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
 			_storeDesktopIcons = storeDesktopIcons;
 		}
 
@@ -79,7 +76,7 @@ namespace ABC.Windows.Desktop
 		/// <returns>The newly created virtual desktop.</returns>
 		public VirtualDesktop CreateEmptyDesktop( string folder = null )
 		{
-			var desktop = _desktopManager.CreateEmptyDesktop();
+			var desktop = _desktopManager.CreateEmptyWorkspace();
 			desktop.Folder = folder ?? Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
 			return desktop;
 		}
@@ -103,7 +100,7 @@ namespace ABC.Windows.Desktop
 			if ( !_storeDesktopIcons ) return;
 
 			// Store the icons.
-			_desktopManager.CurrentDesktop.Icons = IconManager.SaveDestopIcons();
+			_desktopManager.CurrentWorkspace.Icons = IconManager.SaveDestopIcons();
 
 			// Update targetDesktop icons.
 			IconManager.ChangeDesktopFolder( targetDesktop.Folder );
@@ -127,7 +124,7 @@ namespace ABC.Windows.Desktop
 		{
 			try
 			{
-				_desktopManager.SwitchToDesktop( desktop );
+				_desktopManager.SwitchToWorkspace( desktop );
 			}
 			finally
 			{
