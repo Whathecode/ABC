@@ -24,7 +24,7 @@ namespace ABC
 		{
 			_managers = workspaceManagers.ToList();
 
-			SetStartupWorkspace( new Workspace( _managers.Select( w => Tuple.Create( w.GetType(), w.StartupWorkspace) ) ) );
+			SetStartupWorkspace( new Workspace( _managers.Select( w => Tuple.Create( w.GetType(), w.StartupWorkspace ) ) ) );
 		}
 
 
@@ -90,6 +90,11 @@ namespace ABC
 			}
 
 			toMerge.ForEach( m => m.Manager.Merge( m.From.Item2, m.To.Item2 ) );
+		}
+
+		public override List<Type> GetPersistedDataTypes()
+		{
+			return _managers.SelectMany( m => m.GetPersistedDataTypes() ).ToList();
 		}
 
 		/// <summary>

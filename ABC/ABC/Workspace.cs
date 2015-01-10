@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Whathecode.System.Collections.Generic;
 
 
@@ -24,7 +25,27 @@ namespace ABC
 		}
 
 
-		public override WorkspaceSession Store()
+		public override bool HasResourcesToSuspend()
+		{
+			return _workspaces.Any( w => w.Item2.HasResourcesToSuspend() );
+		}
+
+		protected override void SuspendInner()
+		{
+			_workspaces.ForEach( w => w.Item2.Suspend() );
+		}
+
+		protected override void ForceSuspendInner()
+		{
+			_workspaces.ForEach( w => w.Item2.ForceSuspend() );
+		}
+
+		protected override void ResumeInner()
+		{
+			_workspaces.ForEach( w => w.Item2.Resume() );
+		}
+
+		protected override WorkspaceSession StoreInner()
 		{
 			return new WorkspaceSession( this );
 		}

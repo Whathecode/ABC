@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
 using ABC.Applications.Persistence;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
@@ -13,18 +15,19 @@ using Whathecode.System.Windows;
 
 namespace ABC.Windows.Desktop
 {
+	public delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
+
+
 	/// <summary>
 	///   An <see cref = "AbstractWorkspaceManager{TWorkspace, TSession}" />
 	///   which allows creating and switching between different <see cref = "VirtualDesktop" />'s.
 	/// </summary>
-	public class VirtualDesktopManager : AbstractWorkspaceManager<VirtualDesktop, StoredSession>
+	public class VirtualDesktopManager : AbstractWorkspaceManager<VirtualDesktop, StoredSession>, IWindowOperations
 	{
-		public delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
-
 		/// <summary>
 		///   Event which is triggered when in any virtual desktop unresponsive windows are detected.
 		/// </summary>
-		public event UnresponsiveWindowsHandler UnresponsiveWindowDetectedEvent;
+		public event UnresponsiveWindowsHandler UnresponsiveWindowDetected;
 
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
@@ -88,7 +91,7 @@ namespace ABC.Windows.Desktop
 			// Initialize visible startup desktop.
 			var startupDesktop = new VirtualDesktop( _persistenceProvider );
 			SetStartupWorkspace( startupDesktop );
-			startupDesktop.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
+			startupDesktop.UnresponsiveWindowDetected += OnUnresponsiveWindowDetected;
 			startupDesktop.Show(); // Make virtual desktop visible.
 			startupDesktop.AddWindows( GetNewWindows() );
 
@@ -99,13 +102,29 @@ namespace ABC.Windows.Desktop
 
 		void OnUnresponsiveWindowDetected( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop )
 		{
-			UnresponsiveWindowDetectedEvent( unresponsiveWindows, desktop );
+			UnresponsiveWindowDetected( unresponsiveWindows, desktop );
+		}
+
+		void OnForceSuspendRequested( AbstractWorkspace<StoredSession> workspace )
+		{
+			var virtualDesktop = (VirtualDesktop)workspace;
+
+			// TODO: Is there any way to always support this? The internal WindowSnapshot constructor assumes the windows are part of the currently visible desktop.
+			if ( !virtualDesktop.IsVisible )
+			{
+				throw new InvalidOperationException( "Can only transfer windows when the desktop is currently visible." );
+			}
+
+			// Move windows from the forcefully suspended workspace to the startup workspace.
+			List<WindowSnapshot> snapshots =  virtualDesktop.Windows.Select( w => new WindowSnapshot( virtualDesktop, w.WindowInfo ) ).ToList();
+			virtualDesktop.RemoveWindows( snapshots );
+			StartupWorkspace.AddWindows( snapshots );
 		}
 
 		protected override VirtualDesktop CreateEmptyWorkspaceInner()
 		{
 			var newDesktop = new VirtualDesktop( _persistenceProvider );
-			newDesktop.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
+			HookDesktopEvents( newDesktop );
 			return newDesktop;
 		}
 
@@ -119,11 +138,18 @@ namespace ABC.Windows.Desktop
 			StartupWorkspace.RemoveWindows( otherWindows );
 
 			var restored = new VirtualDesktop( session, _persistenceProvider );
-			restored.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
+			HookDesktopEvents( restored );
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
 			return restored;
 		}
 
+		void HookDesktopEvents( VirtualDesktop desktop )
+		{
+			desktop.UnresponsiveWindowDetected += OnUnresponsiveWindowDetected;
+			desktop.ForceSuspendRequested += OnForceSuspendRequested;
+			desktop.Storing += d => UpdateWindowAssociations();
+			desktop.SuspendingWorkspace += OnSuspendingWorkspace;
+		}
 
 		/// <summary>
 		///   Update which windows are associated to the current virtual desktop.
@@ -155,6 +181,32 @@ namespace ABC.Windows.Desktop
 			}
 		}
 
+		void OnSuspendingWorkspace( AbstractWorkspace<StoredSession> workspace )
+		{
+			// Make sure the workspace is aware about all latest open windows.
+			UpdateWindowAssociations();
+
+			bool isSuspended = false;
+			AbstractWorkspace<StoredSession>.WorkspaceEventHandler onSuspended = w => isSuspended = true;
+			workspace.SuspendedWorkspace += onSuspended;
+
+			// While awaiting full suspension in background, make sure list of remaining open windows is updated.
+			var awaitSuspend = new BackgroundWorker();
+			awaitSuspend.DoWork += ( sender, args ) =>
+			{
+				while ( !isSuspended )
+				{
+					UpdateWindowAssociations();
+					Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+				}
+			};
+			awaitSuspend.RunWorkerCompleted += ( sender, args ) =>
+			{
+				workspace.SuspendedWorkspace -= onSuspended;
+			};
+			awaitSuspend.RunWorkerAsync();
+		}
+
 		protected override void SwitchToWorkspaceInner( VirtualDesktop desktop )
 		{
 			UpdateWindowAssociations();
@@ -180,7 +232,7 @@ namespace ABC.Windows.Desktop
 			}
 			catch ( Whathecode.System.Windows.UnresponsiveWindowsException e )
 			{
-				UnresponsiveWindowDetectedEvent(
+				UnresponsiveWindowDetected(
 					e.UnresponsiveWindows.Select( info => new WindowSnapshot( CurrentWorkspace, info ) ).ToList(), CurrentWorkspace );
 			}
 

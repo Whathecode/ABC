@@ -36,7 +36,7 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Event which is triggered when unresponsive windows are detected.
 		/// </summary>
-		internal event UnresponsiveWindowsHandler UnresponsiveWindowDetectedEvent;
+		internal event UnresponsiveWindowsHandler UnresponsiveWindowDetected;
 
 		List<WindowSnapshot> _windows = new List<WindowSnapshot>();
 		readonly AbstractPersistenceProvider _persistenceProvider;
@@ -52,12 +52,6 @@ namespace ABC.Windows.Desktop
 		}
 
 		public bool IsVisible { get; private set; }
-
-		/// <summary>
-		///   Determines whether the desktop is currently in a suspended state,
-		///   meaning all its containing processes and windows are closed and the desktop needs to be resumed prior to being able to continue work on it.
-		/// </summary>
-		public bool IsSuspended { get; private set; }
 
 		List<PersistedApplication> _persistedApplications = new List<PersistedApplication>();
 
@@ -237,11 +231,11 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			UnresponsiveWindowDetectedEvent( unresponsiveWindows, this );
+			UnresponsiveWindowDetected( unresponsiveWindows, this );
 		}
 
 		/// <summary>
-		///    Find z-order of all passed windows.
+		///   Find z-order of all passed windows.
 		/// </summary>
 		/// <returns>A new list containing all the passed windows, but ordered according to their z-order, most on top first.</returns>
 		static List<WindowSnapshot> OrderWindowsByZOrder( List<WindowSnapshot> toOrder )
@@ -263,62 +257,41 @@ namespace ABC.Windows.Desktop
 			return ordenedWindows;
 		}
 
-		/// <summary>
-		///   Serialize the current desktop to a structure, allowing to restore it at a later time.
-		/// </summary>
-		/// <returns>A structure holding the relevant information for this desktop.</returns>
-		public override StoredSession Store()
+		public override bool HasResourcesToSuspend()
 		{
-			return new StoredSession( this );
+			return Windows.Count > 0;
 		}
 
 		/// <summary>
-		///   Suspends this desktop by closing all open windows and storing their state in StoredSession.
+		///   Suspends this desktop by closing all open windows and storing their state.
 		/// </summary>
-		public void Suspend()
+		protected override void SuspendInner()
 		{
-			if ( IsSuspended )
-			{
-				return;
-			}
-
 			_persistedApplications = _persistenceProvider.Suspend( _windows.Select( w => new Window( w.Info ) ).Cast<IWindow>().ToList() );
+		}
 
-			IsSuspended = true;
+		protected override void ForceSuspendInner()
+		{
+			// Nothing to do.
+			// The desktop manager needs to decide how to force suspension of workspaces by consuming the ForceSuspendRequested event.
 		}
 
 		/// <summary>
 		///   Resumes the desktop when it was suspended by reopening all windows which are stored in StoredSession.
 		/// </summary>
-		public void Resume()
+		protected override void ResumeInner()
 		{
-			if ( !IsSuspended )
-			{
-				return;
-			}
-
 			_persistenceProvider.Resume( _persistedApplications );
 			_persistedApplications.Clear();
-
-			IsSuspended = false;
 		}
 
 		/// <summary>
-		///   Transfer windows which are part of the currently visible desktop to another desktop.
+		///   Serialize the current desktop to a structure, allowing to restore it at a later time.
 		/// </summary>
-		/// <param name = "toTransfer">The windows to transfer.</param>
-		/// <param name = "destination">The virtual desktop to which the windows will be transferred.</param>
-		public void TransferWindows( List<Window> toTransfer, VirtualDesktop destination )
+		/// <returns>A structure holding the relevant information for this desktop.</returns>
+		protected override StoredSession StoreInner()
 		{
-			// TODO: Is there any way to always support this? The internal WindowSnapshot constructor assumes the windows are part of the currently visible desktop.
-			if ( !IsVisible )
-			{
-				throw new InvalidOperationException( "Can only transfer windows when the desktop is currently visible." );
-			}
-
-			List<WindowSnapshot> snapshots = toTransfer.Select( w => new WindowSnapshot( this, w.WindowInfo ) ).ToList();
-			RemoveWindows( snapshots );
-			destination.AddWindows( snapshots );
+			return new StoredSession( this );
 		}
 	}
 }

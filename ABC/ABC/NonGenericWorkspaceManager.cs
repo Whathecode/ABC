@@ -62,6 +62,11 @@ namespace ABC
 			_inner.Merge( fromGeneric, toGeneric );
 		}
 
+		public List<Type> GetPersistedDataTypes()
+		{
+			return _inner.GetPersistedDataTypes();
+		}
+
 		TWorkspace MakeGeneric( IWorkspace workspace )
 		{
 			var generic = workspace as NonGenericWorkspace<TSession>;

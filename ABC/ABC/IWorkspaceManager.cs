@@ -51,6 +51,11 @@ namespace ABC
 		void Merge( IWorkspace from, IWorkspace to );
 
 		/// <summary>
+		///   Returns the types which are used to store persisted data. This needs to be passed to DataContractSerializer when serializing.
+		/// </summary>
+		List<Type> GetPersistedDataTypes();
+
+		/// <summary>
 		///   Closes the workspace manager by restoring content from all workspaces as if they weren't separate workspaces.
 		/// </summary>
 		void Close();

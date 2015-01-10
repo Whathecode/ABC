@@ -8,12 +8,22 @@ namespace ABC.Tests
 	[TestClass]
 	public class WorkspaceTest
 	{
+		IWorkspaceManager[] _innerManagers;
+		WorkspaceManager _manager;
+
+
+		[TestInitialize]
+		public void Initialize()
+		{
+			_innerManagers = new[] { new TestWorkspaceManager().NonGeneric, new TestWorkspaceManager().NonGeneric };
+			_manager = new WorkspaceManager( _innerManagers );
+		}
+
+
 		[TestMethod]
 		public void StoreTest()
 		{
-			var innerManagers = new[] { new TestWorkspaceManager().NonGeneric, new TestWorkspaceManager().NonGeneric };
-			var manager = new WorkspaceManager( innerManagers );
-			Workspace empty = manager.CreateEmptyWorkspace();
+			Workspace empty = _manager.CreateEmptyWorkspace();
 			object stored = empty.Store();
 
 			// Verify whether the object can be serialized.
@@ -25,7 +35,7 @@ namespace ABC.Tests
 			stream.Flush();
 			stream.Position = 0;
 			var session = (WorkspaceSession)serializer.ReadObject( stream );
-			Workspace reloaded = manager.CreateWorkspaceFromSession( session );
+			Workspace reloaded = _manager.CreateWorkspaceFromSession( session );
 		}
 	}
 }

@@ -68,6 +68,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DesktopIcon.cs" />
+    <Compile Include="Desktop\IWindowOperations.cs" />
     <Compile Include="Desktop\VirtualDesktopManager.cs" />
     <Compile Include="IconManager.cs" />
     <Compile Include="Desktop\Server\IMonitorVdmService.cs" />

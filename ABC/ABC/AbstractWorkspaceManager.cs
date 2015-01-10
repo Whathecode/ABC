@@ -190,6 +190,14 @@ namespace ABC
 		protected abstract void MergeInner( TWorkspace from, TWorkspace to );
 
 		/// <summary>
+		///   Returns the types which are used to store persisted data. This needs to be passed to DataContractSerializer when serializing.
+		/// </summary>
+		public virtual List<Type> GetPersistedDataTypes()
+		{
+			return new [] { typeof( TSession ) }.ToList();
+		}
+
+		/// <summary>
 		///   Closes the workspace manager by restoring content from all workspaces as if they weren't separate workspaces.
 		///   All workspaces are merged to the startup workspace.
 		/// </summary>
