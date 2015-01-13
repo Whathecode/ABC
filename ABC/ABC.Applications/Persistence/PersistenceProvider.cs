@@ -11,7 +11,8 @@ namespace ABC.Applications.Persistence
 	/// </summary>
 	public class PersistenceProvider : AbstractPersistenceProvider
 	{
-		readonly CompositionContainer _pluginContainer;
+		CompositionContainer _pluginContainer;
+		readonly string _pluginFolderPath;
 
 		[ImportMany]
 		readonly List<AbstractApplicationPersistence> _persistenceProviders = new List<AbstractApplicationPersistence>();
@@ -23,9 +24,14 @@ namespace ABC.Applications.Persistence
 		/// <param name = "pluginFolderPath">The path where application persistence plugins are located.</param>
 		public PersistenceProvider( string pluginFolderPath )
 		{
+			_pluginFolderPath = pluginFolderPath;
 			_pluginContainer = CompositionHelper.ComposeFromPath( this, pluginFolderPath );
 		}
 
+		public void Reload()
+		{
+			_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginFolderPath );
+		}
 
 		protected override List<AbstractApplicationPersistence> GetPersistenceProviders()
 		{
