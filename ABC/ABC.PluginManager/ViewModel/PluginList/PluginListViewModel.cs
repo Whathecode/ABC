@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using PluginManager.Common;
 using PluginManager.Model;
-using PluginManager.PluginManagment;
 using PluginManager.ViewModel.PluginDetails;
 using PluginManager.ViewModel.PluginList.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
@@ -19,7 +17,7 @@ namespace PluginManager.ViewModel.PluginList
 	public class PluginListViewModel
 	{
 		[NotifyProperty( Binding.Properties.ApplicationDatails )]
-		public PluginDetailsViewModel ApplicationDatails { get; set; }
+		public PluginOverviewViewModel PluginOverviewViewModel { get; set; }
 
 		[NotifyProperty( Binding.Properties.SelectedConfigurationItem )]
 		public Configuration SelectedConfigurationItem { get; set; }
@@ -29,7 +27,7 @@ namespace PluginManager.ViewModel.PluginList
 		{
 			if ( newConfiguration != null )
 			{
-				ApplicationDatails.SelectedConfigurationItem = newConfiguration;
+				PluginOverviewViewModel.SelectedConfigurationItem = newConfiguration;
 			}
 		}
 
@@ -38,12 +36,12 @@ namespace PluginManager.ViewModel.PluginList
 		[NotifyProperty( Binding.Properties.PluginList )]
 		public ObservableCollection<Configuration> PluginList { get; private set; }
 
-		readonly PluginType _pluginType;
+		public PluginType PluginType { get; private set; }
 
-		public PluginListViewModel( PluginType pluginType, List<Configuration> configurations, PluginDetailsViewModel pluginViewModel )
+		public PluginListViewModel( PluginType pluginType, List<Configuration> configurations, PluginOverviewViewModel pluginOverviewViewModel )
 		{
-			_pluginType = pluginType;
-			PluginListName = _pluginType.ToString();
+			PluginType = pluginType;
+			PluginListName = PluginType.ToString();
 
 			// Check if configurations data contains all values.
 			configurations.ForEach( configuration =>
@@ -51,26 +49,18 @@ namespace PluginManager.ViewModel.PluginList
 				configuration.Icon = configuration.Icon ?? new Uri( "pack://application:,,,/View/icons/conf.png" ).AbsolutePath;
 				configuration.Version = configuration.Version ?? "1.0";
 				configuration.Author = configuration.Author ?? "Unknown author";
-				configuration.SupportedVersions = configuration.SupportedVersions.Any() && configuration.SupportedVersions != null 
+				configuration.SupportedVersions = configuration.SupportedVersions != null && configuration.SupportedVersions.Any() 
 					? configuration.SupportedVersions : new List<string> { "Any" };
 			} );
 
 			PluginList = new ObservableCollection<Configuration>( configurations );
-			ApplicationDatails = pluginViewModel;
-		}
-
-		[CommandExecute( Commands.DownloadAndOpenConfig )]
-		public void DownloadAndOpenConfig()
-		{
+			PluginOverviewViewModel = pluginOverviewViewModel;
 		}
 
 		[CommandExecute( Commands.InstallPlugin )]
 		public void InstallPlugin()
 		{
-			var installer = new PluginInstaller( SelectedConfigurationItem, _pluginType );
-			installer.PluginInstalledEvent += ( configuration, message ) => MessageBox.Show( message + "\n Please restart connected programs to see an effect." );
-			installer.Install();
-			
+			PluginOverviewViewModel.InstallPlugin( this );
 		}
 	}
 }

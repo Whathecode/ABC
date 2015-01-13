@@ -124,7 +124,7 @@
 												Converter="{StaticResource InstallButtonVisibilityConverter}">
 												<Binding
 													ElementName="Control"
-													Path="DataContext.ApplicationDatails.SelectedConfigurationItem.Id" />
+													Path="DataContext.PluginOverviewViewModel.SelectedConfigurationItem.Id" />
 												<Binding Path="Id" />
 												<Binding Path="State" />
 											</MultiBinding>

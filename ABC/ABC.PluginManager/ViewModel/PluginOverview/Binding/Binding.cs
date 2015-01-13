@@ -2,7 +2,6 @@
 {
 	public enum Properties
 	{
-		State,
 		SelectedConfigurationItem,
 		VdmState,
 		PersistanceState,

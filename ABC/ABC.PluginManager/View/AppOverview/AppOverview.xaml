@@ -14,6 +14,7 @@
 	xmlns:pluginsOverview="clr-namespace:PluginManager.ViewModel.PluginsOverview"
 	xmlns:pluginDetails="clr-namespace:PluginManager.ViewModel.PluginDetails"
 	xmlns:converters="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
+	xmlns:common="clr-namespace:PluginManager.Common"
 	MinWidth="940"
 	MinHeight="600">
 	<Window.Resources>
@@ -38,7 +39,7 @@
 					Margin="10, 10, 10, 10"
 					Name="Plugins"
 					DataContext="{Binding SelectedItem, ElementName=AppsListView}"
-					d:DataContext="{d:DesignInstance Type=pluginDetails:PluginDetailsViewModel}"
+					d:DataContext="{d:DesignInstance Type=pluginDetails:PluginOverviewViewModel}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.DisplayedPlugins.Count,
 									Converter={converters:SingleConditionConverter Expression='[0] > 0', 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Hidden}}}">
@@ -61,17 +62,17 @@
 					<pluginList:PluginList
 						DataContext="{Binding InterruptionsList}"
 						Visibility="{Binding ElementName=Window, Path=DataContext.State, 
-									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Interruptions}, 
+									Converter={converters:EnumHasFlagConverter Flag={x:Static common:OverviewState.Interruptions}, 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 					<pluginList:PluginList
 						DataContext="{Binding VdmList}"
 						Visibility="{Binding ElementName=Window, Path=DataContext.State, 
-									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Applications}, 
+									Converter={converters:EnumHasFlagConverter Flag={x:Static common:OverviewState.Applications}, 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 					<pluginList:PluginList
 						DataContext="{Binding PersistanceList}"
 						Visibility="{Binding ElementName=Window, Path=DataContext.State, 
-									Converter={converters:EnumHasFlagConverter Flag={x:Static pluginsOverview:OverviewState.Applications}, 
+									Converter={converters:EnumHasFlagConverter Flag={x:Static common:OverviewState.Applications}, 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
 
 				</StackPanel>

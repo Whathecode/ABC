@@ -6,6 +6,7 @@
 	xmlns:commandFactory="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
 	xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
 	xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginsOverview.Binding"
+	xmlns:common="clr-namespace:PluginManager.Common"
 	x:Class="PluginManager.View.AppOverview.MenuControl"
 	mc:Ignorable="d" Height="200" Width="202">
 	<Grid>
@@ -15,7 +16,8 @@
 			<StackPanel
 				Name="Panel1"
 				Height="150"
-				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllApplications}}">
+				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}"
+				behaviors:MouseBehavior.LeftClickCommandParameter="{Binding Source={x:Static common:OverviewState.AllApplications}}">
 
 				<Label
 					HorizontalContentAlignment="Center"
@@ -34,17 +36,20 @@
 					Content="All"
 					HorizontalContentAlignment="Center"
 					Background="{x:Null}"
-					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllApplications}}" />
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}" 
+					CommandParameter="{Binding Source={x:Static common:OverviewState.AllApplications}}"/>
 				<Button
 					Content="Installed"
 					HorizontalContentAlignment="Center"
 					Background="{x:Null}"
-					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowInstalledApps}}" />
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}" 
+					CommandParameter="{Binding Source={x:Static common:OverviewState.InstalledApplications}}"/>
 				<Button
 					Content="On-line"
 					HorizontalContentAlignment="Center"
 					Background="{x:Null}"
-					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAvailableApps}}" />
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}"
+					CommandParameter="{Binding Source={x:Static common:OverviewState.AvailibleApplications}}"/>
 
 				<!-- TODO: Implement function of showing plug-ins that can be updated. -->
 				<!--<Button
@@ -88,7 +93,8 @@
 			<StackPanel
 				Name="Panel2"
 				Height="25"
-				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllInterruptions}}">
+				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}"
+				behaviors:MouseBehavior.LeftClickCommandParameter="{Binding Source={x:Static common:OverviewState.AllInterruptions}}">
 
 				<Label
 					HorizontalContentAlignment="Center"
@@ -107,17 +113,20 @@
 					Content="All"
 					HorizontalContentAlignment="Center"
 					Background="{x:Null}"
-					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAllInterruptions}}" />
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}"
+					CommandParameter="{Binding Source={x:Static common:OverviewState.AllInterruptions}}"/>
 				<Button
 					Content="Installed"
 					HorizontalContentAlignment="Center"
 					Background="{x:Null}"
-					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowInstalledInterruptions}}" />
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}" 
+					CommandParameter="{Binding Source={x:Static common:OverviewState.InstalledInterruptions}}"/>
 				<Button
 					Content="On-line"
 					HorizontalContentAlignment="Center"
 					Background="{x:Null}"
-					Command="{commandFactory:CommandBinding {x:Static binding:Commands.ShowAvailableInterruptions}}" />
+					Command="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}" 
+					CommandParameter="{Binding Source={x:Static common:OverviewState.AvailibleInterruptions}}"/>
 				<!-- TODO: Implement function of showing plug-ins that can be updated. -->
 				<!--<Button
 					Content="Updates"
@@ -161,7 +170,8 @@
 			
 				Name="Panel3"
 				Height="25"
-				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.ShowInstalledOnSystem}}">
+				behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.SwitchOverviewState}}"
+				behaviors:MouseBehavior.LeftClickCommandParameter="{Binding Source={x:Static common:OverviewState.InstalledOnSystem}}">
 
 				<Label
 					HorizontalContentAlignment="Center"

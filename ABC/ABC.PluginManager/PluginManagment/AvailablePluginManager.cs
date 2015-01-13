@@ -3,18 +3,19 @@ using System.IO;
 using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
+using PluginManager.common;
 using PluginManager.Model;
 
 
 namespace PluginManager.PluginManagment
 {
-	public class AvailablePluginTrigger
+	public class AvailablePluginManager
 	{
 		private const string AppsFeed = "http://members.upcpoczta.pl/z.grondziowska/AvailableAppsSmall.xml";
 
 		public List<Plugin> AvailablePlugins { get; private set; }
 
-		public AvailablePluginTrigger()
+		public AvailablePluginManager()
 		{
 			GiveAvalibleApps();
 		}
@@ -35,11 +36,11 @@ namespace PluginManager.PluginManagment
 			}
 		}
 
-		void GiveAvalibleApps()
+		public List<Plugin> GiveAvalibleApps()
 		{
 			if (!HasInternetConnection())
 			{
-				return;
+				return null;
 			}
 
 			// Retrieving the available applications stream.
@@ -56,7 +57,20 @@ namespace PluginManager.PluginManagment
 			// Use Deserialize method to restore the object's state.
 			var availibleApps = (Plugins) serializer.Deserialize(reader);
 
-			AvailablePlugins = new List<Plugin>(availibleApps.AvailablePlugins);
+			var availablePlugins = new List<Plugin>(availibleApps.AvailablePlugins);
+			availablePlugins = PluginManagmentHelper.MergePluginsByName( availablePlugins );
+
+			availablePlugins.ForEach( plugin =>
+			{
+				plugin.Vdm.ForEach( vdm => vdm.State = PluginState.Availible );
+				plugin.Persistence.ForEach( persistence => persistence.State = PluginState.Availible );
+				plugin.Interruptions.ForEach( interruption => interruption.State = PluginState.Availible );
+			} );
+
+			PluginManagmentHelper.SortByName( ref availablePlugins );
+			
+			AvailablePlugins = availablePlugins;
+			return availablePlugins;
 		}
 	}
 }

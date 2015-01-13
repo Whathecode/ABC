@@ -13,13 +13,17 @@ using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 namespace PluginManager.ViewModel.PluginDetails
 {
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
-	public class PluginDetailsViewModel
+	public class PluginOverviewViewModel
 	{
+		public delegate void PluginEventHandler( PluginOverviewViewModel pluginOverview, PluginListViewModel pluginList );
+
+		/// <summary>
+		///   Event which is triggered when plug-in being installed.
+		/// </summary>
+		public event PluginEventHandler IntallingPluginEvent;
+
 		[NotifyProperty( Binding.Properties.SelectedConfigurationItem )]
 		public Configuration SelectedConfigurationItem { get; set; }
-
-		[NotifyProperty( Binding.Properties.State )]
-		public PluginState State { get; private set; }
 
 		[NotifyProperty( Binding.Properties.VdmState )]
 		public PluginState VdmState { get; private set; }
@@ -36,7 +40,7 @@ namespace PluginManager.ViewModel.PluginDetails
 		public PluginListViewModel PersistanceList { get; private set; }
 
 
-		public PluginDetailsViewModel( Plugin plugin )
+		public PluginOverviewViewModel( Plugin plugin )
 		{
 			Plugin = plugin;
 			VdmState = VerifyPluginsState( plugin.Vdm );
@@ -77,6 +81,11 @@ namespace PluginManager.ViewModel.PluginDetails
 		{
 			// TODO: Implement method what will create new vdm configuration.
 			//Process.Start( "notepad.exe", "NewProcessConfiguration.xml" );
+		}
+
+		public void InstallPlugin( PluginListViewModel pluginList )
+		{
+			IntallingPluginEvent( this, pluginList );
 		}
 	}
 }

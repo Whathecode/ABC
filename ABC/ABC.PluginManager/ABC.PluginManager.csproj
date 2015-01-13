@@ -114,6 +114,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\OverviewState.cs" />
     <Compile Include="Common\PluginState.cs" />
     <Compile Include="Common\PluginType.cs" />
     <Compile Include="Model\Plugins.cs" />
@@ -121,15 +122,16 @@
     <Compile Include="Model\PluginElement.cs" />
     <Compile Include="Model\Plugin.cs" />
     <Compile Include="PluginManagment\AssemblyInfo.cs" />
-    <Compile Include="PluginManagment\AvailablePluginTrigger.cs" />
-    <Compile Include="PluginManagment\InstalledPluginTrigger.cs" />
+    <Compile Include="PluginManagment\AvailablePluginManager.cs" />
+    <Compile Include="PluginManagment\FileHelper.cs" />
+    <Compile Include="PluginManagment\InstalledPluginManager.cs" />
     <Compile Include="PluginManagment\ApplicationRegistryBrowse.cs" />
-    <Compile Include="PluginManagment\ConfigurationInstaller.cs" />
-    <Compile Include="ViewModel\PluginDetails\PluginDetailsViewModel.cs" />
-    <Compile Include="ViewModel\PluginDetails\Binding\Binding.cs" />
-    <Compile Include="ViewModel\PluginsOverview\AppOverviewViewModel.cs" />
-    <Compile Include="ViewModel\PluginsOverview\Binding\Binding.cs" />
-    <Compile Include="ViewModel\PluginsOverview\OverviewState.cs" />
+    <Compile Include="PluginManagment\PluginDownloader.cs" />
+    <Compile Include="PluginManagment\PluginManagmentHelper.cs" />
+    <Compile Include="ViewModel\PluginOverview\PluginOverviewViewModel.cs" />
+    <Compile Include="ViewModel\PluginOverview\Binding\Binding.cs" />
+    <Compile Include="ViewModel\AppOverview\AppOverviewViewModel.cs" />
+    <Compile Include="ViewModel\AppOverview\Binding\Binding.cs" />
     <Compile Include="ViewModel\PluginList\Binding\Binding.cs" />
     <Compile Include="ViewModel\PluginList\PluginListViewModel.cs" />
     <Compile Include="View\AppOverview\AppOverview.xaml.cs">
