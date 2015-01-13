@@ -39,7 +39,7 @@ namespace ABC.Windows.Desktop.Server
 		public List<List<WindowInfo>> GetWindowAssociations()
 		{
 			_desktopManager.UpdateWindowAssociations();
-			return _desktopManager.Desktops.Select( d => d.WindowSnapshots.Select( w => w.Info ).ToList() ).Where( l => l.Count > 0 ).ToList();
+			return _desktopManager.Workspaces.Select( d => d.WindowSnapshots.Select( w => w.Info ).ToList() ).Where( l => l.Count > 0 ).ToList();
 		}
 
 		public List<WindowInfo> GetWindowClipboard()
@@ -49,13 +49,13 @@ namespace ABC.Windows.Desktop.Server
 
 		public void CutWindows( List<WindowInfo> windows )
 		{
-			List<WindowSnapshot> toCut = windows.Select( w => new WindowSnapshot( _desktopManager.CurrentDesktop, w ) ).ToList();
+			List<WindowSnapshot> toCut = windows.Select( w => new WindowSnapshot( _desktopManager.CurrentWorkspace, w ) ).ToList();
 
 			// Cut the passed window from all desktops.
 			// TODO: This will cause problems once windows are allowed to be on multiple desktops.
 			foreach ( WindowInfo window in windows )
 			{
-				_desktopManager.Desktops
+				_desktopManager.Workspaces
 					.Where( d => d.WindowSnapshots.Any( w => w.Info.Equals( window ) ) )
 					.ForEach( d => d.RemoveWindows( toCut ) );
 			}

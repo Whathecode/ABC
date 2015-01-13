@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
 using ABC.Applications.Persistence;
 using ABC.Windows.Desktop.Server;
 using ABC.Windows.Desktop.Settings;
-using Whathecode.System;
 using Whathecode.System.Extensions;
 using Whathecode.System.Security.Principal;
 using Whathecode.System.Windows;
@@ -14,32 +15,19 @@ using Whathecode.System.Windows;
 
 namespace ABC.Windows.Desktop
 {
-	/// <summary>
-	///   Allows creating and switching between different <see cref="VirtualDesktop" />'s.
-	/// </summary>
-	/// <license>
-	///   This file is part of VirtualDesktopManager.
-	///   VirtualDesktopManager is free software: you can redistribute it and/or modify
-	///   it under the terms of the GNU General Public License as published by
-	///   the Free Software Foundation, either version 3 of the License, or
-	///   (at your option) any later version.
-	///
-	///   VirtualDesktopManager is distributed in the hope that it will be useful,
-	///   but WITHOUT ANY WARRANTY; without even the implied warranty of
-	///   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	///   GNU General Public License for more details.
-	///
-	///   You should have received a copy of the GNU General Public License
-	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
-	/// </license>
-	public class VirtualDesktopManager : AbstractDisposable
-	{
-		public delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
+	public delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
 
+
+	/// <summary>
+	///   An <see cref = "AbstractWorkspaceManager{TWorkspace, TSession}" />
+	///   which allows creating and switching between different <see cref = "VirtualDesktop" />'s.
+	/// </summary>
+	public class VirtualDesktopManager : AbstractWorkspaceManager<VirtualDesktop, StoredSession>, IWindowOperations
+	{
 		/// <summary>
 		///   Event which is triggered when in any virtual desktop unresponsive windows are detected.
 		/// </summary>
-		public event UnresponsiveWindowsHandler UnresponsiveWindowDetectedEvent;
+		public event UnresponsiveWindowsHandler UnresponsiveWindowDetected;
 
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
@@ -52,21 +40,10 @@ namespace ABC.Windows.Desktop
 		readonly MonitorVdmPipeServer _monitorServer;
 		// ReSharper restore NotAccessedField.Local
 
-		public VirtualDesktop StartupDesktop { get; private set; }
-		public VirtualDesktop CurrentDesktop { get; private set; }
-
-		readonly List<VirtualDesktop> _desktops = new List<VirtualDesktop>();
-
-
-		public IReadOnlyCollection<VirtualDesktop> Desktops
-		{
-			get { return _desktops; }
-		}
-
 
 		/// <summary>
 		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
-		///   This desktop is accessible through the <see cref="CurrentDesktop" /> property.
+		///   This desktop is accessible through the <see cref="AbstractWorkspaceManager{TWorkspace,TSession}.CurrentWorkspace" /> property.
 		/// </summary>
 		/// <param name = "settings">
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
@@ -76,14 +53,14 @@ namespace ABC.Windows.Desktop
 
 		/// <summary>
 		///   Initializes a new desktop manager and creates one startup desktop containing all currently open windows.
-		///   This desktop is accessible through the <see cref="CurrentDesktop" /> property.
+		///   This desktop is accessible through the <see cref="AbstractWorkspaceManager{TWorkspace,TSession}.CurrentWorkspace" /> property.
 		/// </summary>
 		/// <param name = "settings">
 		///   Contains settings for how the desktop manager should behave. E.g. which windows to ignore.
 		/// </param>
 		/// <param name = "persistenceProvider">Allows state of applications to be persisted and restored.</param>
-		/// <exception cref="BadImageFormatException">Thrown when other than x64 virtual desktop manager is run to operate on x64 platform.</exception>
-		/// <exception cref="NotSupportedException">Thrown when virtual desktop manager is started without necessary privileges.</exception>
+		/// <exception cref = "BadImageFormatException">Thrown when other than x64 virtual desktop manager is run to operate on x64 platform.</exception>
+		/// <exception cref = "NotSupportedException">Thrown when virtual desktop manager is started without necessary privileges.</exception>
 		public VirtualDesktopManager( ISettings settings, AbstractPersistenceProvider persistenceProvider )
 		{
 			Contract.Requires( settings != null );
@@ -112,12 +89,11 @@ namespace ABC.Windows.Desktop
 			_hideBehavior = settings.CreateHideBehavior();
 
 			// Initialize visible startup desktop.
-			StartupDesktop = new VirtualDesktop( _persistenceProvider );
-			CurrentDesktop = StartupDesktop;
-			StartupDesktop.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
-			StartupDesktop.Show(); // Make virtual desktop visible.
-			StartupDesktop.AddWindows( GetNewWindows() );
-			_desktops.Add( CurrentDesktop );
+			var startupDesktop = new VirtualDesktop( _persistenceProvider );
+			SetStartupWorkspace( startupDesktop );
+			startupDesktop.UnresponsiveWindowDetected += OnUnresponsiveWindowDetected;
+			startupDesktop.Show(); // Make virtual desktop visible.
+			startupDesktop.AddWindows( GetNewWindows() );
 
 			_monitorServer = new MonitorVdmPipeServer( this );
 
@@ -126,49 +102,54 @@ namespace ABC.Windows.Desktop
 
 		void OnUnresponsiveWindowDetected( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop )
 		{
-			UnresponsiveWindowDetectedEvent( unresponsiveWindows, desktop );
+			UnresponsiveWindowDetected( unresponsiveWindows, desktop );
 		}
 
-		/// <summary>
-		///   Create an empty virtual desktop with no windows assigned to it.
-		/// </summary>
-		/// <returns>The newly created virtual desktop.</returns>
-		public VirtualDesktop CreateEmptyDesktop()
+		void OnForceSuspendRequested( AbstractWorkspace<StoredSession> workspace )
 		{
-			ThrowExceptionIfDisposed();
+			var virtualDesktop = (VirtualDesktop)workspace;
 
+			// TODO: Is there any way to always support this? The internal WindowSnapshot constructor assumes the windows are part of the currently visible desktop.
+			if ( !virtualDesktop.IsVisible )
+			{
+				throw new InvalidOperationException( "Can only transfer windows when the desktop is currently visible." );
+			}
+
+			// Move windows from the forcefully suspended workspace to the startup workspace.
+			List<WindowSnapshot> snapshots =  virtualDesktop.Windows.Select( w => new WindowSnapshot( virtualDesktop, w.WindowInfo ) ).ToList();
+			virtualDesktop.RemoveWindows( snapshots );
+			StartupWorkspace.AddWindows( snapshots );
+		}
+
+		protected override VirtualDesktop CreateEmptyWorkspaceInner()
+		{
 			var newDesktop = new VirtualDesktop( _persistenceProvider );
-			newDesktop.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
-
-			_desktops.Add( newDesktop );
-
+			HookDesktopEvents( newDesktop );
 			return newDesktop;
 		}
 
-		/// <summary>
-		/// Creates a new desktop from a stored session.
-		/// </summary>
-		/// <param name = "session">The stored session.</param>
-		/// <returns>The restored virtual desktop.</returns>
-		public VirtualDesktop CreateDesktopFromSession( StoredSession session )
+		protected override VirtualDesktop CreateWorkspaceFromSessionInner( StoredSession session )
 		{
-			ThrowExceptionIfDisposed();
-
 			session.EnsureBackwardsCompatibility();
 
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
-			List<WindowSnapshot> otherWindows = StartupDesktop.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
-			StartupDesktop.RemoveWindows( otherWindows );
+			List<WindowSnapshot> otherWindows = StartupWorkspace.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
+			StartupWorkspace.RemoveWindows( otherWindows );
 
 			var restored = new VirtualDesktop( session, _persistenceProvider );
-			restored.UnresponsiveWindowDetectedEvent += OnUnresponsiveWindowDetected;
+			HookDesktopEvents( restored );
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
-			_desktops.Add( restored );
-
 			return restored;
 		}
 
+		void HookDesktopEvents( VirtualDesktop desktop )
+		{
+			desktop.UnresponsiveWindowDetected += OnUnresponsiveWindowDetected;
+			desktop.ForceSuspendRequested += OnForceSuspendRequested;
+			desktop.Storing += d => UpdateWindowAssociations();
+			desktop.SuspendingWorkspace += OnSuspendingWorkspace;
+		}
 
 		/// <summary>
 		///   Update which windows are associated to the current virtual desktop.
@@ -178,16 +159,16 @@ namespace ABC.Windows.Desktop
 			ThrowExceptionIfDisposed();
 
 			// The desktop needs to be visible in order to update window associations.
-			if ( !CurrentDesktop.IsVisible )
+			if ( !CurrentWorkspace.IsVisible )
 			{
 				return;
 			}
 
 			// Update window associations for the currently open desktop.
-			CurrentDesktop.AddWindows( GetNewWindows() );
+			CurrentWorkspace.AddWindows( GetNewWindows() );
 
-			CurrentDesktop.RemoveWindows( CurrentDesktop.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() );
-			CurrentDesktop.WindowSnapshots.ForEach( w => w.Update() );
+			CurrentWorkspace.RemoveWindows( CurrentWorkspace.WindowSnapshots.Where( w => !IsValidWindow( w ) ).ToList() );
+			CurrentWorkspace.WindowSnapshots.ForEach( w => w.Update() );
 
 			// Remove destroyed windows from places where they are cached.
 			var destroyedWindows = _invalidWindows.Where( w => w.IsDestroyed() ).ToList();
@@ -200,63 +181,49 @@ namespace ABC.Windows.Desktop
 			}
 		}
 
-		/// <summary>
-		///   Switch to the given virtual desktop.
-		/// </summary>
-		/// <param name="desktop">The desktop to switch to.</param>
-		public void SwitchToDesktop( VirtualDesktop desktop )
+		void OnSuspendingWorkspace( AbstractWorkspace<StoredSession> workspace )
 		{
-			ThrowExceptionIfDisposed();
+			// Make sure the workspace is aware about all latest open windows.
+			UpdateWindowAssociations();
 
-			if ( CurrentDesktop == desktop )
+			bool isSuspended = false;
+			AbstractWorkspace<StoredSession>.WorkspaceEventHandler onSuspended = w => isSuspended = true;
+			workspace.SuspendedWorkspace += onSuspended;
+
+			// While awaiting full suspension in background, make sure list of remaining open windows is updated.
+			var awaitSuspend = new BackgroundWorker();
+			awaitSuspend.DoWork += ( sender, args ) =>
 			{
-				return;
-			}
+				while ( !isSuspended )
+				{
+					UpdateWindowAssociations();
+					Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+				}
+			};
+			awaitSuspend.RunWorkerCompleted += ( sender, args ) =>
+			{
+				workspace.SuspendedWorkspace -= onSuspended;
+			};
+			awaitSuspend.RunWorkerAsync();
+		}
 
+		protected override void SwitchToWorkspaceInner( VirtualDesktop desktop )
+		{
 			UpdateWindowAssociations();
 
 			// Hide windows for current desktop and show those from the new desktop.
-			CurrentDesktop.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
+			CurrentWorkspace.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
 			desktop.Show();
 
-			CurrentDesktop = desktop;
 		}
 
-		/// <summary>
-		///   Merges all windows from one desktop with those from another, and removes the original desktop.
-		///   You can't merge the <see cref="StartupDesktop"/> with another desktop.
-		/// </summary>
-		public void Merge( VirtualDesktop from, VirtualDesktop to )
+		protected override void MergeInner( VirtualDesktop from, VirtualDesktop to )
 		{
-			Contract.Requires( from != null && to != null && from != to );
-
-			ThrowExceptionIfDisposed();
-
-			if ( from == StartupDesktop )
-			{
-				CloseAndThrow( new ArgumentException( "Can't remove the startup desktop.", "from" ) );
-			}
-			if ( from == CurrentDesktop )
-			{
-				CloseAndThrow( new ArgumentException( "The passed desktop can't be removed since it's the current desktop.", "from" ) );
-			}
-
-			_desktops.Remove( from );
 			to.AddWindows( from.WindowSnapshots.ToList() );
 		}
 
-		/// <summary>
-		///   Closes the virtual desktop manager by restoring all windows.
-		///   Unresponsive window event is triggered when previously cut windows become unresponsive during show operation.
-		/// </summary>
-		public void Close()
+		protected override void CloseAdditional()
 		{
-			ThrowExceptionIfDisposed();
-			_persistenceProvider.Dispose();
-
-			// Show all windows from all virtual desktops.
-			_desktops.ForEach( d => d.Show() );
-
 			// Show all cut windows again.
 			var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } ).ToList();
 			try
@@ -265,18 +232,10 @@ namespace ABC.Windows.Desktop
 			}
 			catch ( Whathecode.System.Windows.UnresponsiveWindowsException e )
 			{
-				UnresponsiveWindowDetectedEvent( e.UnresponsiveWindows.Select( info => new WindowSnapshot( CurrentDesktop, info ) ).ToList(), CurrentDesktop );
+				UnresponsiveWindowDetected(
+					e.UnresponsiveWindows.Select( info => new WindowSnapshot( CurrentWorkspace, info ) ).ToList(), CurrentWorkspace );
 			}
-		}
 
-		/// <summary>
-		///   Throw an exception, but close the VDM first so that no windows are lost.
-		/// </summary>
-		/// <param name = "exception">The exception to throw.</param>
-		void CloseAndThrow( Exception exception )
-		{
-			Close();
-			throw exception;
 		}
 
 		/// <summary>
@@ -295,14 +254,14 @@ namespace ABC.Windows.Desktop
 		List<WindowSnapshot> GetNewWindows()
 		{
 			List<WindowInfo> newWindows = WindowManager.GetWindows().Except(
-				_desktops.SelectMany( d => d.WindowSnapshots ).Concat( WindowClipboard )
+				Workspaces.SelectMany( d => d.WindowSnapshots ).Concat( WindowClipboard )
 					.Select( w => w.Info )
 					.Concat( _invalidWindows ) ).ToList();
 
 			var validWindows = new List<WindowSnapshot>();
 			foreach ( var w in newWindows )
 			{
-				var snapshot = new WindowSnapshot( CurrentDesktop, w );
+				var snapshot = new WindowSnapshot( CurrentWorkspace, w );
 				if ( IsValidWindow( snapshot ) )
 				{
 					validWindows.Add( snapshot );
@@ -333,10 +292,10 @@ namespace ABC.Windows.Desktop
 				return;
 			}
 
-			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( CurrentDesktop, w.WindowInfo ) ).ToList();
+			var cutWindows = _hideBehavior( window, this ).Select( w => new WindowSnapshot( CurrentWorkspace, w.WindowInfo ) ).ToList();
 			cutWindows.ForEach( w => WindowClipboard.Push( w ) );
 
-			CurrentDesktop.RemoveWindows( cutWindows );
+			CurrentWorkspace.RemoveWindows( cutWindows );
 		}
 
 		/// <summary>
@@ -348,12 +307,14 @@ namespace ABC.Windows.Desktop
 
 			UpdateWindowAssociations(); // There might be newly added windows of which the z-order isn't known yet, so update associations first.
 
-			CurrentDesktop.AddWindows( WindowClipboard.ToList() );
+			CurrentWorkspace.AddWindows( WindowClipboard.ToList() );
 		}
 
 		protected override void FreeManagedResources()
 		{
-			Close();
+			base.FreeManagedResources();
+
+			_persistenceProvider.Dispose();
 		}
 
 		protected override void FreeUnmanagedResources()

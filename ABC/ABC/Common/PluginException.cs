@@ -4,7 +4,7 @@
 namespace ABC.Common
 {
 	/// <summary>
-	///   Exception which is thrown when one of the interruption trigger plugins throws an exception.
+	///   Exception which is thrown when one of the plugins throws an exception.
 	/// </summary>
 	public class PluginException<TPlugin> : Exception
 	{
@@ -12,7 +12,7 @@ namespace ABC.Common
 
 
 		/// <summary>
-		///   Create a new exception indicating an interruption trigger plugin threw an exception.
+		///   Create a new exception indicating a plugin threw an exception.
 		/// </summary>
 		/// <param name = "message">The error message that explains the reason for the exception.</param>
 		/// <param name = "plugin">The plugin that threw the exception.</param>

@@ -52,13 +52,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ABC.Common\ABC.Common.csproj">
-      <Project>{d53f1095-6dc0-4950-982f-3322aae74a50}</Project>
-      <Name>ABC.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ABC.PInvoke\ABC.PInvoke.csproj">
       <Project>{072142c4-284e-4f1a-a1fe-f886e8ecf728}</Project>
       <Name>ABC.PInvoke</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ABC\ABC.csproj">
+      <Project>{d53f1095-6dc0-4950-982f-3322aae74a50}</Project>
+      <Name>ABC</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

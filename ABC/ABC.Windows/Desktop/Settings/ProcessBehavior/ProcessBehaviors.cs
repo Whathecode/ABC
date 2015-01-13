@@ -82,9 +82,9 @@ namespace Generated.ProcessBehaviors
 				case ConsiderWindows.AllWindows:
 					return WindowManager.GetWindows();
 				case ConsiderWindows.AllDesktopWindows:
-					return desktopManager.Desktops.SelectMany( d => d.WindowSnapshots.Select( w => w.Info ) );
+					return desktopManager.Workspaces.SelectMany( d => d.WindowSnapshots.Select( w => w.Info ) );
 				case ConsiderWindows.CurrentDesktopWindowsOnly:
-					return desktopManager.CurrentDesktop.WindowSnapshots.Select( w => w.Info );
+					return desktopManager.CurrentWorkspace.WindowSnapshots.Select( w => w.Info );
 				default:
 					throw new NotSupportedException();
 			}
