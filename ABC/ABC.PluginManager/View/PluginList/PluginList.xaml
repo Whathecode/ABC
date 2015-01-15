@@ -11,14 +11,10 @@
 	xmlns:pluginList="clr-namespace:PluginManager.ViewModel.PluginList"
 	xmlns:data="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
 	xmlns:common="clr-namespace:PluginManager.common"
-	xmlns:pluginList1="clr-namespace:PluginManager.View.PluginList"
 	mc:Ignorable="d"
 	d:DesignHeight="300" d:DesignWidth="300"
 	d:DataContext="{d:DesignInstance Type=pluginList:PluginListViewModel}">
 
-	<UserControl.Resources>
-		<pluginList1:InstallButtonVisibilityConverter x:Key="InstallButtonVisibilityConverter" />
-	</UserControl.Resources>
 	<StackPanel>
 		<TextBlock
 			Text="{Binding PluginListName}"
@@ -116,19 +112,12 @@
 										Width="25"
 										Height="25"
 										Cursor="Hand"
+										PreviewMouseLeftButtonDown="PreviewMouseLeftButtonDown"
 										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.InstallPlugin}, 
-											ElementName=Control}">
-										<Image.Visibility>
-											<MultiBinding
-												UpdateSourceTrigger="PropertyChanged"
-												Converter="{StaticResource InstallButtonVisibilityConverter}">
-												<Binding
-													ElementName="Control"
-													Path="DataContext.PluginOverviewViewModel.SelectedConfigurationItem.Id" />
-												<Binding Path="Id" />
-												<Binding Path="State" />
-											</MultiBinding>
-										</Image.Visibility>
+											ElementName=Control}"
+										Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Availible}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}">
 									</Image>
 								</StackPanel>
 

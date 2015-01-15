@@ -5,8 +5,8 @@ using System.Windows;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
 using PluginManager.View.AppOverview;
+using PluginManager.ViewModel.AppOverview;
 using PluginManager.ViewModel.PluginList;
-using PluginManager.ViewModel.PluginsOverview;
 
 
 namespace PluginManager

@@ -1,4 +1,4 @@
-﻿namespace PluginManager.ViewModel.PluginDetails.Binding
+﻿namespace PluginManager.ViewModel.PluginOverview.Binding
 {
 	public enum Properties
 	{

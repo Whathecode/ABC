@@ -5,9 +5,9 @@ using System.Linq;
 using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
-using PluginManager.ViewModel.PluginDetails;
+using PluginManager.ViewModel.AppOverview.Binding;
 using PluginManager.ViewModel.PluginList;
-using PluginManager.ViewModel.PluginsOverview.Binding;
+using PluginManager.ViewModel.PluginOverview;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Aspects.ViewModel;
@@ -15,7 +15,7 @@ using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 using Whathecode.System.Xaml.Behaviors;
 
 
-namespace PluginManager.ViewModel.PluginsOverview
+namespace PluginManager.ViewModel.AppOverview
 {
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class AppOverviewViewModel

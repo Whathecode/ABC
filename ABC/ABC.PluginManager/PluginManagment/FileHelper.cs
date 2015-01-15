@@ -8,12 +8,12 @@ namespace PluginManager.PluginManagment
 	{
 		public static string GetDllVersion( string dllPath )
 		{
-			return new AssemblyInfo( Assembly.LoadFile( dllPath ) ).Version;
+			return dllPath != null ? new AssemblyInfo( Assembly.LoadFile( dllPath ) ).Version : null;
 		}
 
 		public static string GetLastWriteDate( string dllPath )
 		{
-			return new FileInfo( dllPath ).LastWriteTime.ToShortDateString();
+			return dllPath != null ? new FileInfo( dllPath ).LastWriteTime.ToShortDateString() : null;
 		}
 	}
 }

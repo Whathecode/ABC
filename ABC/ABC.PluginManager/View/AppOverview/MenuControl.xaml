@@ -5,8 +5,8 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:commandFactory="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
 	xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
-	xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginsOverview.Binding"
 	xmlns:common="clr-namespace:PluginManager.Common"
+	xmlns:binding="clr-namespace:PluginManager.ViewModel.AppOverview.Binding"
 	x:Class="PluginManager.View.AppOverview.MenuControl"
 	mc:Ignorable="d" Height="200" Width="202">
 	<Grid>

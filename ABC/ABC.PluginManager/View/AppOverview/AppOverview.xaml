@@ -5,16 +5,16 @@
 	x:Class="PluginManager.View.AppOverview.AppOverview"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	d:DataContext="{d:DesignInstance Type=pluginsOverview:AppOverviewViewModel}"
+	d:DataContext="{d:DesignInstance Type=appOverview:AppOverviewViewModel}"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	xmlns:local="clr-namespace:PluginManager.View.AppOverview"
 	xmlns:pluginList="clr-namespace:PluginManager.View.PluginList"
-	xmlns:pluginsOverview="clr-namespace:PluginManager.ViewModel.PluginsOverview"
-	xmlns:pluginDetails="clr-namespace:PluginManager.ViewModel.PluginDetails"
 	xmlns:converters="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
 	xmlns:common="clr-namespace:PluginManager.Common"
+	xmlns:appOverview="clr-namespace:PluginManager.ViewModel.AppOverview"
+	xmlns:pluginOverview="clr-namespace:PluginManager.ViewModel.PluginOverview"
 	MinWidth="940"
 	MinHeight="600">
 	<Window.Resources>
@@ -39,7 +39,7 @@
 					Margin="10, 10, 10, 10"
 					Name="Plugins"
 					DataContext="{Binding SelectedItem, ElementName=AppsListView}"
-					d:DataContext="{d:DesignInstance Type=pluginDetails:PluginOverviewViewModel}"
+					d:DataContext="{d:DesignInstance Type=pluginOverview:PluginOverviewViewModel}"
 					Visibility="{Binding ElementName=Window, Path=DataContext.DisplayedPlugins.Count,
 									Converter={converters:SingleConditionConverter Expression='[0] > 0', 
 									IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Hidden}}}">

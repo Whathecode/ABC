@@ -3,14 +3,14 @@ using System.Linq;
 using PluginManager.common;
 using PluginManager.Common;
 using PluginManager.Model;
-using PluginManager.ViewModel.PluginDetails.Binding;
 using PluginManager.ViewModel.PluginList;
+using PluginManager.ViewModel.PluginOverview.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Windows.Aspects.ViewModel;
 using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 
 
-namespace PluginManager.ViewModel.PluginDetails
+namespace PluginManager.ViewModel.PluginOverview
 {
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class PluginOverviewViewModel

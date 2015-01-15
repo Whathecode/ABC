@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ABC.Applications.Persistence;
+using ABC.Common;
 using ABC.Interruptions;
 using ABC.Windows.Desktop.Settings;
 using PluginManager.common;
@@ -16,8 +17,8 @@ namespace PluginManager.PluginManagment
 	public class InstalledPluginManager : AbstractDisposable
 	{
 		readonly LoadedSettings _vdmSettings;
-		InterruptionAggregator _interruptionAggregator;
-		PersistenceProvider _persistenceProvider;
+		readonly InterruptionAggregator _interruptionAggregator;
+		readonly PersistenceProvider _persistenceProvider;
 
 		public List<Plugin> PersistencePlugins { get; private set; }
 		public List<Plugin> InterruptionsPlugins { get; private set; }
@@ -25,7 +26,11 @@ namespace PluginManager.PluginManagment
 
 		public InstalledPluginManager()
 		{
-			_vdmSettings = new LoadedSettings( true );
+			PersistencePlugins = new List<Plugin>();
+			InterruptionsPlugins = new List<Plugin>();
+			VdmPlugins = new List<Plugin>();
+
+			_vdmSettings = new LoadedSettings( true, false );
 			_interruptionAggregator = new InterruptionAggregator( App.InterruptionsPluginLibrary );
 			_persistenceProvider = new PersistenceProvider( App.PersistencePluginLibrary );
 			RefreshPlugins();
@@ -33,46 +38,38 @@ namespace PluginManager.PluginManagment
 
 		public void RefreshPlugins()
 		{
-			PersistencePlugins = GetPersistence();
-			InterruptionsPlugins = GetInterruptions();
+			PersistencePlugins = GetPlugins(_persistenceProvider, PluginType.Persistence, App.PersistencePluginLibrary);
+			InterruptionsPlugins = GetPlugins(_interruptionAggregator, PluginType.Interruptions, App.InterruptionsPluginLibrary);
 			VdmPlugins = GetVdms();
 		}
 
-		List<Plugin> GetInterruptions()
+		List<Plugin> GetPlugins(IInstallablePluginContainer pluginContainer, PluginType type, string pluginLibrary)
 		{
-			var interruptionPlugins = new List<Plugin>();
-			var interruptionNumber = 0;
-			var dllsPaths = Directory.EnumerateFiles( App.InterruptionsPluginLibrary, "*.dll" ).ToList();
-			_interruptionAggregator.GetInterruptionInfos().ForEach( interruption =>
+			var plugins = new List<Plugin>();
+			var dllsPaths = Directory.EnumerateFiles( pluginLibrary, "*.dll" ).ToList();
+			pluginContainer.GetPluginInformation().ForEach( pluginInformation =>
 			{
-				var app = GetOrCreate( interruption.ProcessName, interruption.CompanyName, interruptionPlugins );
-				app.Interruptions.Add( CreateConfiguration( interruption.SupportedVersions,
-					interruption.Author, FileHelper.GetDllVersion( dllsPaths[ interruptionNumber ] ),
-					FileHelper.GetLastWriteDate( dllsPaths[ interruptionNumber ] ) ) );
-				++interruptionNumber;
+				var app = AddIfAbsent( pluginInformation.ProcessName, pluginInformation.CompanyName, plugins );
+				switch ( type )
+				{
+					case PluginType.Interruptions:
+						app.Interruptions.Add( CreateConfiguration( pluginInformation, dllsPaths ) );
+						break;
+					case PluginType.Persistence:
+						app.Persistence.Add( CreateConfiguration( pluginInformation, dllsPaths ) );
+						break;
+				}
 			} );
-			PluginManagmentHelper.SortByName( ref interruptionPlugins );
-			return interruptionPlugins;
+			PluginManagmentHelper.SortByName( ref plugins );
+			return plugins;
 		}
 
-		List<Plugin> GetPersistence()
+		Configuration CreateConfiguration( PluginInformation info, IEnumerable<string> dllsPaths )
 		{
-			//_persistenceProvider = new PersistenceProvider( App.PersistencePluginLibrary );
-			var persistencePlugins = new List<Plugin>();
-			var persistenceNumber = 0;
-			var dllsPaths = Directory.EnumerateFiles( App.PersistencePluginLibrary, "*.dll" ).ToList();
-			_persistenceProvider.GetPersistenceProvidersInfo().ForEach( persistance =>
-			{
-				var app = GetOrCreate( persistance.ProcessName, persistance.CompanyName, persistencePlugins );
-				app.Persistence.Add( CreateConfiguration( persistance.SupportedVersions,
-					persistance.Author, FileHelper.GetDllVersion( dllsPaths[ persistenceNumber ] ),
-					FileHelper.GetLastWriteDate( dllsPaths[ persistenceNumber ] ) ) );
-				++persistenceNumber;
-			} );
-			PluginManagmentHelper.SortByName( ref persistencePlugins );
-			// ???
-			//_persistenceProvider.Dispose();
-			return persistencePlugins;
+			var dllPath = dllsPaths.FirstOrDefault( dll => dll.ToLower().Contains( info.ProcessName.ToLower() ) );
+			return CreateConfiguration( info.SupportedVersions,
+				info.Author, FileHelper.GetDllVersion( dllPath ),
+				FileHelper.GetLastWriteDate( dllPath ) );
 		}
 
 		List<Plugin> GetVdms()
@@ -95,7 +92,7 @@ namespace PluginManager.PluginManagment
 			_vdmSettings.Settings.Process.ForEach( vdmCfg =>
 			{
 				// Check if application with the same name already is not installed.
-				var app = GetOrCreate( vdmCfg.Name, vdmCfg.CompanyName, vdms );
+				var app = AddIfAbsent( vdmCfg.Name, vdmCfg.CompanyName, vdms );
 				var supportedVersions = vdmCfg.Version != null ? vdmCfg.Version.Split( ',' ).Select( sv => sv.Trim() ).ToList() : new List<string>();
 				app.Vdm.Add( CreateConfiguration( supportedVersions, vdmCfg.Name, vdmCfg.Version, DateTime.Now.ToShortDateString() ) );
 			} );
@@ -103,16 +100,20 @@ namespace PluginManager.PluginManagment
 			return vdms;
 		}
 
-		public void InstallPlugin( string name, string companyName, PluginType pluginType )
+		public bool InstallPlugin( string name, string companyName, PluginType type )
 		{
-			if ( pluginType == PluginType.Persistence )
+			if ( type == PluginType.Vdm )
 			{
-				_persistenceProvider.Reload();
-				_persistenceProvider.InstallPlugin( name, companyName );
+				return true;
 			}
+			
+			var pluginContainer = type == PluginType.Persistence ? _persistenceProvider : _interruptionAggregator as IInstallablePluginContainer;
+			pluginContainer.Reload();
+			var pluginToInstall = pluginContainer.GetInstallablePlugin( name, companyName );
+			return pluginToInstall != null && pluginToInstall.Install();
 		}
 
-		Plugin GetOrCreate( string name, string companyName, List<Plugin> plugins )
+		Plugin AddIfAbsent( string name, string companyName, ICollection<Plugin> plugins )
 		{
 			var plugin = plugins.FirstOrDefault( installedApp => installedApp.Name == name && installedApp.CompanyName == companyName );
 			if ( plugin != null )
