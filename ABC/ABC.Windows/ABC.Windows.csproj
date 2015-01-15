@@ -68,7 +68,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DesktopIcon.cs" />
+    <Compile Include="Desktop\DesktopIcons.cs" />
+    <Compile Include="Desktop\DesktopIconsManager.cs" />
     <Compile Include="Desktop\IWindowOperations.cs" />
+    <Compile Include="Desktop\StoredIcons.cs" />
     <Compile Include="Desktop\VirtualDesktopManager.cs" />
     <Compile Include="IconManager.cs" />
     <Compile Include="Desktop\Server\IMonitorVdmService.cs" />
@@ -84,7 +87,6 @@
     </Compile>
     <Compile Include="Desktop\StoredSession.cs" />
     <Compile Include="Desktop\VirtualDesktop.cs" />
-    <Compile Include="Desktop\WorkspaceManager.cs" />
     <Compile Include="UnresponsiveWindowsException.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Desktop\WindowSnapshot.cs" />
