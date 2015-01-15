@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Linq;
 using ABC.Common;
 
 
@@ -9,7 +10,7 @@ namespace ABC.Applications.Persistence
 	/// <summary>
 	///   Provides persistence providers for supported applications by loading plugins from a specified folder.
 	/// </summary>
-	public class PersistenceProvider : AbstractPersistenceProvider
+	public class PersistenceProvider : AbstractPersistenceProvider, IInstallablePluginContainer
 	{
 		CompositionContainer _pluginContainer;
 		readonly string _pluginFolderPath;
@@ -36,6 +37,19 @@ namespace ABC.Applications.Persistence
 		protected override List<AbstractApplicationPersistence> GetPersistenceProviders()
 		{
 			return _persistenceProviders;
+		}
+
+		public List<PluginInformation> GetPluginInformation()
+		{
+			var infoCollection = new List<PluginInformation>();
+			GetPersistenceProviders().ForEach( pp => infoCollection.Add(pp.Info) );
+			return infoCollection;
+		}
+
+		public IInstallable GetInstallablePlugin( string name, string companyName )
+		{
+			return GetPersistenceProviders()
+				.FirstOrDefault( persistance => persistance.Info.ProcessName == name && persistance.Info.CompanyName == companyName ) as IInstallable;
 		}
 	}
 }

@@ -100,31 +100,6 @@ namespace ABC.Applications.Persistence
 
 		protected abstract List<AbstractApplicationPersistence> GetPersistenceProviders();
 
-		public List<PluginInformation> GetPersistenceProvidersInfo()
-		{
-			var infoCollection = new List<PluginInformation>();
-			GetPersistenceProviders().ForEach( pp => infoCollection.Add(pp.Info) );
-			return infoCollection;
-		}
-
-		public bool InstallPlugin( string name, string companyName )
-		{
-			IInstallable installablePlugin;
-			return CheckIfInstallable( name, companyName, out installablePlugin ) && installablePlugin.Install();
-		}
-
-		public bool UninstallPlugin( string name, string companyName )
-		{
-			IInstallable uninstallablePlugin;
-			return CheckIfInstallable( name, companyName, out uninstallablePlugin ) && uninstallablePlugin.Unistall();
-		}
-
-		bool CheckIfInstallable( string name, string companyName, out IInstallable installablePlugin )
-		{
-			var persistencePlugin = GetPersistenceProviders().First( persistance => persistance.Info.ProcessName == name && persistance.Info.CompanyName == companyName );
-			// ReSharper disable once SuspiciousTypeConversion.Global
-			installablePlugin = persistencePlugin as IInstallable;
-			return installablePlugin != null;
-		}
+		
 	}
 }

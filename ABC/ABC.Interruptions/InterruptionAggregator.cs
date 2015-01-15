@@ -13,25 +13,31 @@ namespace ABC.Interruptions
 	/// <summary>
 	///   Aggregates interruptions raised by externally loaded plugins.
 	/// </summary>
-	public class InterruptionAggregator : AbstractInterruptionTrigger
+	public class InterruptionAggregator : AbstractInterruptionTrigger, IInstallablePluginContainer
 	{
-		readonly CompositionContainer _pluginContainer;
-
+		CompositionContainer _pluginContainer;
+		readonly string _pluginFolderPath;
 		[ImportMany]
 		readonly List<AbstractInterruptionTrigger> _interruptionTriggers = new List<AbstractInterruptionTrigger>();
 
 
 		public InterruptionAggregator( string pluginFolderPath )
 		{
-			_pluginContainer = CompositionHelper.ComposeFromPath( this, pluginFolderPath );
+			_pluginFolderPath = pluginFolderPath;
+			Reload();
+		}
+
+		public void Reload()
+		{
+			_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginFolderPath );
 
 			// Initialize loaded interruption handlers.
 			foreach ( var handler in _interruptionTriggers )
 			{
+				handler.InterruptionReceived -= TriggerInterruption;
 				handler.InterruptionReceived += TriggerInterruption;
 			}
 		}
-
 
 		public override void Update( DateTime now )
 		{
@@ -61,11 +67,17 @@ namespace ABC.Interruptions
 				.ToList();
 		}
 
-		public List<PluginInformation> GetInterruptionInfos()
+		public List<PluginInformation> GetPluginInformation()
 		{
 			var infos = new List<PluginInformation>();
 			_interruptionTriggers.ForEach( it => infos.Add( it.Info ) );
 			return infos;
+		}
+
+		public IInstallable GetInstallablePlugin( string name, string companyName )
+		{
+			return _interruptionTriggers
+				.FirstOrDefault( interruption => interruption.Info.ProcessName == name && interruption.Info.CompanyName == companyName ) as IInstallable;
 		}
 	}
 }
