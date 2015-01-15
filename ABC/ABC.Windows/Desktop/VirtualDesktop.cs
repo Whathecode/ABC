@@ -60,13 +60,6 @@ namespace ABC.Windows.Desktop
 			get { return _persistedApplications.AsReadOnly(); }
 		}
 
-		/// <summary>
-		///   The folder associated with this desktop, which is used to populate the desktop icons.
-		/// </summary>
-		public string Folder { get; set; }
-
-		public List<DesktopIcon> Icons { get; set; }
-
 
 		/// <summary>
 		///   Create an empty virtual desktop.

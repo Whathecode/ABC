@@ -1,14 +1,18 @@
 ﻿using System.Drawing;
+using System.Runtime.Serialization;
 
 
 namespace ABC.Windows
 {
+	[DataContract]
 	public class DesktopIcon
 	{
-		public Point Location { get; set; }
-		public int DesktopIndex { get; set; }
+		[DataMember]
+		public Point Location { get; private set; }
 
-		public DesktopIcon() {}
+		[DataMember]
+		public int DesktopIndex { get; private set; }
+
 
 		public DesktopIcon( int index, Point location )
 		{
