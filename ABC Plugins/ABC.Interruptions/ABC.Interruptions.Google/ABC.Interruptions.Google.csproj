@@ -76,13 +76,13 @@
       <Project>{4fd0d614-3f1d-4c4b-ae41-69ef8660c94f}</Project>
       <Name>ABC.Applications</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\ABC\ABC.Common\ABC.Common.csproj">
-      <Project>{d53f1095-6dc0-4950-982f-3322aae74a50}</Project>
-      <Name>ABC.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\ABC\ABC.Interruptions\ABC.Interruptions.csproj">
       <Project>{582661ff-ff3d-4cd3-8a52-3c75447e9f69}</Project>
       <Name>ABC.Interruptions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ABC\ABC\ABC.csproj">
+      <Project>{d53f1095-6dc0-4950-982f-3322aae74a50}</Project>
+      <Name>ABC</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
