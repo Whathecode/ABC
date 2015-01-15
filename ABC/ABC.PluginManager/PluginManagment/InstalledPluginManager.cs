@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using ABC.Applications.Persistence;
@@ -16,9 +17,16 @@ namespace PluginManager.PluginManagment
 {
 	public class InstalledPluginManager : AbstractDisposable
 	{
-		readonly LoadedSettings _vdmSettings;
-		readonly InterruptionAggregator _interruptionAggregator;
-		readonly PersistenceProvider _persistenceProvider;
+		public delegate void PluginManagerEventHandler( string message );
+
+		/// <summary>
+		///   Event which is triggered when plug-in cannot be loaded.
+		/// </summary>
+		public event PluginManagerEventHandler PluginCompositionFailEvent;
+
+		LoadedSettings _vdmSettings;
+		InterruptionAggregator _interruptionAggregator;
+		PersistenceProvider _persistenceProvider;
 
 		public List<Plugin> PersistencePlugins { get; private set; }
 		public List<Plugin> InterruptionsPlugins { get; private set; }
@@ -29,21 +37,37 @@ namespace PluginManager.PluginManagment
 			PersistencePlugins = new List<Plugin>();
 			InterruptionsPlugins = new List<Plugin>();
 			VdmPlugins = new List<Plugin>();
-
-			_vdmSettings = new LoadedSettings( true, false );
-			_interruptionAggregator = new InterruptionAggregator( App.InterruptionsPluginLibrary );
-			_persistenceProvider = new PersistenceProvider( App.PersistencePluginLibrary );
-			RefreshPlugins();
 		}
 
-		public void RefreshPlugins()
+		public void InitializePluginContainers()
 		{
-			PersistencePlugins = GetPlugins(_persistenceProvider, PluginType.Persistence, App.PersistencePluginLibrary);
-			InterruptionsPlugins = GetPlugins(_interruptionAggregator, PluginType.Interruptions, App.InterruptionsPluginLibrary);
+			_vdmSettings = new LoadedSettings( true, false );
 			VdmPlugins = GetVdms();
+
+			try
+			{
+				_interruptionAggregator = new InterruptionAggregator( App.InterruptionsPluginLibrary );
+				InterruptionsPlugins = GetPlugins( _interruptionAggregator, PluginType.Interruptions, App.InterruptionsPluginLibrary );
+			}
+			catch ( CompositionException exception )
+			{
+				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
+				                            " \n Please download an updated version of this plug-in and restart plug-in manager." );
+			}
+
+			try
+			{
+				_persistenceProvider = new PersistenceProvider( App.PersistencePluginLibrary );
+				PersistencePlugins = GetPlugins( _persistenceProvider, PluginType.Persistence, App.PersistencePluginLibrary );
+			}
+			catch ( CompositionException exception )
+			{
+				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
+				                            " \n Please download an updated version of this plug-in and restart plug-in manager." );
+			}
 		}
 
-		List<Plugin> GetPlugins(IInstallablePluginContainer pluginContainer, PluginType type, string pluginLibrary)
+		List<Plugin> GetPlugins( IInstallablePluginContainer pluginContainer, PluginType type, string pluginLibrary )
 		{
 			var plugins = new List<Plugin>();
 			var dllsPaths = Directory.EnumerateFiles( pluginLibrary, "*.dll" ).ToList();
@@ -102,11 +126,12 @@ namespace PluginManager.PluginManagment
 
 		public bool InstallPlugin( string name, string companyName, PluginType type )
 		{
+			CheckIfInitialized();
 			if ( type == PluginType.Vdm )
 			{
 				return true;
 			}
-			
+
 			var pluginContainer = type == PluginType.Persistence ? _persistenceProvider : _interruptionAggregator as IInstallablePluginContainer;
 			pluginContainer.Reload();
 			var pluginToInstall = pluginContainer.GetInstallablePlugin( name, companyName );
@@ -142,9 +167,20 @@ namespace PluginManager.PluginManagment
 			};
 		}
 
+		void CheckIfInitialized()
+		{
+			if ( _vdmSettings == null || _persistenceProvider == null || _interruptionAggregator == null )
+			{
+				throw new Exception( "Installed plug-in manager was not initialized properly." );
+			}
+		}
+
 		protected override void FreeManagedResources()
 		{
-			_persistenceProvider.Dispose();
+			if ( _persistenceProvider != null )
+			{
+				_persistenceProvider.Dispose();
+			}
 		}
 
 		protected override void FreeUnmanagedResources()

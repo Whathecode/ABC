@@ -26,12 +26,20 @@ namespace ABC.Applications.Persistence
 		public PersistenceProvider( string pluginFolderPath )
 		{
 			_pluginFolderPath = pluginFolderPath;
-			_pluginContainer = CompositionHelper.ComposeFromPath( this, pluginFolderPath );
+			Reload();
 		}
 
 		public void Reload()
 		{
-			_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginFolderPath );
+			try
+			{
+				_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginFolderPath );
+			}
+			catch ( CompositionException )
+			{
+				Dispose();
+				throw;
+			}
 		}
 
 		protected override List<AbstractApplicationPersistence> GetPersistenceProviders()
@@ -42,7 +50,7 @@ namespace ABC.Applications.Persistence
 		public List<PluginInformation> GetPluginInformation()
 		{
 			var infoCollection = new List<PluginInformation>();
-			GetPersistenceProviders().ForEach( pp => infoCollection.Add(pp.Info) );
+			GetPersistenceProviders().ForEach( pp => infoCollection.Add( pp.Info ) );
 			return infoCollection;
 		}
 

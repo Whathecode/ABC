@@ -37,21 +37,22 @@ namespace PluginManager
 			PersistencePluginLibrary = Path.Combine( PluginManagerDirectory, "ApplicationPersistence" );
 			VdmPluginLibrary = Path.Combine( PluginManagerDirectory, "VdmSettings" );
 
-			// Get available plug-ins.
+			// Get all available plug-ins.
 			_availableManager = new AvailablePluginManager();
+
 
 			// Get all installed plug-ins.
 			_installedManager = new InstalledPluginManager();
+			_installedManager.PluginCompositionFailEvent += message => MessageBox.Show( message );
+			_installedManager.InitializePluginContainers();
 
 			// Get all applications installed on system.
 			var sysInstalled = new ApplicationRegistryBrowse();
 
 			var appOverviewViewModel = new AppOverviewViewModel(
 				_availableManager.AvailablePlugins, _installedManager.PersistencePlugins
-				.Concat(_installedManager.InterruptionsPlugins ).Concat( _installedManager.VdmPlugins )
-				.ToList(), sysInstalled.InstalledOnSystem );
-			
-		
+					.Concat( _installedManager.InterruptionsPlugins ).Concat( _installedManager.VdmPlugins )
+					.ToList(), sysInstalled.InstalledOnSystem );
 
 			appOverviewViewModel.InstallingPluginEvent += OnInstallingPluginEvent;
 			var appOverview = new AppOverview { DataContext = appOverviewViewModel };
@@ -61,7 +62,7 @@ namespace PluginManager
 			Exit += ( sender, args ) => _installedManager.Dispose();
 
 			// Dispose MEF container on unhandled exception.
-			AppDomain.CurrentDomain.UnhandledException += ( s, a ) =>  _installedManager.Dispose();
+			AppDomain.CurrentDomain.UnhandledException += ( s, a ) => _installedManager.Dispose();
 		}
 
 		void OnInstallingPluginEvent( Plugin plugin, PluginListViewModel pluginOverview )
