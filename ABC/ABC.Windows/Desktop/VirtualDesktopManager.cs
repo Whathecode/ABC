@@ -130,8 +130,6 @@ namespace ABC.Windows.Desktop
 
 		protected override VirtualDesktop CreateWorkspaceFromSessionInner( StoredSession session )
 		{
-			session.EnsureBackwardsCompatibility();
-
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			List<WindowSnapshot> otherWindows = StartupWorkspace.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();

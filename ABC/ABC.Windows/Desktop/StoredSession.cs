@@ -6,7 +6,7 @@ using ABC.Applications.Persistence;
 namespace ABC.Windows.Desktop
 {
 	/// <summary>
-	///   A structure which allows storing the state of a <see cref = "VirtualDesktop" />.
+	///   Allows storing the state of a <see cref = "VirtualDesktop" />.
 	/// </summary>
 	/// <author>Steven Jeuris</author>
 	/// <license>
@@ -44,18 +44,6 @@ namespace ABC.Windows.Desktop
 		{
 			OpenWindows = desktop.WindowSnapshots;
 			PersistedApplications = desktop.PersistedApplications;
-		}
-
-
-		/// <summary>
-		///   Updates the loaded data contract data within this stored session to be fully compatible with the current version of the ABC toolkit.
-		/// </summary>
-		internal void EnsureBackwardsCompatibility()
-		{
-			if ( PersistedApplications == null )
-			{
-				PersistedApplications = new ReadOnlyCollection<PersistedApplication>( new PersistedApplication[] {} );
-			}
 		}
 	}
 }
