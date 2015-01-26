@@ -103,12 +103,12 @@ namespace PluginManager.ViewModel.AppOverview
 			{
 				state = (OverviewState)commandArg;
 			}
-			else
+			else if ( commandArg is MouseBehavior.MouseCommandArgs )
 			{
-				var mouseBehaviorData = commandArg as MouseBehaviorData;
-				if ( mouseBehaviorData != null && mouseBehaviorData.MouseBehaviorParameter != null )
+				var mouseBehaviorData = (MouseBehavior.MouseCommandArgs)commandArg;
+				if ( mouseBehaviorData.Parameter != null )
 				{
-					state = (OverviewState)mouseBehaviorData.MouseBehaviorParameter;
+					state = (OverviewState)mouseBehaviorData.Parameter;
 				}
 			}
 			switch ( state )
