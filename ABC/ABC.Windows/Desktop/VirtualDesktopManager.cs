@@ -27,7 +27,7 @@ namespace ABC.Windows.Desktop
 		/// <summary>
 		///   Event which is triggered when in any virtual desktop unresponsive windows are detected.
 		/// </summary>
-		public event UnresponsiveWindowsHandler UnresponsiveWindowDetected;
+		public event UnresponsiveWindowsHandler UnresponsiveWindowDetected = delegate { };
 
 		internal readonly Stack<WindowSnapshot> WindowClipboard = new Stack<WindowSnapshot>();
 
