@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 
 
-namespace ABC.Windows.Desktop
+namespace ABC.Windows.Icons
 {
 	/// <summary>
 	///   Allows storing the state of a <see cref = "DesktopIcons" />.

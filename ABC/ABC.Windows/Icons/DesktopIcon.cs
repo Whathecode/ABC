@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 
 
-namespace ABC.Windows
+namespace ABC.Windows.Icons
 {
 	[DataContract]
 	public class DesktopIcon

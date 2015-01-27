@@ -1,4 +1,7 @@
-﻿namespace ABC.Windows.Desktop
+﻿using ABC.Windows.Desktop;
+
+
+namespace ABC.Windows.Icons
 {
 	/// <summary>
 	///   An <see cref = "AbstractWorkspaceManager{TWorkspace, TSession}" />

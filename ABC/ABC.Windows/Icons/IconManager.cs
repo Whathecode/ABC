@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using ABC.PInvoke;
-using System.IO;
-using Interop = Whathecode.Interop.User32;
 
-namespace ABC.Windows
+
+namespace ABC.Windows.Icons
 {
     public class IconManager
     {
+		static Guid _desktop = new Guid( "B4BFCC3A-DB2C-424C-B029-7FE99A87C641" );
 
         /// <summary>
         /// Updates the desktop folder
@@ -18,7 +19,7 @@ namespace ABC.Windows
         public static void ChangeDesktopFolder(string path)
         {
             if (!Directory.Exists(path)) return;
-            Shell32.SHSetKnownFolderPath(ref KnownFolder.Desktop, 0, IntPtr.Zero, path);
+            Shell32.SHSetKnownFolderPath(ref _desktop, 0, IntPtr.Zero, path);
             Shell32.SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
         }
 
@@ -37,7 +38,7 @@ namespace ABC.Windows
             var icons = new List<DesktopIcon>();
 
 	        uint vProcessId;
-            Interop.GetWindowThreadProcessId(vHandle, out vProcessId);
+            Whathecode.Interop.User32.GetWindowThreadProcessId(vHandle, out vProcessId);
 
             var vProcess = Kernel32.OpenProcess(Kernel32.PROCESS_VM_OPERATION | Kernel32.PROCESS_VM_READ |
                                                  Kernel32.PROCESS_VM_WRITE, false, vProcessId);
@@ -119,7 +120,7 @@ namespace ABC.Windows
             vItemCount = (int)User32.SendMessage(vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero);
 
             uint vProcessId;
-            Interop.GetWindowThreadProcessId(vHandle, out vProcessId);
+            Whathecode.Interop.User32.GetWindowThreadProcessId(vHandle, out vProcessId);
 
             vProcess = Kernel32.OpenProcess(Kernel32.PROCESS_VM_OPERATION | Kernel32.PROCESS_VM_READ |
                                              Kernel32.PROCESS_VM_WRITE, false, vProcessId);

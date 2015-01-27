@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using ABC.Windows.Desktop;
 
 
-namespace ABC.Windows.Desktop
+namespace ABC.Windows.Icons
 {
 	/// <summary>
 	///   Represents a collection of icons displayed on the desktop.
