@@ -3,7 +3,7 @@ using System.Linq;
 using Whathecode.System.Extensions;
 
 
-namespace ABC.Windows.Desktop.Monitor.ViewModel
+namespace ABC.Managers.Windows.Monitor.ViewModel
 {
 	class VirtualDesktopViewModel
 	{

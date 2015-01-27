@@ -1,17 +1,19 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using ABC.Managers.Windows.Monitor.Model;
+using ABC.Managers.Windows.Monitor.ViewModel.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Windows.Aspects.ViewModel;
 using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 
 
-namespace ABC.Windows.Desktop.Monitor.ViewModel
+namespace ABC.Managers.Windows.Monitor.ViewModel
 {
-	[ViewModel( typeof( Binding.Properties ), typeof( Binding.Commands ) ) ]
+	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) ) ]
 	class MainViewModel
 	{
-		readonly Model.MonitorVdmClient _vdm = new Model.MonitorVdmClient();
+		readonly MonitorVdmClient _vdm = new MonitorVdmClient();
 
 		[NotifyProperty( Binding.Properties.VirtualDesktops )]
 		public ObservableCollection<VirtualDesktopViewModel> VirtualDesktops { get; private set; }
@@ -43,33 +45,33 @@ namespace ABC.Windows.Desktop.Monitor.ViewModel
 		// ReSharper restore UnusedMember.Local
 
 
-		[CommandExecute( Binding.Commands.Show )]
+		[CommandExecute( Commands.Show )]
 		public void Show()
 		{
 			SelectedDesktop.ShowSelectedWindows();
 		}
 
-		[CommandExecute( Binding.Commands.Hide )]
+		[CommandExecute( Commands.Hide )]
 		public void Hide()
 		{
 			SelectedDesktop.HideSelectedWindows();
 		}
 
-		[CommandExecute( Binding.Commands.Cut )]
+		[CommandExecute( Commands.Cut )]
 		public void Cut()
 		{
 			_vdm.CutWindows( SelectedDesktop.SelectedWindows.Select( w => w.Window ).ToList() );
 		}
 
-		[CommandCanExecute( Binding.Commands.Show )]
-		[CommandCanExecute( Binding.Commands.Hide )]
-		[CommandCanExecute( Binding.Commands.Cut )]
+		[CommandCanExecute( Commands.Show )]
+		[CommandCanExecute( Commands.Hide )]
+		[CommandCanExecute( Commands.Cut )]
 		public bool AreWindowsSelected()
 		{
 			return SelectedDesktop != null && SelectedDesktop.SelectedWindows.Count > 0;
 		}
 
-		[CommandExecute( Binding.Commands.Refresh )]
+		[CommandExecute( Commands.Refresh )]
 		public void Refresh()
 		{
 			if ( !_vdm.UpdateData() )

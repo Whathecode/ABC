@@ -33,40 +33,48 @@
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/SPACE_WITHIN_WHILE_PARENTHESES/@EntryValue">True</s:Boolean>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/WRAP_LIMIT/@EntryValue">180</s:Int64>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/EventHandlerPatternLong/@EntryValue">$object$_On$event$</s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=28ABE4C34075F244A4654D95AF9B9905/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=28ABE4C34075F244A4654D95AF9B9905/AbsolutePath/@EntryValue">C:\Users\Steven Jeuris\Documents\GitHub\ABC\ABC\ABC.Applications\ABC.Applications.csproj.DotSettings</s:String>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=28ABE4C34075F244A4654D95AF9B9905/RelativePath/@EntryValue">..\ABC.Applications\ABC.Applications.csproj.DotSettings</s:String>
+	
+	
+	
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=52793F265AB7C04AAA96436706EBC2CA/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=52793F265AB7C04AAA96436706EBC2CA/AbsolutePath/@EntryValue">D:\Whathecode\ABC\ABC\ABC.PluginManager\ABC.PluginManager.csproj.DotSettings</s:String>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=52793F265AB7C04AAA96436706EBC2CA/RelativePath/@EntryValue">..\ABC.PluginManager\ABC.PluginManager.csproj.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=6AFB101F83007F409685E34C0CC1E7E3/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=6AFB101F83007F409685E34C0CC1E7E3/AbsolutePath/@EntryValue">D:\Whathecode\ABC\ABC\ABC.Managers.Windows.Monitor\ABC.Managers.Windows.Monitor.csproj.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=6AFB101F83007F409685E34C0CC1E7E3/RelativePath/@EntryValue">..\ABC.Managers.Windows.Monitor\ABC.Managers.Windows.Monitor.csproj.DotSettings</s:String>
 	
 	
 	
 	
 	
 	
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=7C132238392B4145BE636A9244C0FD32/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=7C132238392B4145BE636A9244C0FD32/AbsolutePath/@EntryValue">C:\Users\Steven Jeuris\Documents\GitHub\ABC\ABC\ABC.Interruptions\ABC.Interruptions.csproj.DotSettings</s:String>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=7C132238392B4145BE636A9244C0FD32/RelativePath/@EntryValue">..\ABC.Interruptions\ABC.Interruptions.csproj.DotSettings</s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=855F5A81587D3C458FEE65D0DB8A7DBB/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=855F5A81587D3C458FEE65D0DB8A7DBB/AbsolutePath/@EntryValue">C:\Users\Steven Jeuris\Documents\GitHub\ABC\ABC\ABC.Windows\ABC.Windows.csproj.DotSettings</s:String>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=855F5A81587D3C458FEE65D0DB8A7DBB/RelativePath/@EntryValue">..\ABC.Windows\ABC.Windows.csproj.DotSettings</s:String>
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=98D1B4DD8D08A4409F844C045F11E1A5/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=98D1B4DD8D08A4409F844C045F11E1A5/AbsolutePath/@EntryValue">D:\Whathecode\ABC\ABC\ABC\ABC.csproj.DotSettings</s:String>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=98D1B4DD8D08A4409F844C045F11E1A5/RelativePath/@EntryValue">..\ABC\ABC.csproj.DotSettings</s:String>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=B6F78083F6BDCA4BA658484564257FA9/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=B6F78083F6BDCA4BA658484564257FA9/AbsolutePath/@EntryValue">C:\Users\Steven Jeuris\Documents\GitHub\ABC\ABC\ABC.PInvoke\ABC.PInvoke.csproj.DotSettings</s:String>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=B6F78083F6BDCA4BA658484564257FA9/RelativePath/@EntryValue">..\ABC.PInvoke\ABC.PInvoke.csproj.DotSettings</s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=DED7A2F20143E4448346B774C858E886/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=DED7A2F20143E4448346B774C858E886/AbsolutePath/@EntryValue">D:\Whathecode\ABC\ABC\ABC.Windows\Desktop\Monitor\ABC.Windows.Desktop.Monitor.csproj.DotSettings</s:String>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=DED7A2F20143E4448346B774C858E886/RelativePath/@EntryValue">..\ABC.Windows\Desktop\Monitor\ABC.Windows.Desktop.Monitor.csproj.DotSettings</s:String>
+	
+	
+	
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F08007610658524C84CA1AC01253B533/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F08007610658524C84CA1AC01253B533/AbsolutePath/@EntryValue">D:\Whathecode\ABC\ABC\ABC.Tests\ABC.Tests.csproj.DotSettings</s:String>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F08007610658524C84CA1AC01253B533/RelativePath/@EntryValue">..\ABC.Tests\ABC.Tests.csproj.DotSettings</s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File28ABE4C34075F244A4654D95AF9B9905/@KeyIndexDefined">True</s:Boolean>
-	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File28ABE4C34075F244A4654D95AF9B9905/RelativePriority/@EntryValue">5</s:Double>
+	
+	
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File52793F265AB7C04AAA96436706EBC2CA/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File52793F265AB7C04AAA96436706EBC2CA/RelativePriority/@EntryValue">8</s:Double>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File6AFB101F83007F409685E34C0CC1E7E3/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File6AFB101F83007F409685E34C0CC1E7E3/RelativePriority/@EntryValue">10</s:Double>
 	
 	
 	
@@ -74,16 +82,18 @@
 	
 	
 	
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File7C132238392B4145BE636A9244C0FD32/@KeyIndexDefined">True</s:Boolean>
-	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File7C132238392B4145BE636A9244C0FD32/RelativePriority/@EntryValue">4</s:Double>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File855F5A81587D3C458FEE65D0DB8A7DBB/@KeyIndexDefined">True</s:Boolean>
-	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File855F5A81587D3C458FEE65D0DB8A7DBB/RelativePriority/@EntryValue">3</s:Double>
+	
+	
+	
+	
+	
+	
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File98D1B4DD8D08A4409F844C045F11E1A5/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File98D1B4DD8D08A4409F844C045F11E1A5/RelativePriority/@EntryValue">6</s:Double>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileB6F78083F6BDCA4BA658484564257FA9/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileB6F78083F6BDCA4BA658484564257FA9/RelativePriority/@EntryValue">2</s:Double>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileDED7A2F20143E4448346B774C858E886/@KeyIndexDefined">True</s:Boolean>
-	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileDED7A2F20143E4448346B774C858E886/RelativePriority/@EntryValue">7</s:Double>
+	
+	
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileF08007610658524C84CA1AC01253B533/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileF08007610658524C84CA1AC01253B533/RelativePriority/@EntryValue">9</s:Double>
 	

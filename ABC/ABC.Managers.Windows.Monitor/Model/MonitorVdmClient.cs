@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
-using ABC.Windows.Desktop.Server;
+using ABC.Managers.Windows.Server;
 using Whathecode.System.Windows;
 
 
-namespace ABC.Windows.Desktop.Monitor.Model
+namespace ABC.Managers.Windows.Monitor.Model
 {
 	class MonitorVdmClient
 	{
