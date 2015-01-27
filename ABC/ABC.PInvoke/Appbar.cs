@@ -3,12 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
-using ABC.PInvoke;
 using WpfWindow = System.Windows.Window;
-using User32 = Whathecode.Interop.User32;
 
 
-namespace ABC.Windows
+namespace ABC.PInvoke
 {
 	public abstract class Appbar : WpfWindow
 	{
@@ -129,11 +127,11 @@ namespace ABC.Windows
 			if ( source != null ) source.AddHook( WndProc );
 
 			if ( source == null ) return;
-			var exStyle = (int)User32.GetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE );
+			var exStyle = (int)Whathecode.Interop.User32.GetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE );
 
-			exStyle |= (int)User32.ExtendedWindowStyles.ToolWindow;
+			exStyle |= (int)Whathecode.Interop.User32.ExtendedWindowStyles.ToolWindow;
 
-			PInvoke.User32.SetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE, (uint)exStyle );
+			User32.SetWindowLongPtr( source.Handle, (int)Shell32.GetWindowLongConst.GWL_EXSTYLE, (uint)exStyle );
 
 			DockPosition = DockPosition.Top;
 		}
@@ -146,12 +144,12 @@ namespace ABC.Windows
 			var returnvalue = IntPtr.Zero;
 			if ( msg == (int)WindowMessage.WM_NCACTIVATE )
 			{
-				returnvalue = PInvoke.User32.DefWindowProc( hwnd, (int)WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
+				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_NCACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
 				handled = true;
 			}
 			if ( msg == (int)WindowMessage.WM_ACTIVATE )
 			{
-				returnvalue = PInvoke.User32.DefWindowProc( hwnd, (int)WindowMessage.WM_ACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
+				returnvalue = User32.DefWindowProc( hwnd, (int)WindowMessage.WM_ACTIVATE, new IntPtr( 1 ), new IntPtr( -1 ) );
 				handled = true;
 			}
 			return returnvalue;

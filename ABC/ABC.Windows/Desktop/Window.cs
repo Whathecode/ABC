@@ -5,7 +5,7 @@ using ABC.Common;
 using Whathecode.System.Windows;
 
 
-namespace ABC.Windows
+namespace ABC.Windows.Desktop
 {
 	/// <summary>
 	///   Represents an application window.

@@ -4,13 +4,9 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using ABC.PInvoke;
-using Point = System.Windows.Point;
-using Size = System.Windows.Size;
-using WpfWindow = System.Windows.Window;
 
 
-namespace ABC.Windows
+namespace ABC.PInvoke
 {
 	public enum DockPosition
 	{
@@ -23,10 +19,10 @@ namespace ABC.Windows
 
 	public class DockingManager
 	{
-		static readonly Dictionary<WpfWindow, RegisterInfo> RegisteredWindowInfo = new Dictionary<WpfWindow, RegisterInfo>();
+		static readonly Dictionary<Window, RegisterInfo> RegisteredWindowInfo = new Dictionary<Window, RegisterInfo>();
 
 
-		static RegisterInfo GetRegisterInfo( WpfWindow appbarWindow )
+		static RegisterInfo GetRegisterInfo( Window appbarWindow )
 		{
 			RegisterInfo reg;
 			if ( RegisteredWindowInfo.ContainsKey( appbarWindow ) )
@@ -51,7 +47,7 @@ namespace ABC.Windows
 			return reg;
 		}
 
-		static void RestoreWindow( WpfWindow appbarWindow )
+		static void RestoreWindow( Window appbarWindow )
 		{
 			RegisterInfo info = GetRegisterInfo( appbarWindow );
 
@@ -66,9 +62,9 @@ namespace ABC.Windows
 			                                     new ResizeDelegate( DoResize ), appbarWindow, rect );
 		}
 
-		delegate void ResizeDelegate( WpfWindow appbarWindow, Rect rect );
+		delegate void ResizeDelegate( Window appbarWindow, Rect rect );
 
-		static void DoResize( WpfWindow appbarWindow, Rect rect )
+		static void DoResize( Window appbarWindow, Rect rect )
 		{
 			appbarWindow.Width = rect.Width;
 			appbarWindow.Height = rect.Height;
@@ -76,7 +72,7 @@ namespace ABC.Windows
 			appbarWindow.Left = rect.Left;
 		}
 
-		static void SetPostion( DockPosition edge, WpfWindow appbarWindow, bool isAutoHide )
+		static void SetPostion( DockPosition edge, Window appbarWindow, bool isAutoHide )
 		{
 			var barData = new Shell32.Appbardata();
 			barData.cbSize = Marshal.SizeOf( barData );
@@ -127,7 +123,7 @@ namespace ABC.Windows
 			                                     new ResizeDelegate( DoResize ), appbarWindow, rect );
 		}
 
-		public static void DockWindow( WpfWindow appbarWindow, DockPosition edge, bool autoHide )
+		public static void DockWindow( Window appbarWindow, DockPosition edge, bool autoHide )
 		{
 			var info = GetRegisterInfo( appbarWindow );
 			info.Edge = edge;
@@ -174,7 +170,7 @@ namespace ABC.Windows
 		{
 			public int CallbackId { get; set; }
 			public bool IsRegistered { get; set; }
-			public WpfWindow Window { private get; set; }
+			public Window Window { private get; set; }
 			public DockPosition Edge { get; set; }
 			public WindowStyle OriginalStyle { get; set; }
 			public Point OriginalPosition { get; set; }

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows;
-using ABC.PInvoke;
 
 
-namespace ABC.Windows
+namespace ABC.PInvoke
 {
 	/// <summary>
 	///   Experimental thubmnail class.
