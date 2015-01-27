@@ -38,7 +38,7 @@ namespace ABC.Applications.Explorer
 				.ToList();
 
 			var suspendedExplorerWindows = new List<ExplorerLocation>();
-			foreach ( IWindow window in toSuspend.Windows )
+			foreach ( Window window in toSuspend.Windows )
 			{
 				// Check whether the window is an explorer cabinet window. (file browser)
 				InternetExplorer cabinetWindow = cabinetWindows.FirstOrDefault( e =>

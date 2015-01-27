@@ -47,7 +47,7 @@ namespace ABC.Debug
 			// Suspend all windows of selected persistence provider.
 			var persistor = (AbstractApplicationPersistence)PersistenceProviderList.SelectedItem;
 			_persistenceProvider.PersistenceProviders.Add( persistor );
-			List<PersistedApplication> data = _persistenceProvider.Suspend( WindowManager.GetWindows().Select( w => new Windows.Window( w ) ).Cast<IWindow>().ToList() );
+			List<PersistedApplication> data = _persistenceProvider.Suspend( WindowManager.GetWindows().Select( w => new Common.Window( w ) ).ToList() );
 			ResumeButton.IsEnabled = true;
 			_persistedStates.AddRange( data );
 			_persistenceProvider.PersistenceProviders.Remove( persistor );

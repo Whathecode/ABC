@@ -3,18 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Windows", "ABC.Windows\ABC.Windows.csproj", "{DB8DBDF2-70BF-4712-86DA-06674986BC12}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.PInvoke", "ABC.PInvoke\ABC.PInvoke.csproj", "{072142C4-284E-4F1A-A1FE-F886E8ECF728}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Interruptions", "ABC.Interruptions\ABC.Interruptions.csproj", "{582661FF-FF3D-4CD3-8A52-3C75447E9F69}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8465610F-A045-4282-BADB-2460440B260C}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Applications", "ABC.Applications\ABC.Applications.csproj", "{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Windows.Desktop.Monitor", "ABC.Windows\Desktop\Monitor\ABC.Windows.Desktop.Monitor.csproj", "{19BAF70B-28BC-438F-9EB6-C98D81D98299}"
 EndProject
@@ -34,14 +28,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Release|x64.ActiveCfg = Release|Any CPU
-		{DB8DBDF2-70BF-4712-86DA-06674986BC12}.Release|x86.ActiveCfg = Release|Any CPU
 		{072142C4-284E-4F1A-A1FE-F886E8ECF728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{072142C4-284E-4F1A-A1FE-F886E8ECF728}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{072142C4-284E-4F1A-A1FE-F886E8ECF728}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -50,22 +36,6 @@ Global
 		{072142C4-284E-4F1A-A1FE-F886E8ECF728}.Release|Any CPU.Build.0 = Release|Any CPU
 		{072142C4-284E-4F1A-A1FE-F886E8ECF728}.Release|x64.ActiveCfg = Release|Any CPU
 		{072142C4-284E-4F1A-A1FE-F886E8ECF728}.Release|x86.ActiveCfg = Release|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Release|x64.ActiveCfg = Release|Any CPU
-		{582661FF-FF3D-4CD3-8A52-3C75447E9F69}.Release|x86.ActiveCfg = Release|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x64.ActiveCfg = Release|Any CPU
-		{4FD0D614-3F1D-4C4B-AE41-69EF8660C94F}.Release|x86.ActiveCfg = Release|Any CPU
 		{19BAF70B-28BC-438F-9EB6-C98D81D98299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19BAF70B-28BC-438F-9EB6-C98D81D98299}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19BAF70B-28BC-438F-9EB6-C98D81D98299}.Debug|x64.ActiveCfg = Debug|x64

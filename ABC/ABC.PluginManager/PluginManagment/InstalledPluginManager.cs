@@ -5,7 +5,7 @@ using System.Linq;
 using ABC.Applications.Persistence;
 using ABC.Common;
 using ABC.Interruptions;
-using ABC.Windows.Desktop.Settings;
+using ABC.Managers.Windows.Settings;
 using PluginManager.common;
 using PluginManager.Common;
 using PluginManager.Model;

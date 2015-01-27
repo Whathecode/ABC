@@ -32,7 +32,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.XML" />
     <Reference Include="Whathecode.System">
       <HintPath>..\..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.dll</HintPath>
     </Reference>
@@ -40,8 +42,22 @@
   <ItemGroup>
     <Compile Include="AbstractWorkspace.cs" />
     <Compile Include="AbstractWorkspaceManager.cs" />
+    <Compile Include="Applications\Persistence\AbstractApplicationPersistence.cs" />
+    <Compile Include="Applications\Persistence\AbstractPersistenceProvider.cs" />
+    <Compile Include="Applications\Persistence\CollectionPersistenceProvider.cs" />
+    <Compile Include="Applications\Persistence\IApplicationPersistanceInfo.cs" />
+    <Compile Include="Applications\Persistence\PersistedApplication.cs" />
+    <Compile Include="Applications\Persistence\PersistenceInformation.cs" />
+    <Compile Include="Applications\Persistence\PersistenceProvider.cs" />
+    <Compile Include="Applications\Services\AbstractService.cs" />
+    <Compile Include="Applications\Services\Browser.cs" />
+    <Compile Include="Applications\Services\ServiceProvider.cs" />
     <Compile Include="Common\IInstallable.cs" />
     <Compile Include="Common\IInstallablePluginContainer.cs" />
+    <Compile Include="Interruptions\AbstractInterruption.cs" />
+    <Compile Include="Interruptions\AbstractInterruptionTrigger.cs" />
+    <Compile Include="Interruptions\AbstractIntervalInterruptionTrigger.cs" />
+    <Compile Include="Interruptions\InterruptionAggregator.cs" />
     <Compile Include="IWorkspace.cs" />
     <Compile Include="IWorkspaceManager.cs" />
     <Compile Include="NonGenericWorkspace.cs" />
@@ -49,12 +65,90 @@
     <Compile Include="Common\PluginException.cs" />
     <Compile Include="Common\PluginHelper.cs" />
     <Compile Include="Common\CompositionHelper.cs" />
-    <Compile Include="Common\IWindow.cs" />
     <Compile Include="Common\PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Managers\Windows\IWindowOperations.cs" />
+    <Compile Include="Managers\Windows\Server\IMonitorVdmService.cs" />
+    <Compile Include="Managers\Windows\Server\MonitorVdmServer.cs" />
+    <Compile Include="Managers\Windows\Server\MonitorVdmService.cs" />
+    <Compile Include="Managers\Windows\Settings\ISettings.cs" />
+    <Compile Include="Managers\Windows\Settings\LoadedSettings.cs" />
+    <Compile Include="Managers\Windows\Settings\ProcessBehavior\ProcessBehaviors.cs">
+      <DependentUpon>ProcessBehaviors.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\Windows\Settings\ProcessBehavior\ProcessBehaviors.designer.cs">
+      <DependentUpon>ProcessBehaviors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\Windows\StoredSession.cs" />
+    <Compile Include="Managers\Windows\VirtualDesktop.cs" />
+    <Compile Include="Managers\Windows\VirtualDesktopManager.cs" />
+    <Compile Include="Common\Window.cs" />
+    <Compile Include="Managers\Windows\WindowSnapshot.cs" />
+    <Compile Include="Managers\Icons\DesktopIcons.cs" />
+    <Compile Include="Managers\Icons\DesktopIconsManager.cs" />
+    <Compile Include="Managers\Icons\StoredIcons.cs" />
     <Compile Include="Workspace.cs" />
     <Compile Include="WorkspaceManager.cs" />
     <Compile Include="WorkspaceSession.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ABC.PInvoke\ABC.PInvoke.csproj">
+      <Project>{072142c4-284e-4f1a-a1fe-f886e8ecf728}</Project>
+      <Name>ABC.PInvoke</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\asus.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\card_detector.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\chrome.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\firefox.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\internet_explorer.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\ms_office.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Managers\Windows\Settings\ProcessBehavior\ProcessBehaviors.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\skype.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\spotifyhelper.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\tortoisegit.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\visual_studio_2012.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\windows_7.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\windows_photo_viewer.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
