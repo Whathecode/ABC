@@ -1,9 +1,9 @@
 ﻿using System.Windows;
-using ABC.Managers.Windows.Monitor.View;
-using ABC.Managers.Windows.Monitor.ViewModel;
+using ABC.Workspaces.Windows.Monitor.View;
+using ABC.Workspaces.Windows.Monitor.ViewModel;
 
 
-namespace ABC.Managers.Windows.Monitor
+namespace ABC.Workspaces.Windows.Monitor
 {
 	/// <summary>
 	/// Interaction logic for App.xaml

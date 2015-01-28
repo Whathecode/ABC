@@ -2,7 +2,7 @@
 using Whathecode.System.Windows;
 
 
-namespace ABC.Managers.Windows.Monitor.ViewModel
+namespace ABC.Workspaces.Windows.Monitor.ViewModel
 {
 	class WindowViewModel
 	{

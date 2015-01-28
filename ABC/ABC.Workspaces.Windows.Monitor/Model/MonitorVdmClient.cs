@@ -7,7 +7,7 @@ using ABC.Workspaces.Windows.Server;
 using Whathecode.System.Windows;
 
 
-namespace ABC.Managers.Windows.Monitor.Model
+namespace ABC.Workspaces.Windows.Monitor.Model
 {
 	class MonitorVdmClient
 	{

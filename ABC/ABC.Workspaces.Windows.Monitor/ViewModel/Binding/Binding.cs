@@ -1,4 +1,4 @@
-﻿namespace ABC.Managers.Windows.Monitor.ViewModel.Binding
+﻿namespace ABC.Workspaces.Windows.Monitor.ViewModel.Binding
 {
 	public enum Properties
 	{

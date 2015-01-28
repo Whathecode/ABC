@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
-using ABC.Managers.Windows.Monitor.ViewModel;
+using ABC.Workspaces.Windows.Monitor.ViewModel;
 
 
-namespace ABC.Managers.Windows.Monitor.View
+namespace ABC.Workspaces.Windows.Monitor.View
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

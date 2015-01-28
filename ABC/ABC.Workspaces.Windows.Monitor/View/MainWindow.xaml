@@ -1,12 +1,12 @@
 ﻿<Window
-	x:Class="ABC.Managers.Windows.Monitor.View.MainWindow"
+	x:Class="ABC.Workspaces.Windows.Monitor.View.MainWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:wtc="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:b="clr-namespace:ABC.Managers.Windows.Monitor.ViewModel.Binding"
-	xmlns:viewModel="clr-namespace:ABC.Managers.Windows.Monitor.ViewModel"
+	xmlns:b="clr-namespace:ABC.Workspaces.Windows.Monitor.ViewModel.Binding"
+	xmlns:viewModel="clr-namespace:ABC.Workspaces.Windows.Monitor.ViewModel"
 	mc:Ignorable="d"
 	Title="Monitor Virtual Desktops">
 

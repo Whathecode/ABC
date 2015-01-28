@@ -1,14 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using ABC.Managers.Windows.Monitor.Model;
-using ABC.Managers.Windows.Monitor.ViewModel.Binding;
+using ABC.Workspaces.Windows.Monitor.Model;
+using ABC.Workspaces.Windows.Monitor.ViewModel.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Windows.Aspects.ViewModel;
 using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 
 
-namespace ABC.Managers.Windows.Monitor.ViewModel
+namespace ABC.Workspaces.Windows.Monitor.ViewModel
 {
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) ) ]
 	class MainViewModel
