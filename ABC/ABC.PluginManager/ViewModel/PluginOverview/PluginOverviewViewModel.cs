@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PluginManager.common;
 using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.ViewModel.PluginList;
@@ -26,13 +25,13 @@ namespace PluginManager.ViewModel.PluginOverview
 		public Configuration SelectedConfigurationItem { get; set; }
 
 		[NotifyProperty( Binding.Properties.VdmState )]
-		public PluginState VdmState { get; private set; }
+		public PluginState VdmState { get; set; }
 
 		[NotifyProperty( Binding.Properties.PersistanceState )]
-		public PluginState PersistanceState { get; private set; }
+		public PluginState PersistanceState { get; set; }
 
 		[NotifyProperty( Binding.Properties.InterruptionsState )]
-		public PluginState InterruptionsState { get; private set; }
+		public PluginState InterruptionsState { get; set; }
 
 		public Plugin Plugin { get; private set; }
 		public PluginListViewModel VdmList { get; private set; }
@@ -51,25 +50,11 @@ namespace PluginManager.ViewModel.PluginOverview
 			VdmList = new PluginListViewModel( PluginType.Vdm, plugin.Vdm, this );
 			InterruptionsList = new PluginListViewModel( PluginType.Interruptions, plugin.Interruptions, this );
 			PersistanceList = new PluginListViewModel( PluginType.Persistence, plugin.Persistence, this );
-
-			// Select first element in ordered configurations collections. 
-			if ( plugin.Interruptions.Any() )
-			{
-				SelectedConfigurationItem = plugin.Interruptions.First();
-			}
-			else if ( plugin.Vdm.Any() )
-			{
-				SelectedConfigurationItem = plugin.Vdm.First();
-			}
-			else if ( plugin.Persistence.Any() )
-			{
-				SelectedConfigurationItem = plugin.Persistence.First();
-			}
 		}
 
-		PluginState VerifyPluginsState( IEnumerable<Configuration> pluList )
+		PluginState VerifyPluginsState( IEnumerable<Configuration> pluginList )
 		{
-			if ( pluList.Any( cfg => cfg.State == PluginState.Installed ) )
+			if ( pluginList.Any( cfg => cfg.State == PluginState.Installed ) )
 			{
 				return PluginState.Installed;
 			}

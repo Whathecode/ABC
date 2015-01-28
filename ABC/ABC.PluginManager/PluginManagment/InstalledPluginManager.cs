@@ -7,7 +7,6 @@ using ABC.Applications.Persistence;
 using ABC.Common;
 using ABC.Interruptions;
 using ABC.Windows.Desktop.Settings;
-using PluginManager.common;
 using PluginManager.Common;
 using PluginManager.Model;
 using Whathecode.System;
@@ -17,12 +16,17 @@ namespace PluginManager.PluginManagment
 {
 	public class InstalledPluginManager : AbstractDisposable
 	{
-		public delegate void PluginManagerEventHandler( string message );
+		public delegate void PluginManagerEventHandler( string message, Plugin plugin );
 
 		/// <summary>
 		///   Event which is triggered when plug-in cannot be loaded.
 		/// </summary>
 		public event PluginManagerEventHandler PluginCompositionFailEvent;
+
+		/// <summary>
+		///   Event which is triggered when plug-in installation processes has ended.
+		/// </summary>
+		public event PluginManagerEventHandler PluginInstalledEvent;
 
 		LoadedSettings _vdmSettings;
 		InterruptionAggregator _interruptionAggregator;
@@ -52,7 +56,7 @@ namespace PluginManager.PluginManagment
 			catch ( CompositionException exception )
 			{
 				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
-				                            " \n Please download an updated version of this plug-in and restart plug-in manager." );
+				                            " \n Please download an updated version of this plug-in and restart plug-in manager.", null );
 			}
 
 			try
@@ -63,7 +67,7 @@ namespace PluginManager.PluginManagment
 			catch ( CompositionException exception )
 			{
 				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
-				                            " \n Please download an updated version of this plug-in and restart plug-in manager." );
+				                            " \n Please download an updated version of this plug-in and restart plug-in manager.", null );
 			}
 		}
 
@@ -91,9 +95,9 @@ namespace PluginManager.PluginManagment
 		Configuration CreateConfiguration( PluginInformation info, IEnumerable<string> dllsPaths )
 		{
 			var dllPath = dllsPaths.FirstOrDefault( dll => dll.ToLower().Contains( info.ProcessName.ToLower() ) );
-			return CreateConfiguration( info.SupportedVersions,
+			return new Configuration( info.SupportedVersions,
 				info.Author, FileHelper.GetDllVersion( dllPath ),
-				FileHelper.GetLastWriteDate( dllPath ) );
+				FileHelper.GetLastWriteDate( dllPath ), PluginState.Installed );
 		}
 
 		List<Plugin> GetVdms()
@@ -118,24 +122,37 @@ namespace PluginManager.PluginManagment
 				// Check if application with the same name already is not installed.
 				var app = AddIfAbsent( vdmCfg.Name, vdmCfg.CompanyName, vdms );
 				var supportedVersions = vdmCfg.Version != null ? vdmCfg.Version.Split( ',' ).Select( sv => sv.Trim() ).ToList() : new List<string>();
-				app.Vdm.Add( CreateConfiguration( supportedVersions, vdmCfg.Name, vdmCfg.Version, DateTime.Now.ToShortDateString() ) );
+				app.Vdm.Add( new Configuration( supportedVersions, vdmCfg.Name, vdmCfg.Version, DateTime.Now.ToShortDateString(), PluginState.Installed ) );
 			} );
 			PluginManagmentHelper.SortByName( ref vdms );
 			return vdms;
 		}
 
-		public bool InstallPlugin( string name, string companyName, PluginType type )
+		public void InstallPlugin( Plugin plugin, PluginType type )
 		{
 			CheckIfInitialized();
-			if ( type == PluginType.Vdm )
-			{
-				return true;
-			}
 
 			var pluginContainer = type == PluginType.Persistence ? _persistenceProvider : _interruptionAggregator as IInstallablePluginContainer;
-			pluginContainer.Reload();
-			var pluginToInstall = pluginContainer.GetInstallablePlugin( name, companyName );
-			return pluginToInstall != null && pluginToInstall.Install();
+			try
+			{
+				pluginContainer.Reload();
+			}
+			catch ( CompositionException exception )
+			{
+				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
+				                            " \n Please download an updated version of this plug-in and restart plug-in manager.", null );
+			}
+
+			var pluginToInstall = pluginContainer.GetInstallablePlugin( plugin.Name, plugin.CompanyName );
+			if ( pluginToInstall != null && pluginToInstall.Install() )
+			{
+				PersistencePlugins = GetPlugins( pluginContainer, PluginType.Persistence, App.PersistencePluginLibrary );
+				PluginInstalledEvent( "Plug-in for " + plugin.Name + " was installed correctly.", plugin );
+			}
+			else
+			{
+				PluginInstalledEvent( "Plug-in for " + plugin.CompanyName + " was not installed.", plugin );
+			}
 		}
 
 		Plugin AddIfAbsent( string name, string companyName, ICollection<Plugin> plugins )
@@ -153,18 +170,6 @@ namespace PluginManager.PluginManagment
 			};
 			plugins.Add( plugin );
 			return plugin;
-		}
-
-		Configuration CreateConfiguration( List<string> supportedVersions, string author, string version, string timeStamp )
-		{
-			return new Configuration
-			{
-				SupportedVersions = supportedVersions,
-				Author = author,
-				Version = version,
-				TimeStamp = timeStamp,
-				State = PluginState.Installed
-			};
 		}
 
 		void CheckIfInitialized()

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PluginManager.common;
+using PluginManager.Common;
 
 
 namespace PluginManager.Model
@@ -7,9 +7,17 @@ namespace PluginManager.Model
 	[System.Xml.Serialization.XmlTypeAttribute( AnonymousType = true )]
 	public class Configuration : PluginElement
 	{
-		public string ConfigFile { get; set; }
+		public Configuration(){}
+		public Configuration( List<string> supportedVersions, string author, string version, string timeStamp, PluginState state )
+		{
+			SupportedVersions = supportedVersions;
+			Author = author;
+			Version = version;
+			TimeStamp = timeStamp;
+			State = state;
+		}
 
-		public string Installer { get; set; }
+		public string ConfigFile { get; set; }
 
 		[System.Xml.Serialization.XmlArrayItemAttribute( "Version", IsNullable = false )]
 		public List<string> SupportedVersions { get; set; }

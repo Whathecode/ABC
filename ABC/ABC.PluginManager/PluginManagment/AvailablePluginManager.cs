@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
-using PluginManager.common;
+using PluginManager.Common;
 using PluginManager.Model;
 
 

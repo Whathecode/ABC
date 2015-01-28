@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace PluginManager.common
+namespace PluginManager.Common
 {
 	[Flags]
 	public enum PluginState
