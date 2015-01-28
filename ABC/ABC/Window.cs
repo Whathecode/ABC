@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using Whathecode.System.Windows;
 
 
-namespace ABC.Common
+namespace ABC
 {
 	/// <summary>
 	///   Represents an application window.

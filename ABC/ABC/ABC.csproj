@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.XML" />
@@ -60,8 +61,10 @@
     <Compile Include="Common\PluginHelper.cs" />
     <Compile Include="Common\CompositionHelper.cs" />
     <Compile Include="Common\PluginInformation.cs" />
+    <Compile Include="ProcessInfo.cs" />
+    <Compile Include="ProcessTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Common\Window.cs" />
+    <Compile Include="Window.cs" />
     <Compile Include="Workspaces\AbstractWorkspace.cs" />
     <Compile Include="Workspaces\AbstractWorkspaceManager.cs" />
     <Compile Include="Workspaces\Icons\DesktopIcons.cs" />

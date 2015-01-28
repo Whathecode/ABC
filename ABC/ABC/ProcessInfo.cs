@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ABC.PInvoke.Process
+namespace ABC
 {
 	public class ProcessInfo
 	{

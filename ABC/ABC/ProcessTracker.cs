@@ -3,7 +3,7 @@ using System.Management;
 using Whathecode.System;
 
 
-namespace ABC.PInvoke.Process
+namespace ABC
 {
 	public class ProcessTracker : AbstractDisposable
 	{

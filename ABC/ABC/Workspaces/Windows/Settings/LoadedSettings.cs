@@ -9,7 +9,6 @@ using Generated.ProcessBehaviors;
 using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
 using Whathecode.System.Windows;
-using Window = ABC.Common.Window;
 
 
 namespace ABC.Workspaces.Windows.Settings
