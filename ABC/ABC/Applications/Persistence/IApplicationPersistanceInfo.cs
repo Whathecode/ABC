@@ -1,6 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Collections.Generic;
 
 
 namespace ABC.Applications.Persistence

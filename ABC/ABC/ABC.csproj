@@ -40,8 +40,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractWorkspace.cs" />
-    <Compile Include="AbstractWorkspaceManager.cs" />
     <Compile Include="Applications\Persistence\AbstractApplicationPersistence.cs" />
     <Compile Include="Applications\Persistence\AbstractPersistenceProvider.cs" />
     <Compile Include="Applications\Persistence\CollectionPersistenceProvider.cs" />
@@ -58,38 +56,40 @@
     <Compile Include="Interruptions\AbstractInterruptionTrigger.cs" />
     <Compile Include="Interruptions\AbstractIntervalInterruptionTrigger.cs" />
     <Compile Include="Interruptions\InterruptionAggregator.cs" />
-    <Compile Include="IWorkspace.cs" />
-    <Compile Include="IWorkspaceManager.cs" />
-    <Compile Include="NonGenericWorkspace.cs" />
-    <Compile Include="NonGenericWorkspaceManager.cs" />
     <Compile Include="Common\PluginException.cs" />
     <Compile Include="Common\PluginHelper.cs" />
     <Compile Include="Common\CompositionHelper.cs" />
     <Compile Include="Common\PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Managers\Windows\IWindowOperations.cs" />
-    <Compile Include="Managers\Windows\Server\IMonitorVdmService.cs" />
-    <Compile Include="Managers\Windows\Server\MonitorVdmServer.cs" />
-    <Compile Include="Managers\Windows\Server\MonitorVdmService.cs" />
-    <Compile Include="Managers\Windows\Settings\ISettings.cs" />
-    <Compile Include="Managers\Windows\Settings\LoadedSettings.cs" />
-    <Compile Include="Managers\Windows\Settings\ProcessBehavior\ProcessBehaviors.cs">
+    <Compile Include="Common\Window.cs" />
+    <Compile Include="Workspaces\AbstractWorkspace.cs" />
+    <Compile Include="Workspaces\AbstractWorkspaceManager.cs" />
+    <Compile Include="Workspaces\Icons\DesktopIcons.cs" />
+    <Compile Include="Workspaces\Icons\DesktopIconsManager.cs" />
+    <Compile Include="Workspaces\Icons\StoredIcons.cs" />
+    <Compile Include="Workspaces\IWorkspace.cs" />
+    <Compile Include="Workspaces\IWorkspaceManager.cs" />
+    <Compile Include="Workspaces\NonGenericWorkspace.cs" />
+    <Compile Include="Workspaces\NonGenericWorkspaceManager.cs" />
+    <Compile Include="Workspaces\Windows\IWindowOperations.cs" />
+    <Compile Include="Workspaces\Windows\Server\IMonitorVdmService.cs" />
+    <Compile Include="Workspaces\Windows\Server\MonitorVdmServer.cs" />
+    <Compile Include="Workspaces\Windows\Server\MonitorVdmService.cs" />
+    <Compile Include="Workspaces\Windows\Settings\ISettings.cs" />
+    <Compile Include="Workspaces\Windows\Settings\LoadedSettings.cs" />
+    <Compile Include="Workspaces\Windows\Settings\ProcessBehavior\ProcessBehaviors.cs">
       <DependentUpon>ProcessBehaviors.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Windows\Settings\ProcessBehavior\ProcessBehaviors.designer.cs">
+    <Compile Include="Workspaces\Windows\Settings\ProcessBehavior\ProcessBehaviors.designer.cs">
       <DependentUpon>ProcessBehaviors.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Windows\StoredSession.cs" />
-    <Compile Include="Managers\Windows\VirtualDesktop.cs" />
-    <Compile Include="Managers\Windows\VirtualDesktopManager.cs" />
-    <Compile Include="Common\Window.cs" />
-    <Compile Include="Managers\Windows\WindowSnapshot.cs" />
-    <Compile Include="Managers\Icons\DesktopIcons.cs" />
-    <Compile Include="Managers\Icons\DesktopIconsManager.cs" />
-    <Compile Include="Managers\Icons\StoredIcons.cs" />
-    <Compile Include="Workspace.cs" />
-    <Compile Include="WorkspaceManager.cs" />
-    <Compile Include="WorkspaceSession.cs" />
+    <Compile Include="Workspaces\Windows\StoredSession.cs" />
+    <Compile Include="Workspaces\Windows\VirtualDesktop.cs" />
+    <Compile Include="Workspaces\Windows\VirtualDesktopManager.cs" />
+    <Compile Include="Workspaces\Windows\WindowSnapshot.cs" />
+    <Compile Include="Workspaces\Workspace.cs" />
+    <Compile Include="Workspaces\WorkspaceManager.cs" />
+    <Compile Include="Workspaces\WorkspaceSession.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABC.PInvoke\ABC.PInvoke.csproj">
@@ -98,57 +98,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\asus.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\asus.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\card_detector.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\chrome.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\firefox.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\internet_explorer.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\ms_office.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\skype.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\spotifyhelper.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\tortoisegit.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\visual_studio_2012.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_7.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_photo_viewer.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\card_detector.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\chrome.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\firefox.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\internet_explorer.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\ms_office.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Managers\Windows\Settings\ProcessBehavior\ProcessBehaviors.xsd">
+    <None Include="Workspaces\Windows\Settings\ProcessBehavior\ProcessBehaviors.xsd">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\skype.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\spotifyhelper.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\tortoisegit.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\visual_studio_2012.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\windows_7.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Managers\Windows\Settings\ProcessBehavior\windows_photo_viewer.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

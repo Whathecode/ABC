@@ -6,7 +6,7 @@
     <ProjectGuid>{775263E0-638F-4E8F-BAB3-32AC4FF54FFC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ABC.Tests</RootNamespace>
+    <RootNamespace>ABC</RootNamespace>
     <AssemblyName>ABC.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -58,15 +58,15 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="AbstractWorkspaceManagerTest.cs" />
-    <Compile Include="AbstractWorkspaceTest.cs" />
-    <Compile Include="IncorrectWorkspaceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestSession.cs" />
-    <Compile Include="TestWorkspace.cs" />
-    <Compile Include="TestWorkspaceManager.cs" />
-    <Compile Include="WorkspaceManagerTest.cs" />
-    <Compile Include="WorkspaceTest.cs" />
+    <Compile Include="Workspaces\AbstractWorkspaceManagerTest.cs" />
+    <Compile Include="Workspaces\AbstractWorkspaceTest.cs" />
+    <Compile Include="Workspaces\IncorrectWorkspaceManager.cs" />
+    <Compile Include="Workspaces\TestSession.cs" />
+    <Compile Include="Workspaces\TestWorkspace.cs" />
+    <Compile Include="Workspaces\TestWorkspaceManager.cs" />
+    <Compile Include="Workspaces\WorkspaceManagerTest.cs" />
+    <Compile Include="Workspaces\WorkspaceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABC\ABC.csproj">
