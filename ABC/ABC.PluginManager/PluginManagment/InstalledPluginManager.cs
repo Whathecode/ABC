@@ -96,7 +96,7 @@ namespace PluginManager.PluginManagment
 		{
 			var dllPath = dllsPaths.FirstOrDefault( dll => dll.ToLower().Contains( info.ProcessName.ToLower() ) );
 			return new Configuration( info.SupportedVersions,
-				info.Author, FileHelper.GetDllVersion( dllPath ),
+				info.Author, new Version( FileHelper.GetDllVersion( dllPath ) ?? "1.0" ),
 				FileHelper.GetLastWriteDate( dllPath ), PluginState.Installed );
 		}
 
@@ -122,7 +122,7 @@ namespace PluginManager.PluginManagment
 				// Check if application with the same name already is not installed.
 				var app = AddIfAbsent( vdmCfg.Name, vdmCfg.CompanyName, vdms );
 				var supportedVersions = vdmCfg.Version != null ? vdmCfg.Version.Split( ',' ).Select( sv => sv.Trim() ).ToList() : new List<string>();
-				app.Vdm.Add( new Configuration( supportedVersions, vdmCfg.Name, vdmCfg.Version, DateTime.Now.ToShortDateString(), PluginState.Installed ) );
+				app.Vdm.Add( new Configuration( supportedVersions, vdmCfg.Author, new Version( vdmCfg.Version ?? "1.0" ), DateTime.Now.ToShortDateString(), PluginState.Installed ) );
 			} );
 			PluginManagmentHelper.SortByName( ref vdms );
 			return vdms;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PluginManager.Common;
 
 
@@ -8,18 +9,18 @@ namespace PluginManager.Model
 	public class Configuration : PluginElement
 	{
 		public Configuration(){}
-		public Configuration( List<string> supportedVersions, string author, string version, string timeStamp, PluginState state )
+		public Configuration( List<string> supportedVersions, string author, Version version2, string timeStamp, PluginState state )
 		{
 			SupportedVersions = supportedVersions;
 			Author = author;
-			Version = version;
+			Version2 = version2;
 			TimeStamp = timeStamp;
 			State = state;
 		}
 
 		public string ConfigFile { get; set; }
 
-		[System.Xml.Serialization.XmlArrayItemAttribute( "Version", IsNullable = false )]
+		[System.Xml.Serialization.XmlArrayItemAttribute( "Version2", IsNullable = false )]
 		public List<string> SupportedVersions { get; set; }
 
 		public string Icon { get; set; }

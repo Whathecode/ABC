@@ -81,7 +81,7 @@ namespace PluginManager
 			var downloader = new PluginDownloader( pluginOverview.SelectedConfigurationItem, pluginOverview.PluginType );
 
 			var tempConf = pluginOverview.SelectedConfigurationItem;
-			var targetConfiguration = new Configuration(tempConf.SupportedVersions, tempConf.Author, tempConf.Version, tempConf.TimeStamp, PluginState.Installed);
+			var targetConfiguration = new Configuration(tempConf.SupportedVersions, tempConf.Author, tempConf.Version2, tempConf.TimeStamp, PluginState.Installed);
 			plugin.Vdm.Clear();
 				plugin.Interruptions.Clear();
 				plugin.Persistence.Clear();

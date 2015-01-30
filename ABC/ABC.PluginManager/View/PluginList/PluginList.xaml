@@ -89,7 +89,7 @@
 										Margin="5"
 										Cursor="Hand" />
 									<StackPanel Margin="5" VerticalAlignment="Center">
-										<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
+										<TextBlock Text="{Binding Version2, StringFormat='Plug-in Version: {0}'}" />
 										<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
 										<TextBlock Text="{Binding SupportedVersions[0], StringFormat='Supported Version: {0}'}" />
 									</StackPanel>

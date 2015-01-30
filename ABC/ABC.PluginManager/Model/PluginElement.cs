@@ -8,6 +8,7 @@ namespace PluginManager.Model
 		public PluginElement()
 		{
 			TimeStamp = DateTime.Now.ToShortDateString();
+			//Version2 = new Version(Version);
 		}
 
 		[XmlAttribute]
@@ -20,5 +21,7 @@ namespace PluginManager.Model
 		public string Author { get; set; }
 
 		public string TimeStamp { get; set; }
+
+		public Version Version2 { get; set; }
 	}
 }
