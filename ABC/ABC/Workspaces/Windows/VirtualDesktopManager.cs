@@ -6,7 +6,6 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading;
 using ABC.Applications.Persistence;
-using ABC.Common;
 using ABC.Workspaces.Windows.Server;
 using ABC.Workspaces.Windows.Settings;
 using Whathecode.System.Extensions;
@@ -211,9 +210,10 @@ namespace ABC.Workspaces.Windows
 			UpdateWindowAssociations();
 
 			// Hide windows for current desktop and show those from the new desktop.
-			CurrentWorkspace.Hide( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
+			// TODO: Refactor so that one can not forget to call 'SetHideBehavior'.
+			CurrentWorkspace.SetHideBehavior( wi => _hideBehavior( new Window( wi ), this ).Select( w => w.WindowInfo ).ToList() );
+			CurrentWorkspace.Hide();
 			desktop.Show();
-
 		}
 
 		protected override void MergeInner( VirtualDesktop from, VirtualDesktop to )
@@ -229,7 +229,7 @@ namespace ABC.Workspaces.Windows
 			{
 				WindowManager.RepositionWindows( showWindows, true, true );
 			}
-			catch ( Whathecode.System.Windows.UnresponsiveWindowsException e )
+			catch ( UnresponsiveWindowsException e )
 			{
 				UnresponsiveWindowDetected(
 					e.UnresponsiveWindows.Select( info => new WindowSnapshot( CurrentWorkspace, info ) ).ToList(), CurrentWorkspace );

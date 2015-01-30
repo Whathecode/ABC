@@ -11,13 +11,14 @@
 		{
 			// Initialize currently visible desktop icons.
 			var startupIcons = new DesktopIcons();
+			startupIcons.Show();
 			SetStartupWorkspace( startupIcons );
 		}
 
 
 		protected override DesktopIcons CreateEmptyWorkspaceInner()
 		{
-			return new DesktopIcons( StartupWorkspace );
+			return new DesktopIcons();
 		}
 
 		protected override DesktopIcons CreateWorkspaceFromSessionInner( StoredIcons session )
@@ -27,9 +28,8 @@
 
 		protected override void SwitchToWorkspaceInner( DesktopIcons workspace )
 		{
-			CurrentWorkspace.SaveIcons();
-			workspace.ShowIcons();
-			// TODO: The positions of the icons do not seem to be updated yet.
+			CurrentWorkspace.Hide();
+			workspace.Show();
 		}
 
 		protected override void MergeInner( DesktopIcons from, DesktopIcons to )
@@ -40,12 +40,13 @@
 
 		protected override void CloseAdditional()
 		{
-			// Nothing to do.
+			// Show startup desktop icons again.
+			SwitchToWorkspaceInner( StartupWorkspace );
 		}
 
 		protected override void FreeUnmanagedResources()
 		{
-			// Nothing to do.
+			CloseAdditional();
 		}
 	}
 }

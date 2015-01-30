@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ABC.Applications.Persistence;
-using ABC.Common;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows;
 
@@ -50,8 +49,6 @@ namespace ABC.Workspaces.Windows
 		{
 			get { return _windows.AsReadOnly(); }
 		}
-
-		public bool IsVisible { get; private set; }
 
 		List<PersistedApplication> _persistedApplications = new List<PersistedApplication>();
 
@@ -100,7 +97,7 @@ namespace ABC.Workspaces.Windows
 			{
 				WindowManager.RepositionWindows( toPosition.ToList(), true, changeZOrder );
 			}
-			catch ( Whathecode.System.Windows.UnresponsiveWindowsException e )
+			catch ( UnresponsiveWindowsException e )
 			{
 				unresponsive = e.UnresponsiveWindows.Select( u => _windows.First( w => w.Info.Equals( u ) ) ).ToList();
 			}
@@ -159,10 +156,8 @@ namespace ABC.Workspaces.Windows
 		///   Show all windows associated with this virtual desktop.
 		///   Unresponsive window event is triggered when any unresponsive windows are detected during show operation.
 		/// </summary>
-		internal void Show()
+		protected override void ShowInner()
 		{
-			IsVisible = true;
-
 			// Early out when virtual desktop has not windows.
 			if ( _windows.Count == 0 )
 			{
@@ -194,20 +189,25 @@ namespace ABC.Workspaces.Windows
 			TriggerIfUnresponsive( unresponsiveWindows );
 		}
 
+		Func<WindowInfo, List<WindowInfo>> _hideBehavior; 
+
+		internal void SetHideBehavior( Func<WindowInfo, List<WindowInfo>> hideBehavior )
+		{
+			_hideBehavior = hideBehavior;
+		}
+
 		/// <summary>
 		/// Hide all windows associated with this virtual desktop.
 		/// Unresponsive window event is triggered when any unresponsive windows are detected during hide operation.
 		/// </summary>
-		internal void Hide( Func<WindowInfo, List<WindowInfo>> hideBehavior )
+		protected override void HideInner()
 		{
-			IsVisible = false;
-
 			_windows = OrderWindowsByZOrder( _windows );
 
 			// Find windows to hide using process specific hide behaviors.
 			var toHide = _windows
 				.Where( w => !w.Ignore && w.Visible )
-				.SelectMany( w => hideBehavior( w.Info ) )
+				.SelectMany( w => _hideBehavior( w.Info ) )
 				.ToList();
 
 			// Hide windows.

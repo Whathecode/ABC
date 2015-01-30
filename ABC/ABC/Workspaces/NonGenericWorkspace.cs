@@ -8,6 +8,11 @@
 	{
 		internal AbstractWorkspace<TSession> Inner { get; private set; }
 
+		public bool IsVisible
+		{
+			get { return Inner.IsVisible; }
+		}
+
 		public bool IsSuspended
 		{
 			get { return Inner.IsSuspended; }
@@ -19,6 +24,16 @@
 			Inner = workspace;
 		}
 
+
+		public void Show()
+		{
+			Inner.Show();
+		}
+
+		public void Hide()
+		{
+			Inner.Hide();
+		}
 
 		public bool HasResourcesToSuspend()
 		{

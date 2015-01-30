@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using ABC.PInvoke;
+using Whathecode.System;
+using Whathecode.System.Windows;
 
 
 namespace ABC.Workspaces.Icons
@@ -11,25 +14,26 @@ namespace ABC.Workspaces.Icons
 	/// <author>Steven Jeuris</author>
 	public class DesktopIcons : AbstractWorkspace<StoredIcons>
 	{
+		static readonly string StartupDesktopFolder;
+
 		/// <summary>
 		///   The path to the folder where the files to be displayed as icons on the desktop are located.
-		///   The default path used is the default desktop folder.
+		///   Default is the original startup desktop folder. When a path becomes invalid, as a fallback <see cref="Folder" /> will be changed to the original startup folder as well.
 		/// </summary>
 		public string Folder { get; private set; }
 
 		internal List<DesktopIcon> Icons { get; private set; }
 
 
-		internal DesktopIcons()
+		static DesktopIcons()
 		{
-			Folder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
-			Icons = IconManager.SaveDestopIcons();
+			StartupDesktopFolder = Environment.GetFolderPath( Environment.SpecialFolder.Desktop );
 		}
 
-		internal DesktopIcons( DesktopIcons other )
+		internal DesktopIcons()
 		{
-			Folder = other.Folder;
-			Icons = other.Icons;
+			Folder = StartupDesktopFolder;
+			Icons = new List<DesktopIcon>();
 		}
 
 		internal DesktopIcons( StoredIcons icons )
@@ -39,21 +43,42 @@ namespace ABC.Workspaces.Icons
 		}
 
 
-		internal void SaveIcons()
+		protected override void ShowInner()
+		{
+			try
+			{
+				EnvironmentHelper.SetFolderPath( Environment.SpecialFolder.Desktop, Folder );
+			}
+			catch ( ArgumentException )
+			{
+				// Invalid path. Retry with startup desktop folder.
+				Folder = StartupDesktopFolder;
+				ShowInner();
+				return;
+			}
+
+			WindowManager.RefreshDesktop();
+			IconManager.ArrangeDesktopIcons( Icons );
+		}
+
+		protected override void HideInner()
 		{
 			Icons = IconManager.SaveDestopIcons();
 		}
 
-		internal void ShowIcons()
-		{
-			IconManager.ChangeDesktopFolder( Folder );
-			IconManager.ArrangeDesktopIcons( Icons );
-		}
-
 		public void ChangeFolder( string folder )
 		{
+			if ( folder == Folder )
+			{
+				return;
+			}
+
 			Folder = folder;
-			// TODO: What if the folder is changed while within the workspace? This should be taken care of here.
+
+			if ( IsVisible )
+			{
+				ShowInner();
+			}
 		}
 
 		public override bool HasResourcesToSuspend()

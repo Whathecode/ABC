@@ -20,6 +20,8 @@ namespace ABC.Workspaces
 
 		bool _isSuspending;
 
+		public bool IsVisible { get; private set; }
+
 		public IWorkspace NonGeneric { get; private set; }
 
 		/// <summary>
@@ -55,6 +57,22 @@ namespace ABC.Workspaces
 			NonGeneric = new NonGenericWorkspace<TSession>( this );
 		}
 
+
+		internal void Show()
+		{
+			IsVisible = true;
+			ShowInner();
+		}
+
+		protected abstract void ShowInner();
+
+		internal void Hide()
+		{
+			IsVisible = false;
+			HideInner();
+		}
+
+		protected abstract void HideInner();
 
 		/// <summary>
 		///   Determine whether there are resources left that need suspension in case <see cref="Suspend" /> is called.

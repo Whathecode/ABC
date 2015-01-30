@@ -6,10 +6,25 @@
 	public interface IWorkspace
 	{
 		/// <summary>
+		///   Determines whether the workspace is currently visible.
+		/// </summary>
+		bool IsVisible { get; }
+
+		/// <summary>
 		///   Determines whether the workspace is currently in a suspended state,
 		///   meaning all its resources have been closed and are ready to be stored.
 		/// </summary>
 		bool IsSuspended { get; }
+
+		/// <summary>
+		///   Makes the workspace visible.
+		/// </summary>
+		void Show();
+
+		/// <summary>
+		///   Hides the workspace.
+		/// </summary>
+		void Hide();
 
 		/// <summary>
 		///   Determine whether there are resources left that need suspension in case <see cref="Suspend" /> is called.

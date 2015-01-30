@@ -56,6 +56,16 @@ namespace ABC.Workspaces
 			}
 		}
 
+		protected override void ShowInner()
+		{
+			_workspaces.ForEach( w => w.Item2.Show() );
+		}
+
+		protected override void HideInner()
+		{
+			_workspaces.ForEach( w => w.Item2.Hide() );
+		}
+
 		public override bool HasResourcesToSuspend()
 		{
 			return _workspaces.Any( w => w.Item2.HasResourcesToSuspend() );
