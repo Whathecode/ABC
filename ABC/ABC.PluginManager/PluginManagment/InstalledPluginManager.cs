@@ -6,7 +6,7 @@ using System.Linq;
 using ABC.Applications.Persistence;
 using ABC.Common;
 using ABC.Interruptions;
-using ABC.Windows.Desktop.Settings;
+using ABC.Workspaces.Windows.Settings;
 using PluginManager.Common;
 using PluginManager.Model;
 using Whathecode.System;
@@ -50,9 +50,9 @@ namespace PluginManager.PluginManagment
 
 			try
 			{
-				_interruptionAggregator = new InterruptionAggregator( App.InterruptionsPluginLibrary );
+			_interruptionAggregator = new InterruptionAggregator( App.InterruptionsPluginLibrary );
 				InterruptionsPlugins = GetPlugins( _interruptionAggregator, PluginType.Interruptions, App.InterruptionsPluginLibrary );
-			}
+		}
 			catch ( CompositionException exception )
 			{
 				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
@@ -60,10 +60,10 @@ namespace PluginManager.PluginManagment
 			}
 
 			try
-			{
+		{
 				_persistenceProvider = new PersistenceProvider( App.PersistencePluginLibrary );
 				PersistencePlugins = GetPlugins( _persistenceProvider, PluginType.Persistence, App.PersistencePluginLibrary );
-			}
+		}
 			catch ( CompositionException exception )
 			{
 				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
@@ -134,7 +134,7 @@ namespace PluginManager.PluginManagment
 
 			var pluginContainer = type == PluginType.Persistence ? _persistenceProvider : _interruptionAggregator as IInstallablePluginContainer;
 			try
-			{
+		{
 				pluginContainer.Reload();
 			}
 			catch ( CompositionException exception )
@@ -142,7 +142,7 @@ namespace PluginManager.PluginManagment
 				PluginCompositionFailEvent( exception.RootCauses[ 0 ].Message +
 				                            " \n Please download an updated version of this plug-in and restart plug-in manager.", null );
 			}
-
+			
 			var pluginToInstall = pluginContainer.GetInstallablePlugin( plugin.Name, plugin.CompanyName );
 			if ( pluginToInstall != null && pluginToInstall.Install() )
 			{
@@ -184,8 +184,8 @@ namespace PluginManager.PluginManagment
 		{
 			if ( _persistenceProvider != null )
 			{
-				_persistenceProvider.Dispose();
-			}
+			_persistenceProvider.Dispose();
+		}
 		}
 
 		protected override void FreeUnmanagedResources()
