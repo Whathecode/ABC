@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using ABC.Common;
 using Whathecode.System;
+using Whathecode.System.Management;
 
 
 namespace ABC.Applications.Persistence
