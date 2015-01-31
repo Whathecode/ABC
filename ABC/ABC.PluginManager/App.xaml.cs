@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
 using PluginManager.View.AppOverview;
@@ -20,6 +21,9 @@ namespace PluginManager
 
 		InstalledPluginManager _installedManager;
 		AvailablePluginManager _availableManager;
+		AppOverviewViewModel _appOverviewViewModel;
+		ApplicationRegistryBrowse _sysInstalled;
+		AppOverview _appOverview;
 
 		protected override void OnStartup( StartupEventArgs e )
 		{
@@ -37,44 +41,67 @@ namespace PluginManager
 			PersistencePluginLibrary = Path.Combine( PluginManagerDirectory, "ApplicationPersistence" );
 			VdmPluginLibrary = Path.Combine( PluginManagerDirectory, "VdmSettings" );
 
-			// Get available plug-ins.
+			// Get all available plug-ins.
 			_availableManager = new AvailablePluginManager();
+
 
 			// Get all installed plug-ins.
 			_installedManager = new InstalledPluginManager();
+			_installedManager.PluginCompositionFailEvent += (message, plugin) => MessageBox.Show( message );
+			_installedManager.PluginInstalledEvent += ( message, plugin ) =>
+			{
+				MessageBox.Show( message );
+				_appOverviewViewModel.Populate( _availableManager.AvailablePlugins,  PluginManagmentHelper.MergePluginsByName(_installedManager.PersistencePlugins
+					.Concat( _installedManager.InterruptionsPlugins ).Concat( _installedManager.VdmPlugins )
+					.ToList()), _sysInstalled.InstalledOnSystem );
+			};
+			_installedManager.InitializePluginContainers();
 
 			// Get all applications installed on system.
-			var sysInstalled = new ApplicationRegistryBrowse();
+			_sysInstalled = new ApplicationRegistryBrowse();
 
-			var appOverviewViewModel = new AppOverviewViewModel(
-				_availableManager.AvailablePlugins, _installedManager.PersistencePlugins
-				.Concat(_installedManager.InterruptionsPlugins ).Concat( _installedManager.VdmPlugins )
-				.ToList(), sysInstalled.InstalledOnSystem );
-			
-		
+			_appOverviewViewModel = new AppOverviewViewModel(
+				_availableManager.AvailablePlugins, PluginManagmentHelper.MergePluginsByName( _installedManager.PersistencePlugins
+					.Concat( _installedManager.InterruptionsPlugins ).Concat( _installedManager.VdmPlugins )
+					.ToList()), _sysInstalled.InstalledOnSystem );
 
-			appOverviewViewModel.InstallingPluginEvent += OnInstallingPluginEvent;
-			var appOverview = new AppOverview { DataContext = appOverviewViewModel };
-			appOverview.Show();
+			_appOverviewViewModel.InstallingPluginEvent += OnInstallingPluginEvent;
+			_appOverview = new AppOverview { DataContext = _appOverviewViewModel };
+			_appOverview.Show();
 
 			// Dispose MEF container on exit.
 			Exit += ( sender, args ) => _installedManager.Dispose();
 
 			// Dispose MEF container on unhandled exception.
-			AppDomain.CurrentDomain.UnhandledException += ( s, a ) =>  _installedManager.Dispose();
+			AppDomain.CurrentDomain.UnhandledException += ( s, a ) => _installedManager.Dispose();
 		}
 
 		void OnInstallingPluginEvent( Plugin plugin, PluginListViewModel pluginOverview )
 		{
-			var installer = new PluginDownloader( pluginOverview.SelectedConfigurationItem, pluginOverview.PluginType );
-			installer.PluginDownloadedEvent += ( configuration, completedEventArgs ) =>
+			var downloader = new PluginDownloader( pluginOverview.SelectedConfigurationItem, pluginOverview.PluginType );
+
+			var tempConf = pluginOverview.SelectedConfigurationItem;
+			var targetConfiguration = new Configuration(tempConf.SupportedVersions, tempConf.Author, tempConf.Version2, tempConf.TimeStamp, PluginState.Installed);
+			plugin.Vdm.Clear();
+				plugin.Interruptions.Clear();
+				plugin.Persistence.Clear();
+				var configurations = pluginOverview.PluginType == PluginType.Interruptions
+					? plugin.Interruptions
+					: pluginOverview.PluginType == PluginType.Persistence
+						? plugin.Persistence
+						: plugin.Vdm;
+				configurations.Add( targetConfiguration );
+			
+			downloader.PluginDownloadedEvent += ( configuration, completedEventArgs ) =>
 			{
-				if ( !completedEventArgs.Cancelled )
+				if ( completedEventArgs.Cancelled )
 				{
-					_installedManager.InstallPlugin( plugin.Name, plugin.CompanyName, pluginOverview.PluginType );
+					return;
 				}
+
+				_installedManager.InstallPlugin( plugin, pluginOverview.PluginType );
 			};
-			installer.DownloadAsync();
+			downloader.DownloadAsync();
 		}
 	}
 }

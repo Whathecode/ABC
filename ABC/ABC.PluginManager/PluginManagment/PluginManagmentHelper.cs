@@ -28,6 +28,10 @@ namespace PluginManager.PluginManagment
 						newPlugin.Vdm.AddRange( plugin.Vdm );
 						newPlugin.Persistence.AddRange( plugin.Persistence );
 						newPlugin.Interruptions.AddRange( plugin.Interruptions );
+
+						newPlugin.Vdm = RemoveDuplicates( newPlugin.Vdm );
+						newPlugin.Persistence = RemoveDuplicates( newPlugin.Persistence );
+						newPlugin.Interruptions = RemoveDuplicates( newPlugin.Interruptions );
 					}
 					merged.Add( newPlugin );
 				}
@@ -37,6 +41,14 @@ namespace PluginManager.PluginManagment
 				}
 			} );
 			return merged;
+		}
+
+		static List<Configuration> RemoveDuplicates( IEnumerable<Configuration> configurations )
+		{
+			return configurations
+				.GroupBy( configuration => new { configuration.Author, configuration.Version2.Major, configuration.Version2.Minor } )
+				.Select( configuration => configuration.First() )
+				.ToList();
 		}
 
 		public static void GiveId( IEnumerable<Plugin> plugins )

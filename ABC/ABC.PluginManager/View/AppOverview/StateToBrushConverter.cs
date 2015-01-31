@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
-using PluginManager.common;
+using PluginManager.Common;
 using Whathecode.System.Windows.Data;
 
 

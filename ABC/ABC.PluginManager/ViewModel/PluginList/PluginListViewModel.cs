@@ -47,7 +47,6 @@ namespace PluginManager.ViewModel.PluginList
 			configurations.ForEach( configuration =>
 			{
 				configuration.Icon = configuration.Icon ?? new Uri( "pack://application:,,,/View/icons/conf.png" ).AbsolutePath;
-				configuration.Version = configuration.Version ?? "1.0";
 				configuration.Author = configuration.Author ?? "Unknown author";
 				configuration.SupportedVersions = configuration.SupportedVersions != null && configuration.SupportedVersions.Any() 
 					? configuration.SupportedVersions : new List<string> { "Any" };

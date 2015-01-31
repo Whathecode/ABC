@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Win32;
 using PluginManager.Model;
@@ -60,7 +61,7 @@ namespace PluginManager.PluginManagment
 					}
 					if ( subkeysValues.Contains( "DisplayVersion" ) )
 					{
-						plugin.Version = subkey.GetValue( "DisplayVersion" ).ToString();
+						//plugin.Version2 = new Version(subkey.GetValue( "DisplayVersion" ).ToString());
 					}
 					if ( subkeysValues.Contains( "DisplayIcon" ) )
 					{

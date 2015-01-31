@@ -22,7 +22,7 @@ namespace ABC.Applications.Explorer
 
 
 	[Export( typeof( AbstractApplicationPersistence ) )]
-	public class ExplorerPersistence : AbstractApplicationPersistence
+	public class ExplorerPersistence : AbstractApplicationPersistence, IInstallable
 	{
 		public ExplorerPersistence()
 			: base( new PluginInformation("explorer", "Microsoft Corporation", "Steven Jeuris") ) {}
@@ -93,6 +93,20 @@ namespace ABC.Applications.Explorer
 		public override Type GetPersistedDataType()
 		{
 			return typeof( List<ExplorerLocation> );
+		}
+
+		public bool Install()
+		{
+			// Nothing to do install.
+			Console.WriteLine("Installing explorer plug-in");
+			return true;
+		}
+
+		public bool Unistall()
+		{
+			// Nothing to do uninstall.
+			Console.WriteLine("Uninstalling explorer plug-in");
+			return true;
 		}
 	}
 }

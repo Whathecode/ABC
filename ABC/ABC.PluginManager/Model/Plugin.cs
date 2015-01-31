@@ -23,7 +23,7 @@ namespace PluginManager.Model
 			CompanyName = plugin.CompanyName;
 			Id = plugin.Id;
 			Name = plugin.Name;
-			Version = plugin.Version;
+			Version2 = plugin.Version2;
 			Author = plugin.Author;
 		}
 

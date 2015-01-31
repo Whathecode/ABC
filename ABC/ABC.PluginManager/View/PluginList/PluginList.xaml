@@ -10,7 +10,7 @@
 	xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginList.Binding"
 	xmlns:pluginList="clr-namespace:PluginManager.ViewModel.PluginList"
 	xmlns:data="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
-	xmlns:common="clr-namespace:PluginManager.common"
+	xmlns:common="clr-namespace:PluginManager.Common"
 	mc:Ignorable="d"
 	d:DesignHeight="300" d:DesignWidth="300"
 	d:DataContext="{d:DesignInstance Type=pluginList:PluginListViewModel}">
@@ -89,7 +89,7 @@
 										Margin="5"
 										Cursor="Hand" />
 									<StackPanel Margin="5" VerticalAlignment="Center">
-										<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
+										<TextBlock Text="{Binding Version2, StringFormat='Plug-in Version: {0}'}" />
 										<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
 										<TextBlock Text="{Binding SupportedVersions[0], StringFormat='Supported Version: {0}'}" />
 									</StackPanel>

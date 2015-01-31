@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
@@ -36,18 +37,48 @@ namespace PluginManager.ViewModel.AppOverview
 		[NotifyProperty( Binding.Properties.State )]
 		public OverviewState State { get; private set; }
 
-		readonly ObservableCollection<PluginOverviewViewModel> _installedApps = new ObservableCollection<PluginOverviewViewModel>();
-		readonly ObservableCollection<PluginOverviewViewModel> _availableApps = new ObservableCollection<PluginOverviewViewModel>();
-		readonly ObservableCollection<PluginOverviewViewModel> _installedAndAvailableApps = new ObservableCollection<PluginOverviewViewModel>();
-		readonly ObservableCollection<PluginOverviewViewModel> _availableInterruptions = new ObservableCollection<PluginOverviewViewModel>();
-		readonly ObservableCollection<PluginOverviewViewModel> _installedInterruptions = new ObservableCollection<PluginOverviewViewModel>();
-		readonly ObservableCollection<PluginOverviewViewModel> _installedAndIvailableInterruptions = new ObservableCollection<PluginOverviewViewModel>();
-		readonly ObservableCollection<PluginOverviewViewModel> _installedOnSystem = new ObservableCollection<PluginOverviewViewModel>();
+		readonly ObservableCollection<PluginOverviewViewModel> _installedApps;
+		readonly ObservableCollection<PluginOverviewViewModel> _availableApps;
+		readonly ObservableCollection<PluginOverviewViewModel> _installedAndAvailableApps;
+		readonly ObservableCollection<PluginOverviewViewModel> _availableInterruptions;
+		readonly ObservableCollection<PluginOverviewViewModel> _installedInterruptions;
+		readonly ObservableCollection<PluginOverviewViewModel> _installedAndIvailableInterruptions;
+		readonly ObservableCollection<PluginOverviewViewModel> _installedOnSystem;
+
+		readonly List<ObservableCollection<PluginOverviewViewModel>> _filterList;
+		
+		PluginOverviewViewModel _selctedApplicationCache;
 
 		public AppOverviewViewModel( List<Plugin> available, List<Plugin> installed, List<Plugin> installedOnSystem )
 		{
+			_installedApps = new ObservableCollection<PluginOverviewViewModel>();
+			_availableApps = new ObservableCollection<PluginOverviewViewModel>();
+			_installedAndAvailableApps = new ObservableCollection<PluginOverviewViewModel>();
+			_availableInterruptions = new ObservableCollection<PluginOverviewViewModel>();
+			_installedInterruptions = new ObservableCollection<PluginOverviewViewModel>();
+			_installedAndIvailableInterruptions = new ObservableCollection<PluginOverviewViewModel>();
+			_installedOnSystem = new ObservableCollection<PluginOverviewViewModel>();
+
+			_filterList = new List<ObservableCollection<PluginOverviewViewModel>> 
+			{ _installedApps, _installedInterruptions, _availableApps,
+				_availableInterruptions, _installedAndAvailableApps, _installedAndIvailableInterruptions };
+
+			// By default all application-connected plug-ins are shown on the start screen.
+			State = OverviewState.Applications;
+
+			Populate( available, installed, installedOnSystem );
+		}
+
+		public void Populate( List<Plugin> available, List<Plugin> installed, List<Plugin> installedOnSystem )
+		{
+			Mouse.OverrideCursor = Cursors.Wait;
+
+			_selctedApplicationCache = SelectedApplication;
+			_filterList.ForEach( list => list.Clear() );
+
 			PluginManagmentHelper.GiveId( installed );
 			PluginManagmentHelper.GiveId( available );
+			PluginManagmentHelper.SortByName( ref installed );
 
 			available.Concat( installed ).Concat( installedOnSystem ).ForEach( plugin =>
 			{
@@ -79,13 +110,14 @@ namespace PluginManager.ViewModel.AppOverview
 			PluginManagmentHelper.SortByName( ref installedAndAvailable );
 			installedAndAvailable.ForEach( a => _installedAndAvailableApps.Add( CreateHookPluginDetails( a ) ) );
 
-			// By default all application-connected plug-ins are shown on the start screen.
-			DisplayedPlugins = _installedAndAvailableApps;
-			State = OverviewState.Applications;
+			var all = available.Concat( installed ).Concat( installedOnSystem ).Concat( installedOnSystem ).ToList();
+			PluginManagmentHelper.GiveId( all );
+			PluginManagmentHelper.SortByName( ref all );
+			all.ForEach( plugin => _installedOnSystem.Add( CreateHookPluginDetails( plugin ) ) );
 
-			installedOnSystem.ForEach( installedOnSys => _installedOnSystem.Add( CreateHookPluginDetails( installedOnSys ) ) );
+			SwitchOverviewState( State );
 
-			SelectFirst();
+			Mouse.OverrideCursor = Cursors.Arrow;
 		}
 
 		PluginOverviewViewModel CreateHookPluginDetails( Plugin plugin )
@@ -139,18 +171,24 @@ namespace PluginManager.ViewModel.AppOverview
 					break;
 			}
 			State = state;
-			SelectFirst();
+			SelectApp();
 		}
 
 		/// <summary>
 		/// Selects the first box in the list view.
 		/// </summary>
-		void SelectFirst()
+		void SelectApp()
 		{
-			if ( DisplayedPlugins.Count > 0 )
+			if ( DisplayedPlugins.Count <= 0 )
 			{
-				SelectedApplication = DisplayedPlugins.First();
+				return;
 			}
+			PluginOverviewViewModel previouslySelected = null;
+			if ( _selctedApplicationCache != null )
+			{
+				previouslySelected = DisplayedPlugins.FirstOrDefault( displayedItem => displayedItem.Plugin.Name == _selctedApplicationCache.Plugin.Name );
+			}
+			SelectedApplication = previouslySelected ?? DisplayedPlugins.First();
 		}
 	}
 }
