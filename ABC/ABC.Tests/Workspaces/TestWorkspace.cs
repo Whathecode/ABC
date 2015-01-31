@@ -7,6 +7,16 @@
 			return false;
 		}
 
+		protected override void ShowInner()
+		{
+			// Nothing to do.
+		}
+
+		protected override void HideInner()
+		{
+			// Nothing to do.
+		}
+
 		protected override void SuspendInner()
 		{
 			// Nothing to do.
