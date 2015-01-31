@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Whathecode.System.Windows;
+using WUser32 = Whathecode.Interop.User32;
 
 
 namespace ABC.PInvoke
@@ -34,7 +35,7 @@ namespace ABC.PInvoke
 				if ( User32.RegisterShellHookWindow( _hookWin.Handle ) == false )
 					throw new Exception( "Win32 error" );
 
-				_wmShellhookmessage = User32.RegisterWindowMessage( "SHELLHOOK" );
+				_wmShellhookmessage = (int)WUser32.RegisterWindowMessage( "SHELLHOOK" );
 				_hookWin.MessageRecieved += ShellWinProc;
 			} );
 		}

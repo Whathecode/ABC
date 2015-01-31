@@ -2,26 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Runtime.InteropServices;
+using WUser32 = Whathecode.Interop.User32;
+using WShell32 = Whathecode.Interop.Shell32;
 
 
 namespace ABC.PInvoke
 {
 	public class IconManager
 	{
-		static Guid _desktop = new Guid( "B4BFCC3A-DB2C-424C-B029-7FE99A87C641" );
-
-		/// <summary>
-		/// Updates the desktop folder
-		/// </summary>
-		public static void ChangeDesktopFolder(string path)
-		{
-			if (!Directory.Exists(path)) return;
-			Shell32.SHSetKnownFolderPath(ref _desktop, 0, IntPtr.Zero, path);
-			Shell32.SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
-		}
-
 		static int MakeLParam(int loWord, int hiWord)
 		{
 			return ((hiWord << 16) | (loWord & 0xffff));
@@ -33,7 +22,7 @@ namespace ABC.PInvoke
 			vHandle = User32.FindWindowEx(vHandle, IntPtr.Zero, "SHELLDLL_DefView", null);
 			vHandle = User32.FindWindowEx(vHandle, IntPtr.Zero, "SysListView32", "FolderView");
 
-			var vItemCount = (int)User32.SendMessage(vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero);
+			var vItemCount = (int)WUser32.SendMessage(vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero);
 			var icons = new List<DesktopIcon>();
 
 			uint vProcessId;
@@ -58,10 +47,10 @@ namespace ABC.PInvoke
 					uint vNumberOfBytesRead = 0;
 
 					Kernel32.WriteProcessMemory(vProcess, vPointer, Marshal.UnsafeAddrOfPinnedArrayElement(vItem, 0), Marshal.SizeOf(typeof(User32.Lvitem)), ref vNumberOfBytesRead);
-					User32.SendMessage(vHandle, User32.LVM_GETITEMW, new IntPtr(j), new IntPtr(vPointer.ToInt32()));
+					WUser32.SendMessage(vHandle, User32.LVM_GETITEMW, new IntPtr(j), new IntPtr(vPointer.ToInt32()));
 					Kernel32.ReadProcessMemory(vProcess, (IntPtr)((int)vPointer + Marshal.SizeOf(typeof(User32.Lvitem))), Marshal.UnsafeAddrOfPinnedArrayElement(vBuffer, 0),
 												vBuffer.Length, ref vNumberOfBytesRead);
-					User32.SendMessage(vHandle, User32.LVM_GETITEMPOSITION, new IntPtr(j), new IntPtr(vPointer.ToInt32()));
+					WUser32.SendMessage(vHandle, User32.LVM_GETITEMPOSITION, new IntPtr(j), new IntPtr(vPointer.ToInt32()));
 					var vPoint = new Point[1];
 					Kernel32.ReadProcessMemory(vProcess, vPointer, Marshal.UnsafeAddrOfPinnedArrayElement(vPoint, 0), Marshal.SizeOf(typeof(Point)), ref vNumberOfBytesRead);
 					icons.Add(new DesktopIcon(j, vPoint[0]));
@@ -105,7 +94,7 @@ namespace ABC.PInvoke
 
 		static void SendMsg(IntPtr hWnd, uint msg, int wParam, int lParam)
 		{
-			var result = User32.SendMessage(hWnd, User32.LVM_SETITEMPOSITION, new IntPtr(wParam), new IntPtr(lParam));
+			var result = WUser32.SendMessage(hWnd, User32.LVM_SETITEMPOSITION, new IntPtr(wParam), new IntPtr(lParam));
 
 			if (result != IntPtr.Zero) return;
 			var err = Marshal.GetLastWin32Error();
@@ -116,7 +105,7 @@ namespace ABC.PInvoke
 		static void GetDesktopIconCount(IntPtr vHandle, out int vItemCount, out IntPtr vProcess, out IntPtr vPointer)
 		{
 			//Get total count of the icons on the desktop
-			vItemCount = (int)User32.SendMessage(vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero);
+			vItemCount = (int)WUser32.SendMessage(vHandle, User32.LVM_GETITEMCOUNT, IntPtr.Zero, IntPtr.Zero);
 
 			uint vProcessId;
 			Whathecode.Interop.User32.GetWindowThreadProcessId(vHandle, out vProcessId);

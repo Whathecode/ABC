@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using WUser32 = Whathecode.Interop.User32;
 
 
 namespace ABC.PInvoke
@@ -147,7 +148,7 @@ namespace ABC.PInvoke
 			if ( !info.IsRegistered )
 			{
 				info.IsRegistered = true;
-				info.CallbackId = User32.RegisterWindowMessage( "AppBarMessage" );
+				info.CallbackId = (int)WUser32.RegisterWindowMessage( "AppBarMessage" );
 				abd.uCallbackMessage = info.CallbackId;
 
 				Shell32.SHAppBarMessage( (int)Shell32.AppBarMessages.ABM_NEW, ref abd );
