@@ -2,16 +2,6 @@
 {
 	class TestWorkspace : AbstractWorkspace<TestSession>
 	{
-		protected override void ShowInner()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		protected override void HideInner()
-		{
-			throw new System.NotImplementedException();
-		}
-
 		public override bool HasResourcesToSuspend()
 		{
 			return false;
