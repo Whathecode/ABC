@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ABC.Common
+namespace ABC.Plugins
 {
 	public static class PluginHelper<TPlugin>
 	{

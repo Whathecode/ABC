@@ -2,7 +2,7 @@
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
-using ABC.Common;
+using ABC.Plugins;
 
 
 namespace ABC.Applications.Persistence

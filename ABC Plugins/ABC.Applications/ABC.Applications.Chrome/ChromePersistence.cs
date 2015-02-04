@@ -6,7 +6,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using ABC.Applications.Persistence;
-using ABC.Common;
+using ABC.Plugins;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows;
 

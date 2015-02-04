@@ -1,5 +1,4 @@
-﻿
-namespace ABC.Common
+﻿namespace ABC.Plugins
 {
 	/// <summary>
 	/// Interface should be implemented by plug-ins that require additional custom installation steps.

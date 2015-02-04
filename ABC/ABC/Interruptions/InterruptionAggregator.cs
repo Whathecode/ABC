@@ -5,7 +5,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
-using ABC.Common;
+using ABC.Plugins;
 
 
 namespace ABC.Interruptions

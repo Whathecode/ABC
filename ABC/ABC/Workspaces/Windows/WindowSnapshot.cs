@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using ABC.Common;
 using Whathecode.System.Windows;
 
 

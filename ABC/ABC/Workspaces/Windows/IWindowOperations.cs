@@ -1,7 +1,4 @@
-﻿using ABC.Common;
-
-
-namespace ABC.Workspaces.Windows
+﻿namespace ABC.Workspaces.Windows
 {
 	/// <summary>
 	///   Allows to execute window operations on windows managed by a virtual desktop manager.

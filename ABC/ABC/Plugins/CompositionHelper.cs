@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 
 
-namespace ABC.Common
+namespace ABC.Plugins
 {
 	/// <summary>
 	///   Helper class to help with MEF composition.

@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text.RegularExpressions;
 using ABC.Applications.Persistence;
 using Whathecode.System.Diagnostics;
-using ABC.Common;
+using ABC.Plugins;
 
 
 namespace ABC.Applications.Notepad

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-namespace ABC.Common
+namespace ABC.Plugins
 {
 	public class PluginInformation
 	{

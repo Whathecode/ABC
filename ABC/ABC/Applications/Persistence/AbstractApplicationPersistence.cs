@@ -1,5 +1,5 @@
 ﻿using System;
-using ABC.Common;
+using ABC.Plugins;
 
 
 namespace ABC.Applications.Persistence

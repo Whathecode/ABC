@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ABC.Common
+namespace ABC.Plugins
 {
 	/// <summary>
 	///   Exception which is thrown when one of the plugins throws an exception.
