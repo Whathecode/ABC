@@ -49,26 +49,6 @@ namespace ABC.PInvoke
 				       : SetWindowLongPtr32( windowHandle, index, dwNewLong );
 		}
 
-		/// <summary>
-		/// Retrieves a handle to the top-level window whose class name and window name match the specified strings. This function does not search child windows. This function does not perform a case-sensitive search.
-		/// </summary>
-		/// <param name="lpszClass">The class name or a class atom created by a previous call to the RegisterClass or RegisterClassEx function. The atom must be in the low-order word of lpClassName; the high-order word must be zero.</param>
-		/// <param name="lpszWindow">The window name (the window's title). If this parameter is NULL, all window names match.</param>
-		/// <returns>If the function succeeds, the return value is a handle to the window that has the specified class name and window name. If the function fails, the return value is NULL. To get extended error information, call GetLastError.</returns>
-		[DllImport( Dll, CharSet = CharSet.Auto, SetLastError = true )]
-		public static extern IntPtr FindWindow( string lpszClass, string lpszWindow );
-
-		/// <summary>
-		/// Retrieves a handle to the top-level window whose class name and window name match the specified strings. This function does not search child windows. This function does not perform a case-sensitive search.
-		/// </summary>
-		/// <param name="hwndParent">A handle to the parent window whose child windows are to be searched. If hwndParent is NULL, the function uses the desktop window as the parent window. The function searches among windows that are child windows of the desktop.></param>
-		/// <param name="hwndChildAfter">A handle to a child window. The search begins with the next child window in the Z order. The child window must be a direct child window of hwndParent, not just a descendant window.</param>
-		/// <param name="lpszClass">The class name or a class atom created by a previous call to the RegisterClass or RegisterClassEx function. The atom must be placed in the low-order word of lpszClass; the high-order word must be zero.</param>
-		/// <param name="lpszWindow">The window name (the window's title). If this parameter is NULL, all window names match.</param>
-		/// <returns>If the function succeeds, the return value is a handle to the window that has the specified class and window names. If the function fails, the return value is NULL. To get extended error information, call GetLastError.</returns>
-		[DllImport( Dll, CharSet = CharSet.Auto, SetLastError = true )]
-		public static extern IntPtr FindWindowEx( IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow );
-
 		[DllImport( Dll, EntryPoint = "SetWindowLong", SetLastError = true )]
 		static extern IntPtr SetWindowLongPtr32( IntPtr windowHandle, int index, uint dwNewLong );
 

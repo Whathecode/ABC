@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using WUser32 = Whathecode.Interop.User32;
 
 
 namespace ABC.PInvoke
@@ -13,7 +14,7 @@ namespace ABC.PInvoke
 			public IntPtr hWnd;
 			public int uCallbackMessage;
 			public int uEdge;
-			public WinDef.Rectangle rc;
+			public WUser32.Rectangle rc;
 			public IntPtr lParam;
 		}
 

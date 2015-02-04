@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using WUser32 = Whathecode.Interop.User32;
 
 
 namespace ABC.PInvoke
@@ -10,8 +11,8 @@ namespace ABC.PInvoke
 		public struct ThumbnailProperties
 		{
 			public uint dwFlags;
-			public WinDef.Rectangle rcDestination;
-			public WinDef.Rectangle rcSource;
+			public WUser32.Rectangle rcDestination;
+			public WUser32.Rectangle rcSource;
 			public byte opacity;
 
 			[MarshalAs( UnmanagedType.Bool )]

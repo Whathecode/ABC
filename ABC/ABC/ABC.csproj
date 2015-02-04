@@ -41,6 +41,7 @@
     <Reference Include="Whathecode.System.Management">
       <HintPath>..\..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.System.Management.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Applications\Persistence\AbstractApplicationPersistence.cs" />
@@ -93,12 +94,6 @@
     <Compile Include="Workspaces\Workspace.cs" />
     <Compile Include="Workspaces\WorkspaceManager.cs" />
     <Compile Include="Workspaces\WorkspaceSession.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ABC.PInvoke\ABC.PInvoke.csproj">
-      <Project>{072142c4-284e-4f1a-a1fe-f886e8ecf728}</Project>
-      <Name>ABC.PInvoke</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\asus.xml" />

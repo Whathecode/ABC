@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using ABC.PInvoke;
+using System.Linq;
+using System.Windows;
 using Whathecode.System;
 using Whathecode.System.Windows;
+using Whathecode.System.Windows.Win32Controls;
 
 
 namespace ABC.Workspaces.Icons
@@ -22,7 +23,7 @@ namespace ABC.Workspaces.Icons
 		/// </summary>
 		public string Folder { get; private set; }
 
-		internal List<DesktopIcon> Icons { get; private set; }
+		internal List<Point> Icons { get; private set; }
 
 
 		static DesktopIcons()
@@ -33,7 +34,7 @@ namespace ABC.Workspaces.Icons
 		internal DesktopIcons()
 		{
 			Folder = StartupDesktopFolder;
-			Icons = new List<DesktopIcon>();
+			Icons = new List<Point>();
 		}
 
 		internal DesktopIcons( StoredIcons icons )
@@ -43,8 +44,18 @@ namespace ABC.Workspaces.Icons
 		}
 
 
+		ListView GetDesktopListView()
+		{
+			WindowInfo listViewWindow = WindowManager
+				.GetDesktopWindow()
+				.GetChildWindows()
+				.First( w => w.GetClassName() == "SysListView32" && w.GetTitle() == "FolderView" );
+			return new ListView( listViewWindow );
+		}
+
 		protected override void ShowInner()
 		{
+			// Change desktop path.
 			try
 			{
 				EnvironmentHelper.SetFolderPath( Environment.SpecialFolder.Desktop, Folder );
@@ -56,14 +67,32 @@ namespace ABC.Workspaces.Icons
 				ShowInner();
 				return;
 			}
-
 			WindowManager.RefreshDesktop();
-			IconManager.ArrangeDesktopIcons( Icons );
+
+			// Move icons to original positions.
+			ListView listView = GetDesktopListView();
+			var itemCount = listView.GetItemCount();
+			if ( itemCount == Icons.Count )
+			{
+				for ( var i = 0; i < itemCount; ++i )
+				{
+					var point = Icons[ i ];
+					listView.SetItemPosition( i, point );
+				}
+			}
 		}
 
 		protected override void HideInner()
 		{
-			Icons = IconManager.SaveDestopIcons();
+			// Save icon positions.
+			ListView listView = GetDesktopListView();
+			var itemCount = listView.GetItemCount();
+			Icons.Clear();
+			for ( var i = 0; i < itemCount; ++i )
+			{
+				var point = listView.GetItemPosition( i );
+				Icons.Add( point );
+			}
 		}
 
 		public void ChangeFolder( string folder )

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using WUser32 = Whathecode.Interop.User32;
 
 
 namespace ABC.PInvoke
@@ -41,7 +42,7 @@ namespace ABC.PInvoke
 				          DwmApi.ThumbnailProperties.DWM_TNP_RECTDESTINATION,
 				opacity = 255,
 				fVisible = true,
-				rcDestination = new WinDef.Rectangle
+				rcDestination = new WUser32.Rectangle
 				{
 					Left = (int)location.X,
 					Top = (int)location.Y,

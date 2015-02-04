@@ -68,22 +68,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Appbar.cs" />
-    <Compile Include="DesktopIcon.cs" />
     <Compile Include="DockingManager.cs" />
     <Compile Include="DwmApi.cs" />
     <Compile Include="DwmApi.Types.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="HookType.cs" />
-    <Compile Include="IconManager.cs" />
     <Compile Include="NativeWindowEx.cs" />
-    <Compile Include="Kernel32.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="Shell32.cs" />
     <Compile Include="ThumbnailInfo.cs" />
     <Compile Include="User32.cs" />
-    <Compile Include="User32.Types.cs" />
-    <Compile Include="WinDef.cs" />
     <Compile Include="WindowMessage.cs" />
     <Compile Include="WindowMonitor.cs" />
   </ItemGroup>
