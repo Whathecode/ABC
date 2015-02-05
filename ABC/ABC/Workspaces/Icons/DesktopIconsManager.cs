@@ -11,7 +11,6 @@
 		{
 			// Initialize currently visible desktop icons.
 			var startupIcons = new DesktopIcons();
-			startupIcons.Show();
 			SetStartupWorkspace( startupIcons );
 		}
 
