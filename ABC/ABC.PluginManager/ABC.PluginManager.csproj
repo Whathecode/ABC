@@ -121,6 +121,7 @@
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\PluginElement.cs" />
     <Compile Include="Model\Plugin.cs" />
+    <Compile Include="Model\SupportedApplications.cs" />
     <Compile Include="PluginManagment\AssemblyInfo.cs" />
     <Compile Include="PluginManagment\AvailablePluginManager.cs" />
     <Compile Include="PluginManagment\FileHelper.cs" />
@@ -192,6 +193,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="SupportedApplications.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -252,6 +256,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\icons\install.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="SupportedApplications.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\PostSharp.3.1.48\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.3.1.48\tools\PostSharp.targets')" />
