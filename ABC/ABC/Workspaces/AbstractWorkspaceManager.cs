@@ -60,6 +60,9 @@ namespace ABC.Workspaces
 			CurrentWorkspace = StartupWorkspace;
 			_orderedWorkspaces.Add( workspace );
 			_workspaces.Add( workspace );
+
+			// The startup workspace is the one visible at startup.
+			workspace.Show();
 		}
 
 		/// <summary>

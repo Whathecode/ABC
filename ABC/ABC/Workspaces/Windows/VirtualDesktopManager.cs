@@ -92,7 +92,6 @@ namespace ABC.Workspaces.Windows
 			var startupDesktop = new VirtualDesktop( _persistenceProvider );
 			SetStartupWorkspace( startupDesktop );
 			startupDesktop.UnresponsiveWindowDetected += OnUnresponsiveWindowDetected;
-			startupDesktop.Show(); // Make virtual desktop visible.
 			startupDesktop.AddWindows( GetNewWindows() );
 
 			_monitorServer = new MonitorVdmPipeServer( this );
