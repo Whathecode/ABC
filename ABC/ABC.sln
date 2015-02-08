@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Tests", "ABC.Tests\ABC.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABC.Workspaces.Windows.Monitor", "ABC.Workspaces.Windows.Monitor\ABC.Workspaces.Windows.Monitor.csproj", "{19BAF70B-28BC-438F-9EB6-C98D81D98299}"
 EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ABC.Modeling", "ABC.Modeling\ABC.Modeling.modelproj", "{D17409BE-14D2-47D8-BBA5-CAF395604EBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,14 @@ Global
 		{19BAF70B-28BC-438F-9EB6-C98D81D98299}.Release|x64.Build.0 = Release|x64
 		{19BAF70B-28BC-438F-9EB6-C98D81D98299}.Release|x86.ActiveCfg = Release|x86
 		{19BAF70B-28BC-438F-9EB6-C98D81D98299}.Release|x86.Build.0 = Release|x86
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Release|x64.ActiveCfg = Release|Any CPU
+		{D17409BE-14D2-47D8-BBA5-CAF395604EBE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
