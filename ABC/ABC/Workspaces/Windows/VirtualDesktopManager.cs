@@ -220,8 +220,11 @@ namespace ABC.Workspaces.Windows
 			to.AddWindows( from.WindowSnapshots.ToList() );
 		}
 
-		protected override void CloseAdditional()
+		protected override void CloseInner()
 		{
+			// Show all desktops again.
+			Workspaces.ForEach( w => w.Show() );
+
 			// Show all cut windows again.
 			var showWindows = WindowClipboard.Select( w => new RepositionWindowInfo( w.Info ) { Visible = w.Visible } ).ToList();
 			try

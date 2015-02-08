@@ -48,6 +48,8 @@ namespace ABC.Workspaces
 		///   Merges all content from one workspace with that from another, and removes the original workspace.
 		///   You can't merge the <see cref = "StartupWorkspace"/> with another workspace.
 		/// </summary>
+		/// <param name="from">The workspace which needs to be merged with <paramref name="to" />.</param>
+		/// <param name="to"> The workspace to which <paramref name="from" /> is being merged.</param>
 		void Merge( IWorkspace from, IWorkspace to );
 
 		/// <summary>

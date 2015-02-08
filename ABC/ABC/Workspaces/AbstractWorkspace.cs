@@ -60,16 +60,16 @@ namespace ABC.Workspaces
 
 		internal void Show()
 		{
-			IsVisible = true;
 			ShowInner();
+			IsVisible = true;
 		}
 
 		protected abstract void ShowInner();
 
 		internal void Hide()
 		{
-			IsVisible = false;
 			HideInner();
+			IsVisible = false;
 		}
 
 		protected abstract void HideInner();

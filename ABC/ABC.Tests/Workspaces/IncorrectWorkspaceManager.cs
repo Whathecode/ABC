@@ -20,7 +20,7 @@
 		{
 		}
 
-		protected override void CloseAdditional()
+		protected override void CloseInner()
 		{
 		}
 

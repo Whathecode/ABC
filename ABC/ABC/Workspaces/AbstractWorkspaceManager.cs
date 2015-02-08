@@ -190,6 +190,8 @@ namespace ABC.Workspaces
 		/// <summary>
 		///   Merges all content from one workspace with that from another.
 		/// </summary>
+		/// <param name="from">The workspace which needs to be merged with <paramref name="to" />.</param>
+		/// <param name="to"> The workspace to which <paramref name="from" /> is being merged.</param>
 		protected abstract void MergeInner( TWorkspace from, TWorkspace to );
 
 		/// <summary>
@@ -202,22 +204,19 @@ namespace ABC.Workspaces
 
 		/// <summary>
 		///   Closes the workspace manager by restoring content from all workspaces as if they weren't separate workspaces.
-		///   All workspaces are merged to the startup workspace.
 		/// </summary>
 		public void Close()
 		{
 			VerifyValidState();
 
 			SwitchToWorkspace( StartupWorkspace );
-			_orderedWorkspaces.Except( new [] { StartupWorkspace } ).ToList().ForEach( w => Merge( w, StartupWorkspace ) );
-
-			CloseAdditional();
+			CloseInner();
 		}
 
 		/// <summary>
-		///   After having merged all workspaces to the startup workspace, this is called to allow closing any additional resources.
+		///   After having switched to the startup workspace, this is called to allow closing all workspaces as if they weren't separate workspaces.
 		/// </summary>
-		protected abstract void CloseAdditional();
+		protected abstract void CloseInner();
 
 		/// <summary>
 		///   Throw an exception, but close the workspace first so that no content is lost.
