@@ -222,6 +222,8 @@ namespace ABC.Workspaces.Windows
 
 		protected override void CloseInner()
 		{
+			UpdateWindowAssociations(); // Make sure new visible windows are saved as well.
+
 			// Show all desktops again.
 			Workspaces.ForEach( w => w.Show() );
 
