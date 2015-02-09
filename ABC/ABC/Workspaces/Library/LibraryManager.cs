@@ -54,6 +54,8 @@ namespace ABC.Workspaces.Library
 
 		protected override void CloseInner()
 		{
+			CurrentWorkspace.UpdatePaths(); // Make sure newly added/removed paths are stored as well.
+
 			// TODO: Remove the library.
 		}
 
