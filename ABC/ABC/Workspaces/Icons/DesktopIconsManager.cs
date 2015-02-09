@@ -1,4 +1,8 @@
-﻿namespace ABC.Workspaces.Icons
+﻿using System.IO;
+using IWshRuntimeLibrary;
+
+
+namespace ABC.Workspaces.Icons
 {
 	/// <summary>
 	///   An <see cref = "AbstractWorkspaceManager{TWorkspace, TSession}" />
@@ -33,7 +37,13 @@
 
 		protected override void MergeInner( DesktopIcons from, DesktopIcons to )
 		{
-			// TODO: How to best handle this? This should probably be an option, since different ways of merging could be desired.
+			// TODO: Are there different/better ways of handling this? Perhaps this should be an option?
+			// Add a shortcut to the desktop folder being merged.
+			var shell = new WshShell();
+			string shortcutName = new DirectoryInfo( from.Folder ).Name + ".lnk";
+			IWshShortcut shortcut = shell.CreateShortcut( Path.Combine( to.Folder, shortcutName ) );
+			shortcut.TargetPath = from.Folder;
+			shortcut.Save();
 		}
 
 		protected override void CloseInner()

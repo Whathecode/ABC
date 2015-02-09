@@ -23,7 +23,7 @@ namespace ABC.Workspaces.Icons
 		/// </summary>
 		public string Folder { get; private set; }
 
-		internal List<Point> Icons { get; private set; }
+		internal Dictionary<string, Point> Icons;
 
 
 		static DesktopIcons()
@@ -34,7 +34,7 @@ namespace ABC.Workspaces.Icons
 		internal DesktopIcons()
 		{
 			Folder = StartupDesktopFolder;
-			Icons = new List<Point>();
+			Icons = new Dictionary<string, Point>();
 		}
 
 		internal DesktopIcons( StoredIcons icons )
@@ -72,12 +72,14 @@ namespace ABC.Workspaces.Icons
 			// Move icons to original positions.
 			ListView listView = GetDesktopListView();
 			var itemCount = listView.GetItemCount();
-			if ( itemCount == Icons.Count )
+			for ( var i = 0; i < itemCount; ++i )
 			{
-				for ( var i = 0; i < itemCount; ++i )
+				string text = listView.GetItemText( i );
+				Point position;
+				bool found = Icons.TryGetValue( text, out position );
+				if ( found )
 				{
-					var point = Icons[ i ];
-					listView.SetItemPosition( i, point );
+					listView.SetItemPosition( i, position );
 				}
 			}
 		}
@@ -90,8 +92,9 @@ namespace ABC.Workspaces.Icons
 			Icons.Clear();
 			for ( var i = 0; i < itemCount; ++i )
 			{
-				var point = listView.GetItemPosition( i );
-				Icons.Add( point );
+				string text = listView.GetItemText( i );
+				Point position = listView.GetItemPosition( i );
+				Icons[ text ] = position;
 			}
 		}
 

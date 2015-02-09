@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
 
@@ -16,14 +15,15 @@ namespace ABC.Workspaces.Icons
 		[DataMember]
 		internal readonly string Folder;
 
+
 		[DataMember]
-		internal readonly List<Point> Icons;
+		internal Dictionary<string, Point> Icons;
 
 
 		public StoredIcons( DesktopIcons icons )
 		{
 			Folder = icons.Folder;
-			Icons = icons.Icons.ToList();
+			Icons = icons.Icons;
 		}
 	}
 }
