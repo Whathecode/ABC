@@ -30,6 +30,8 @@ namespace ABC.Workspaces.Windows
 	/// </license>
 	public class VirtualDesktop : AbstractWorkspace<StoredSession>
 	{
+		internal bool IsStartupDesktop;
+
 		internal delegate void UnresponsiveWindowsHandler( List<WindowSnapshot> unresponsiveWindows, VirtualDesktop desktop );
 
 		/// <summary>

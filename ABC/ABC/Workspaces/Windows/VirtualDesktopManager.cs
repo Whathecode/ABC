@@ -89,7 +89,10 @@ namespace ABC.Workspaces.Windows
 			_hideBehavior = settings.CreateHideBehavior();
 
 			// Initialize visible startup desktop.
-			var startupDesktop = new VirtualDesktop( _persistenceProvider );
+			var startupDesktop = new VirtualDesktop( _persistenceProvider )
+			{
+				IsStartupDesktop = true
+			};
 			SetStartupWorkspace( startupDesktop );
 			startupDesktop.UnresponsiveWindowDetected += OnUnresponsiveWindowDetected;
 			startupDesktop.AddWindows( GetNewWindows() );
@@ -129,12 +132,18 @@ namespace ABC.Workspaces.Windows
 
 		protected override VirtualDesktop CreateWorkspaceFromSessionInner( StoredSession session )
 		{
+			// Do not restore startup desktop, simply use the newly created startup desktop.
+			if ( session.IsStartupDesktop )
+			{
+				return StartupWorkspace;
+			}
+
 			// The startup desktop contains all windows open at startup.
 			// Windows from previously stored sessions shouldn't be assigned to this startup desktop, so remove them.
 			List<WindowSnapshot> otherWindows = StartupWorkspace.WindowSnapshots.Where( o => session.OpenWindows.Contains( o ) ).ToList();
 			StartupWorkspace.RemoveWindows( otherWindows );
+			VirtualDesktop restored = new VirtualDesktop( session, _persistenceProvider );
 
-			var restored = new VirtualDesktop( session, _persistenceProvider );
 			HookDesktopEvents( restored );
 			session.OpenWindows.ForEach( w => w.ChangeDesktop( restored ) );
 			return restored;

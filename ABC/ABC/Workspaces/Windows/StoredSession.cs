@@ -27,6 +27,9 @@ namespace ABC.Workspaces.Windows
 	[DataContract]
 	public class StoredSession
 	{
+		[DataMember]
+		internal bool IsStartupDesktop;
+
 		/// <summary>
 		///   Holds all the windows open on the virtual desktop.
 		/// </summary>
@@ -42,6 +45,7 @@ namespace ABC.Workspaces.Windows
 
 		internal StoredSession( VirtualDesktop desktop )
 		{
+			IsStartupDesktop = desktop.IsStartupDesktop;
 			OpenWindows = desktop.WindowSnapshots;
 			PersistedApplications = desktop.PersistedApplications;
 		}
