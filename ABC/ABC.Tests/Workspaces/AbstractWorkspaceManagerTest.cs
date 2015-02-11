@@ -135,14 +135,14 @@ namespace ABC.Workspaces
 		[TestMethod]
 		public void CloseTest()
 		{
+			TestWorkspace workspace = _manager.CreateEmptyWorkspace();
 			_manager.CreateEmptyWorkspace();
-			_manager.CreateEmptyWorkspace();
+			_manager.SwitchToWorkspace( workspace );
 			_manager.Close();
 
-			// All workspaces are merged with startup workspace when closing.
-			Assert.AreEqual( 1, _manager.Workspaces.Count );
+			// All workspaces except the startup workspace are removed when closing.
+			Assert.AreEqual( _manager.Workspaces.Count, 1 );
 			Assert.AreEqual( _manager.StartupWorkspace, _manager.CurrentWorkspace );
-			Assert.AreEqual( _manager.StartupWorkspace, _manager.Workspaces.First() );
 		}
 	}
 }

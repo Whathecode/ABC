@@ -211,6 +211,12 @@ namespace ABC.Workspaces
 
 			SwitchToWorkspace( StartupWorkspace );
 			CloseInner();
+
+			// Remove all workspaces except the startup workspace.
+			_orderedWorkspaces.Clear();
+			_workspaces.Clear();
+			_orderedWorkspaces.Add( StartupWorkspace );
+			_workspaces.Add( StartupWorkspace );
 		}
 
 		/// <summary>
