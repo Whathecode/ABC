@@ -7,18 +7,18 @@ namespace PluginManager.Common
 	public enum PluginState
 	{
 		/// <summary>
-		/// Show only installed plug-ins grouped as applications.
-		/// </summary>
-		Installed = 1,
-
-		/// <summary>
-		/// Show updates for installed plug-ins.
-		/// </summary>
-		Updates = 3,
-
-		/// <summary>
 		/// Show available plug-ins that are not installed as applications.
 		/// </summary>
-		Availible = 4
+		Availible = 1,
+
+		/// <summary>
+		/// Show only installed plug-ins grouped as applications.
+		/// </summary>
+		Installed = 2,
+
+		/// <summary>
+		/// Plug-ins that are installed but out of date.
+		/// </summary>
+		Updates = 4
 	}
 }

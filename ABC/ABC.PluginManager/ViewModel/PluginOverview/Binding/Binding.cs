@@ -2,14 +2,24 @@
 {
 	public enum Properties
 	{
-		SelectedConfigurationItem,
-		VdmState,
-		PersistanceState,
-		InterruptionsState
+		SelectedPlugin,
+		Plugins
 	}
 
 	public enum Commands
 	{
-		CreateNewConfiguartion
+		DownloadPlugin
 	}
+
+	public enum PluginProperties
+	{
+		Author,
+		Description,
+		Icon,
+		Version,
+		State
+	}
+
+	public enum PluginCommands
+	{}
 }

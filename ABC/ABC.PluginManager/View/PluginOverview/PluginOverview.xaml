@@ -1,0 +1,140 @@
+﻿<UserControl
+	Name="Control"
+	x:Class="PluginManager.View.PluginOverview.PluginOverview"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:commandFactory="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
+	xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
+	xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginOverview.Binding"
+	xmlns:data="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
+	xmlns:common="clr-namespace:PluginManager.Common"
+	xmlns:pluginOverview="clr-namespace:PluginManager.ViewModel.PluginOverview"
+	mc:Ignorable="d"
+	d:DesignHeight="300" d:DesignWidth="300"
+	d:DataContext="{d:DesignInstance Type=pluginOverview:PluginOverviewViewModel}">
+
+	<StackPanel>
+
+		<ScrollViewer BorderThickness="0" VerticalScrollBarVisibility="Auto">
+			<ListView
+				HorizontalAlignment="Stretch"
+				BorderThickness="0" MinWidth="250"
+				ItemsSource="{Binding Plugins}"
+				SelectedItem="{Binding SelectedPlugin}"
+				Name="ListView">
+
+				<ListView.Resources>
+					<Style TargetType="TextBlock">
+						<Setter Property="Margin" Value="10,0,0,0" />
+						<Setter Property="VerticalAlignment" Value="Center" />
+					</Style>
+					<Style TargetType="StackPanel">
+						<Setter Property="VerticalAlignment" Value="Center" />
+					</Style>
+					<Style TargetType="DockPanel">
+						<Setter Property="MinHeight" Value="55" />
+						<Setter Property="MinWidth" Value="200" />
+						<Setter Property="LastChildFill" Value="False" />
+					</Style>
+				</ListView.Resources>
+
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListBoxItem">
+						<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+						<Setter Property="BorderThickness" Value="1" />
+						<Setter Property="BorderBrush" Value="Black" />
+						<Setter Property="Margin" Value="1" />
+					</Style>
+				</ListView.ItemContainerStyle>
+
+				<ListView.Style>
+					<Style TargetType="ListView">
+						<Style.Triggers>
+							<Trigger Property="HasItems" Value="False">
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="ListView">
+											<Border MinWidth="320" BorderThickness="1" BorderBrush="Black">
+												<TextBlock
+													Text="No items found."
+													Margin="20"
+													HorizontalAlignment="Center"
+													VerticalAlignment="Center" />
+											</Border>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</ListView.Style>
+
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<DockPanel MinWidth="350">
+							<Grid Margin="2">
+								<StackPanel
+									Orientation="Horizontal"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch">
+									<Image
+										Width="30"
+										Height="30"
+										Source="{Binding Icon}"
+										Margin="5"
+										Cursor="Hand" />
+									<StackPanel Margin="5" VerticalAlignment="Center">
+										<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
+										<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
+										<TextBlock Text="{Binding Description}" Margin="0, 5, 0, 0" />
+									</StackPanel>
+								</StackPanel>
+
+								<StackPanel
+									Orientation="Horizontal"
+									VerticalAlignment="Bottom"
+									HorizontalAlignment="Right">
+									<Image
+										Source="../icons/ok.ico"
+										Width="25"
+										Height="25"
+										Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
+
+									<Image
+										Source="../icons/install.png"
+										Width="25"
+										Height="25"
+										Cursor="Hand"
+										PreviewMouseLeftButtonDown="PreviewMouseLeftButtonDown"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadPlugin}, 
+											ElementName=Control}"
+										Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Availible}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
+									<Image
+										Source="../icons/update.png"
+										Width="25"
+										Height="25"
+										Cursor="Hand"
+										PreviewMouseLeftButtonDown="PreviewMouseLeftButtonDown"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadPlugin}, 
+											ElementName=Control}"
+										Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Updates}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
+								</StackPanel>
+
+							</Grid>
+
+						</DockPanel>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+
+			</ListView>
+		</ScrollViewer>
+	</StackPanel>
+</UserControl>

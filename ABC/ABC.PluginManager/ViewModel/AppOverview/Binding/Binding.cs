@@ -3,12 +3,15 @@
 	public enum Properties
 	{
 		SelectedApplication,
-		AvailibleApps,
-		State
+		Applications,
+		CurrentPlugins,
+		Filters,
+		SelectedFilter
 	}
 
 	public enum Commands
 	{
-		SwitchOverviewState
+		//SwitchOverviewState
+		SelectApplication
 	}
 }

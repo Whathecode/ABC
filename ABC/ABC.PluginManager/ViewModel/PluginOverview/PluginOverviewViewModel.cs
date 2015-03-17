@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using PluginManager.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using PluginManager.Model;
-using PluginManager.ViewModel.PluginList;
 using PluginManager.ViewModel.PluginOverview.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Windows.Aspects.ViewModel;
@@ -14,63 +13,44 @@ namespace PluginManager.ViewModel.PluginOverview
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class PluginOverviewViewModel
 	{
-		public delegate void PluginEventHandler( PluginOverviewViewModel pluginOverview, PluginListViewModel pluginList );
+		public delegate void PluginEventHandler( PluginViewModel pluginViewModel, Guid pluginGuid );
 
 		/// <summary>
 		///   Event which is triggered when plug-in being installed.
 		/// </summary>
-		public event PluginEventHandler IntallingPluginEvent;
+		public event PluginEventHandler InstallingPluginEvent;
 
-		[NotifyProperty( Binding.Properties.SelectedConfigurationItem )]
-		public Configuration SelectedConfigurationItem { get; set; }
+		/// <summary>
+		///   Event which is triggered when plug-in being uninstalled.
+		/// </summary>
+		public event PluginEventHandler UninstallingPluginEvent;
 
-		[NotifyProperty( Binding.Properties.VdmState )]
-		public PluginState VdmState { get; set; }
+		/// <summary>
+		///   Event which is triggered when plug-in being updated.
+		/// </summary>
+		public event PluginEventHandler UpdatingPluginEvent;
 
-		[NotifyProperty( Binding.Properties.PersistanceState )]
-		public PluginState PersistanceState { get; set; }
+		[NotifyProperty( Binding.Properties.SelectedPlugin )]
+		public PluginViewModel SelectedPlugin { get; set; }
 
-		[NotifyProperty( Binding.Properties.InterruptionsState )]
-		public PluginState InterruptionsState { get; set; }
+		[NotifyProperty( Binding.Properties.Plugins )]
+		public ObservableCollection<PluginViewModel> Plugins { get; private set; } 
 
-		public Plugin Plugin { get; private set; }
-		public PluginListViewModel VdmList { get; private set; }
-		public PluginListViewModel InterruptionsList { get; private set; }
-		public PluginListViewModel PersistanceList { get; private set; }
-
-
-		public PluginOverviewViewModel( Plugin plugin )
+		public PluginOverviewViewModel( List<PluginManifestPlugin> plugins )
 		{
-			Plugin = plugin;
-			VdmState = VerifyPluginsState( plugin.Vdm );
-			PersistanceState = VerifyPluginsState( plugin.Persistence );
-			InterruptionsState = VerifyPluginsState( plugin.Interruptions );
-
-			// Initialize configurations collections.
-			VdmList = new PluginListViewModel( PluginType.Vdm, plugin.Vdm, this );
-			InterruptionsList = new PluginListViewModel( PluginType.Interruptions, plugin.Interruptions, this );
-			PersistanceList = new PluginListViewModel( PluginType.Persistence, plugin.Persistence, this );
-		}
-
-		PluginState VerifyPluginsState( IEnumerable<Configuration> pluginList )
-		{
-			if ( pluginList.Any( cfg => cfg.State == PluginState.Installed ) )
+			Plugins = new ObservableCollection<PluginViewModel>();
+			plugins.ForEach( plugin =>
 			{
-				return PluginState.Installed;
-			}
-			return PluginState.Availible;
+				var pluginViewModel = new PluginViewModel( plugin );
+				pluginViewModel.IntallingPluginEvent += ( model, abcPlugin ) => InstallingPluginEvent( model, abcPlugin );
+				Plugins.Add( pluginViewModel );
+			} );
 		}
 
-		[CommandExecute( Commands.CreateNewConfiguartion )]
-		public void OpenActivityLibrary()
+		[CommandExecute( Commands.DownloadPlugin )]
+		public void DownloadPlugin()
 		{
-			// TODO: Implement method what will create new vdm configuration.
-			//Process.Start( "notepad.exe", "NewProcessConfiguration.xml" );
-		}
-
-		public void InstallPlugin( PluginListViewModel pluginList )
-		{
-			IntallingPluginEvent( this, pluginList );
+			SelectedPlugin.DownloadAbcPlugins();
 		}
 	}
 }

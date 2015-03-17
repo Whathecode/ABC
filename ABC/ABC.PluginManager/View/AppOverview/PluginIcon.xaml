@@ -11,19 +11,19 @@
 		Width="18"
 		Height="18"
 		CornerRadius="2"
-		BorderBrush="White" 
+		BorderBrush="White"
 		BorderThickness="1">
 		<Border.Background>
 			<Binding ElementName="PluginIconControl" Path="IconBackground1" />
 		</Border.Background>
-		<TextBlock 
+		<TextBlock
 			Text="{Binding IconText, ElementName=PluginIconControl}"
 			VerticalAlignment="Center"
 			HorizontalAlignment="Center"
-			FontSize="14" 
-			Foreground="White" 
-			Height="16" 
-			Margin="4,-2,2,2" 
+			FontSize="14"
+			Foreground="White"
+			Height="16"
+			Margin="4,-2,2,2"
 			Width="10" />
 	</Border>
 </UserControl>
