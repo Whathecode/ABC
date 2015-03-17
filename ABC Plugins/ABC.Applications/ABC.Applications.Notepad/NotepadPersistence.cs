@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using ABC.Applications.Persistence;
 using Whathecode.System.Diagnostics;
-using ABC.Plugins;
 
 
 namespace ABC.Applications.Notepad
@@ -12,8 +12,7 @@ namespace ABC.Applications.Notepad
 	public class NotepadPersistence : AbstractApplicationPersistence
 	{
 		public NotepadPersistence()
-			: base( new PluginInformation("notepad", "Microsoft Corporation", "Steven Jeuris") ) {}
-
+			: base( Assembly.GetExecutingAssembly() ) {}
 
 		public override object Suspend( SuspendInformation toSuspend )
 		{
@@ -38,7 +37,7 @@ namespace ABC.Applications.Notepad
 				return;
 			}
 
-			string filePath = (string)persistedData;
+			var filePath = (string)persistedData;
 
 			ProcessHelper.SetUp( applicationPath, filePath ).Run();
 		}

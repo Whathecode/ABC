@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using ABC.Applications.Persistence;
-using ABC.Plugins;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows;
 
@@ -21,7 +21,7 @@ namespace ABC.Applications.Chrome
 
 
 		public ChromePersistence()
-			: base( new PluginInformation("chrome", "Google", "Steven Jeuris" ) )
+			: base( Assembly.GetExecutingAssembly() )
 		{
 			// Set up communication with the Chrome ABC extension.
 			_channel = new IpcClientChannel();

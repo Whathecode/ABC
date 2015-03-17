@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using ABC.Plugins;
 
 
@@ -9,33 +10,39 @@ namespace ABC.Applications.Persistence
 	/// </summary>
 	public abstract class AbstractApplicationPersistence
 	{
-		protected AbstractApplicationPersistence( PluginInformation info )
+		/// <summary>
+		/// Default constructor.
+		/// </summary>
+		/// <param name="assembly">In order to identify plug-in, AssemblyTargetProcess, GUID, 
+		/// AssemblyVersion have to be included as assembly attributes.</param>
+		protected AbstractApplicationPersistence( Assembly assembly )
 		{
-			Info = info;
+			// TODO: Verify if all assembly info is included.
+			AssemblyInfo = new AssemblyInfo( assembly );
 		}
 
 		/// <summary>
-		///   Plug-in detailed information.
+		/// Provides information about assembly and its requirements.
 		/// </summary>
-		internal PluginInformation Info;
+		public AssemblyInfo AssemblyInfo { get; private set; }
 
 		/// <summary>
 		///   Persists the current state of the application, and then suspends it.
 		/// </summary>
 		/// <param name = "toSuspend">Holds information about the process to suspend.</param>
 		/// <returns>The object which holds the persisted data.</returns>
-		abstract public object Suspend( SuspendInformation toSuspend );
+		public abstract object Suspend( SuspendInformation toSuspend );
 
 		/// <summary>
 		///   Resume an application with the passed persisted state.
 		/// </summary>
 		/// <param name = "applicationPath">The path to the application for which persisted data was stored.</param>
 		/// <param name = "persistedData">The object which holds the persisted data.</param>
-		abstract public void Resume( string applicationPath, object persistedData );
+		public abstract void Resume( string applicationPath, object persistedData );
 
 		/// <summary>
 		///   Returns the type which holds the persisted data, which needs to be serializable.
 		/// </summary>
-		abstract public Type GetPersistedDataType();
+		public abstract Type GetPersistedDataType();
 	}
 }

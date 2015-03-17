@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
@@ -42,22 +43,35 @@ namespace ABC.Applications.Persistence
 			}
 		}
 
+		AbstractApplicationPersistence GetPluginByGuid( Guid guid )
+		{
+			return GetPersistenceProviders()
+				.FirstOrDefault( persistance => persistance.AssemblyInfo.Guid == guid );
+		}
+
+		public Version GetPluginVersion( Guid guid )
+		{
+			var plugin = GetPluginByGuid( guid );
+			return plugin != null ? plugin.AssemblyInfo.Version : null;
+		}
+
+		public bool InstallPugin( Guid guid )
+		{
+			var installablePlugin = GetPluginByGuid( guid ) as IInstallable;
+			return installablePlugin == null || installablePlugin.Install();
+		}
+
+		public bool UninstallPugin( Guid guid )
+		{
+			var installablePlugin = GetPersistenceProviders()
+				.FirstOrDefault( persistance => persistance.AssemblyInfo.Guid == guid ) as IInstallable;
+			return installablePlugin == null || installablePlugin.Unistall();
+		}
+
+
 		protected override List<AbstractApplicationPersistence> GetPersistenceProviders()
 		{
 			return _persistenceProviders;
-		}
-
-		public List<PluginInformation> GetPluginInformation()
-		{
-			var infoCollection = new List<PluginInformation>();
-			GetPersistenceProviders().ForEach( pp => infoCollection.Add( pp.Info ) );
-			return infoCollection;
-		}
-
-		public IInstallable GetInstallablePlugin( string name, string companyName )
-		{
-			return GetPersistenceProviders()
-				.FirstOrDefault( persistance => persistance.Info.ProcessName == name && persistance.Info.CompanyName == companyName ) as IInstallable;
 		}
 	}
 }

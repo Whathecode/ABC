@@ -11,6 +11,12 @@
     <AssemblyName>ABC.Applications.Explorer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>None.None.None.IncrementOnDemand</AssemblyVersionSettings>
+    <AssemblyFileVersionSettings>None.None.None.IncrementOnDemand</AssemblyFileVersionSettings>
+    <AssemblyInfoVersionSettings>None.None.None.IncrementOnDemand</AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="Whathecode.Interop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Libraries\Framework Class Library Extension\Any CPU\Whathecode.Interop.dll</HintPath>
@@ -64,6 +71,10 @@
     <ProjectReference Include="..\..\..\ABC\ABC\ABC.csproj">
       <Project>{d53f1095-6dc0-4950-982f-3322aae74a50}</Project>
       <Name>ABC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ABC.Interruptions\ABC.Interruptions.Google\ABC.Interruptions.Google.csproj">
+      <Project>{FC9B9A49-95BE-4603-B054-E8CE87FD9000}</Project>
+      <Name>ABC.Interruptions.Google</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

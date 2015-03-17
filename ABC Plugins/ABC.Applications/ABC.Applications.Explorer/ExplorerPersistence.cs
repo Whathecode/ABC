@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using ABC.Applications.Persistence;
 using ABC.Plugins;
@@ -25,8 +26,7 @@ namespace ABC.Applications.Explorer
 	public class ExplorerPersistence : AbstractApplicationPersistence, IInstallable
 	{
 		public ExplorerPersistence()
-			: base( new PluginInformation("explorer", "Microsoft Corporation", "Steven Jeuris") ) {}
-
+			: base( Assembly.GetExecutingAssembly() ) {}
 
 		public override object Suspend( SuspendInformation toSuspend )
 		{
@@ -98,14 +98,14 @@ namespace ABC.Applications.Explorer
 		public bool Install()
 		{
 			// Nothing to do install.
-			Console.WriteLine("Installing explorer plug-in");
+			Console.WriteLine( "Installing explorer plug-in" );
 			return true;
 		}
 
 		public bool Unistall()
 		{
 			// Nothing to do uninstall.
-			Console.WriteLine("Uninstalling explorer plug-in");
+			Console.WriteLine( "Uninstalling explorer plug-in" );
 			return true;
 		}
 	}
