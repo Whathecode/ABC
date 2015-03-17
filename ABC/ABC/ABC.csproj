@@ -69,12 +69,13 @@
     <Compile Include="Interruptions\AbstractInterruptionTrigger.cs" />
     <Compile Include="Interruptions\AbstractIntervalInterruptionTrigger.cs" />
     <Compile Include="Interruptions\InterruptionAggregator.cs" />
+    <Compile Include="Plugins\AssemblyInfo.cs" />
     <Compile Include="Plugins\CompositionHelper.cs" />
     <Compile Include="Plugins\IInstallable.cs" />
     <Compile Include="Plugins\IInstallablePluginContainer.cs" />
     <Compile Include="Plugins\PluginException.cs" />
     <Compile Include="Plugins\PluginHelper.cs" />
-    <Compile Include="Plugins\PluginInformation.cs" />
+    <Compile Include="Plugins\AssemblyTargetProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Workspaces\AbstractWorkspace.cs" />
@@ -120,7 +121,9 @@
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\spotifyhelper.xml" />
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\tortoisegit.xml" />
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\visual_studio_2012.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_7.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_7.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_photo_viewer.xml" />
   </ItemGroup>
   <ItemGroup>

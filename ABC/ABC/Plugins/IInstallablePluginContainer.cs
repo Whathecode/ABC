@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 
 namespace ABC.Plugins
@@ -11,17 +11,24 @@ namespace ABC.Plugins
 		void Reload();
 
 		/// <summary>
-		/// Searches plug-ins by name and company name (for now this two parameters are plug-ins identifiers).  
+		/// Run the install procedure on given plug-in.  
 		/// </summary>
-		/// <param name="processName">Process name connected to plug-in.</param>
-		/// <param name="companyName">Company name connected to application, process.</param>
-		/// <returns>Plug-in which implements Installable interface.</returns>
-		IInstallable GetInstallablePlugin( string processName, string companyName );
+		/// <param name="guid">Plug-in identifier.</param>
+		/// <returns>True if installing went successfully or is not needed, otherwise false.</returns>
+		bool InstallPugin( Guid guid );
 
 		/// <summary>
-		/// Gets all information about plug-ins which are installed.
+		/// Run the uninstall procedure on given plug-in.  
 		/// </summary>
-		/// <returns>List of plug-ins information.</returns>
-		List<PluginInformation> GetPluginInformation();
+		/// <param name="guid">Plug-in identifier.</param>
+		/// <returns>True if uninstalling went successfully or is not needed, otherwise false.</returns>
+		bool UninstallPugin( Guid guid );
+
+		/// <summary>
+		/// Gives a version of plug-in.  
+		/// </summary>
+		/// <param name="guid">Plug-in identifier.</param>
+		/// <returns>Version if plug-in is found, otherwise null.</returns>
+		Version GetPluginVersion( Guid guid );
 	}
 }
