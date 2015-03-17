@@ -6,20 +6,6 @@
       <body>Client</body>
     </comment>
   </ownedCommentsInternal>
-  <profileInstances>
-    <packageHasProfileInstances Id="20abdc84-b81d-4bc3-aea9-1e9dcc9b3ca2">
-      <profileInstance Id="7f93c480-3d02-4531-b05b-53d526bada31" name="StandardProfileL2">
-        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
-      </profileInstance>
-      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
-    </packageHasProfileInstances>
-    <packageHasProfileInstances Id="4cad9af1-714d-4076-b6f0-0de76f0954e8">
-      <profileInstance Id="4a37f224-a12b-4884-a948-f5f1d601351d" name="StandardProfileL3">
-        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
-      </profileInstance>
-      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
-    </packageHasProfileInstances>
-  </profileInstances>
   <packagedElements>
     <logicalClassDesignerModelHasTypes>
       <class Id="f158bf15-04f3-4dbf-8644-24952e62aaac" name="Application" isAbstract="false" isLeaf="false" isActiveClass="false">
@@ -304,5 +290,19 @@
   </packagedElements>
   <package Id="4741f87f-dbd1-43cc-8186-9e50d1c66e0a" name="ABC.Modeling">
     <elementDefinition Id="78705546-8d91-4a48-ab33-c77645314af8" />
+    <profileInstances>
+      <packageHasProfileInstances Id="20abdc84-b81d-4bc3-aea9-1e9dcc9b3ca2">
+        <profileInstance Id="7f93c480-3d02-4531-b05b-53d526bada31" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="4cad9af1-714d-4076-b6f0-0de76f0954e8">
+        <profileInstance Id="4a37f224-a12b-4884-a948-f5f1d601351d" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
   </package>
 </logicalClassDesignerModel>
