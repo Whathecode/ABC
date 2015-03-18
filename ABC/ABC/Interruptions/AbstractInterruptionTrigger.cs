@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ABC.Plugins;
 
 
@@ -12,14 +13,12 @@ namespace ABC.Interruptions
 	{
 		public event Action<AbstractInterruption> InterruptionReceived = delegate { };
 
-		protected AbstractInterruptionTrigger() { }
-
-		protected AbstractInterruptionTrigger( PluginInformation info )
+		protected AbstractInterruptionTrigger( Assembly assembly )
 		{
-			Info = info;
+			AssemblyInfo = new AssemblyInfo( assembly );
 		}
-		
-		internal PluginInformation Info { get; private set; }
+
+		public AssemblyInfo AssemblyInfo { get;  private set; }
 
 		protected void TriggerInterruption( AbstractInterruption interruption )
 		{

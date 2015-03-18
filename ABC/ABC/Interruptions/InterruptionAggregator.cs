@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using ABC.Plugins;
@@ -11,17 +12,20 @@ using ABC.Plugins;
 namespace ABC.Interruptions
 {
 	/// <summary>
-	///   Aggregates interruptions raised by externally loaded plugins.
+	///   Aggregates interruptions raised by externally loaded plug-ins.
 	/// </summary>
 	public class InterruptionAggregator : AbstractInterruptionTrigger, IInstallablePluginContainer
 	{
 		CompositionContainer _pluginContainer;
 		readonly string _pluginFolderPath;
+
 		[ImportMany]
-		readonly List<AbstractInterruptionTrigger> _interruptionTriggers = new List<AbstractInterruptionTrigger>();
+		readonly List<AbstractInterruptionTrigger> _interruptionTriggers =
+			new List<AbstractInterruptionTrigger>();
 
 
 		public InterruptionAggregator( string pluginFolderPath )
+			: base( Assembly.GetExecutingAssembly() )
 		{
 			_pluginFolderPath = pluginFolderPath;
 			Reload();
@@ -67,17 +71,29 @@ namespace ABC.Interruptions
 				.ToList();
 		}
 
-		public List<PluginInformation> GetPluginInformation()
-		{
-			var infos = new List<PluginInformation>();
-			_interruptionTriggers.ForEach( it => infos.Add( it.Info ) );
-			return infos;
-		}
-
-		public IInstallable GetInstallablePlugin( string name, string companyName )
+		AbstractInterruptionTrigger GetPluginByGuid( Guid guid )
 		{
 			return _interruptionTriggers
-				.FirstOrDefault( interruption => interruption.Info.ProcessName == name && interruption.Info.CompanyName == companyName ) as IInstallable;
+				.FirstOrDefault( interruption => interruption.AssemblyInfo.Guid == guid );
+		}
+
+		public Version GetPluginVersion( Guid guid )
+		{
+			var plugin = GetPluginByGuid( guid );
+			return plugin != null ? plugin.AssemblyInfo.Version : null;
+		}
+
+		public bool InstallPugin( Guid guid )
+		{
+			var installablePlugin = GetPluginByGuid( guid ) as IInstallable;
+			return installablePlugin == null || installablePlugin.Install();
+		}
+
+
+		public bool UninstallPugin( Guid guid )
+		{
+			var installablePlugin = GetPluginByGuid( guid ) as IInstallable;
+			return installablePlugin == null || installablePlugin.Unistall();
 		}
 	}
 }

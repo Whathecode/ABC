@@ -1,5 +1,5 @@
 ﻿using System;
-using ABC.Plugins;
+using System.Reflection;
 
 
 namespace ABC.Interruptions
@@ -13,8 +13,8 @@ namespace ABC.Interruptions
 		DateTime? _lastUpdate;
 
 
-		protected AbstractIntervalInterruptionTrigger( TimeSpan interval, PluginInformation info )
-			: base( info )
+		protected AbstractIntervalInterruptionTrigger( TimeSpan interval, Assembly assembly )
+			: base( assembly )
 		{
 			_interval = interval;
 		}

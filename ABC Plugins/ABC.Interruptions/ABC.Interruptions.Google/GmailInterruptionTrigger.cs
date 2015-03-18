@@ -12,7 +12,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Threading;
 using System.Xml;
-using ABC.Plugins;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Threading;
 
@@ -36,7 +35,7 @@ namespace ABC.Interruptions.Google
 
 
 		public GmailInterruptionTrigger()
-			: base( TimeSpan.FromMinutes( 1 ), new PluginInformation("Gmail", "Google", "Steven Jeuris") )
+			: base( TimeSpan.FromMinutes( 1 ), Assembly.GetExecutingAssembly() )
 		{
 			_dispatcher = Dispatcher.CurrentDispatcher;
 
