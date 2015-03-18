@@ -5,7 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Generated.ProcessBehaviors;
+using ABC.Plugins;
+using ABC.Workspaces.Windows.Settings.ProcessBehavior;
 using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
 using Whathecode.System.Windows;
@@ -32,7 +33,7 @@ namespace ABC.Workspaces.Windows.Settings
 	///   You should have received a copy of the GNU General Public License
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
-	public class LoadedSettings : ISettings
+	public class LoadedSettings : ISettings, IInstallablePluginContainer
 	{
 		const string SettingsFiles = "ABC.Workspaces.Windows.Settings.ProcessBehavior";
 		public ProcessBehaviors Settings { get; private set; }
@@ -40,7 +41,7 @@ namespace ABC.Workspaces.Windows.Settings
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
 		readonly Func<Window, bool> _windowManagerFilter;
 		readonly bool _ignoreRequireElevatedPrivileges;
-
+		readonly string _pluginsDirectory;
 
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
@@ -48,7 +49,8 @@ namespace ABC.Workspaces.Windows.Settings
 		/// <param name = "ignoreRequireElevatedPrivileges">Setting to determine whether windows with higher privileges than the running application should be ignored or not.</param>
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
-		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null )
+		/// <param name = "pluginsDirectoty">Path to configurations directory (they can be loaded externally or by specifying this parameter).</param>
+		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null, string pluginsDirectoty = null )
 		{
 			_ignoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
 
@@ -82,6 +84,10 @@ namespace ABC.Workspaces.Windows.Settings
 			{
 				_windowManagerFilter = customWindowFilter;
 			}
+
+			_pluginsDirectory = pluginsDirectoty;
+			if ( _pluginsDirectory != null )
+				Reload();
 		}
 
 		public bool IgnoreRequireElevatedPrivileges
@@ -89,12 +95,11 @@ namespace ABC.Workspaces.Windows.Settings
 			get { return _ignoreRequireElevatedPrivileges; }
 		}
 
-
 		public void AddSettingsFile( Stream stream )
 		{
 			using ( var xmlStream = new StreamReader( stream ) )
 			{
-				AddBehaviors( ProcessBehaviors.Deserialize( xmlStream.ReadToEnd() ) );
+				AddBehaviors( ProcessBehaviors.Deserialize( xmlStream.BaseStream ) );
 			}
 		}
 
@@ -107,23 +112,29 @@ namespace ABC.Workspaces.Windows.Settings
 			}
 
 			// Add new common behaviors.
-			foreach ( var newCommon in newBehaviors.CommonIgnoreWindows.Window )
+			if ( newBehaviors.CommonIgnoreWindows != null )
 			{
-				if ( Settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( newCommon ) ) == null )
-				{
-					Settings.CommonIgnoreWindows.Window.Add( newCommon );
-				}
+				var ignoreWindowsList = newBehaviors.CommonIgnoreWindows.Window.ToList();
+				ignoreWindowsList.AddRange( newBehaviors.CommonIgnoreWindows.Window
+					.Where( newCommon => Settings.CommonIgnoreWindows.Window
+						.FirstOrDefault( i => i.Equals( newCommon ) ) == null ) );
+				
+				newBehaviors.CommonIgnoreWindows = new WindowList { Window = ignoreWindowsList.ToArray() };
 			}
+
 
 			// Add new or overwrite existing process behaviors.
 			foreach ( var newProcess in newBehaviors.Process )
 			{
 				var same = Settings.Process.FirstOrDefault( p => newProcess.Equals( p ) );
+				var processList = Settings.Process.ToList();
+
 				if ( same != null )
 				{
-					Settings.Process.Remove( same );
+					processList.Remove( same );
 				}
-				Settings.Process.Add( newProcess );
+				processList.Add( newProcess );
+				Settings.Process = processList.ToArray();
 			}
 		}
 
@@ -145,7 +156,7 @@ namespace ABC.Workspaces.Windows.Settings
 				}
 
 				// Process specific settings.
-				Generated.ProcessBehaviors.Window listedWindow = process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) );
+				ProcessBehavior.Window listedWindow = process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) );
 				return process.IgnoreWindows.Mode == ProcessBehaviorsProcessIgnoreWindowsMode.NoneExcept
 					? listedWindow == null
 					: listedWindow != null;
@@ -161,13 +172,13 @@ namespace ABC.Workspaces.Windows.Settings
 
 				// Ensure at least a default setting is included.
 				var hideBehaviors = new List<object>();
-				if ( process == null || process.HideBehavior.Items.Count == 0 )
+				if ( process == null || process.HideBehavior.Items.Length == 0 )
 				{
 					hideBehaviors.Add( new ProcessBehaviorsProcessHideBehaviorDefault { Hide = ProcessBehaviorsProcessHideBehaviorDefaultHide.AllProcessWindows } );
 				}
 				else
 				{
-					hideBehaviors = process.HideBehavior.Items;
+					hideBehaviors = process.HideBehavior.Items.ToList();
 				}
 
 				// Go through all specified cut behaviors in order.
@@ -182,6 +193,7 @@ namespace ABC.Workspaces.Windows.Settings
 
 		readonly List<WindowInfo> _accessDeniedWindows = new List<WindowInfo>();
 		readonly Dictionary<WindowInfo, ProcessBehaviorsProcess> _windowProcessBehaviors = new Dictionary<WindowInfo, ProcessBehaviorsProcess>();
+
 		ProcessBehaviorsProcess GetProcessSettings( WindowInfo window )
 		{
 			// See whether settings are cached.
@@ -202,14 +214,14 @@ namespace ABC.Workspaces.Windows.Settings
 
 			// Get settings.
 			Process process = window.GetProcess();
-			
+
 			try
 			{
 				FileVersionInfo versionInfo = process.MainModule.FileVersionInfo;
 
 				var matches = Settings.Process.Where( p =>
-					p.Name == process.ProcessName &&
-					( p.Version == null || versionInfo.FileVersion.StartsWith( p.Version ) ) ).ToList();
+					p.TargetProcessName == process.ProcessName &&
+					( p.TargerProcessVersion == null || versionInfo.FileVersion.StartsWith( p.TargerProcessVersion ) ) ).ToList();
 
 				ProcessBehaviorsProcess processBehavior = matches.Count == 0
 					? _handleProcess
@@ -223,6 +235,45 @@ namespace ABC.Workspaces.Windows.Settings
 				_accessDeniedWindows.Add( window );
 				return _dontHandleProcess;
 			}
+		}
+
+		public void Reload()
+		{
+			var plugins = Directory.EnumerateFiles( _pluginsDirectory, "*.xml" );
+			foreach ( var plugin in plugins )
+			{
+				try
+				{
+					using ( var stream = new FileStream( plugin, FileMode.Open ) )
+					{
+						AddSettingsFile( stream );
+					}
+				}
+				catch ( InvalidOperationException ) {}
+			}
+		}
+
+		public bool InstallPugin( Guid guid )
+		{
+			// nothing to do right now;
+			return true;
+		}
+
+		public bool UninstallPugin( Guid guid )
+		{
+			// nothing to do right now;
+			return true;
+		}
+
+		public Version GetPluginVersion( Guid guid )
+		{
+			var plugin = GetProcessBehaviorsProcess( guid );
+			return plugin != null ? new Version( plugin.Version ) : null;
+		}
+
+		ProcessBehaviorsProcess GetProcessBehaviorsProcess( Guid guid )
+		{
+			return Settings.Process.FirstOrDefault( process => new Guid( process.Guid ) == guid );
 		}
 	}
 }

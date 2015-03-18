@@ -1,19 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using ABC.Workspaces.Windows;
+using System.Xml.Serialization;
 using Whathecode.System.Windows;
 
 
-// TODO: Generating ProcessBehaviors with the correct namespace causes problems.
-// ReSharper disable once CheckNamespace
-namespace Generated.ProcessBehaviors
+namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 {
+	public partial class ProcessBehaviors
+	{
+		public ProcessBehaviors()
+		{
+			CommonIgnoreWindows = new WindowList { Window = new Window[0] };
+		}
+
+		static XmlSerializer _serializer;
+
+		static XmlSerializer Serializer
+		{
+			get
+			{
+				if ( ( _serializer == null ) )
+				{
+					_serializer = new XmlSerializerFactory().CreateSerializer( typeof( ProcessBehaviors ) );
+				}
+				return _serializer;
+			}
+		}
+
+		public static ProcessBehaviors Deserialize( Stream s )
+		{
+			return ( (ProcessBehaviors)( Serializer.Deserialize( s ) ) );
+		}
+	}
+
 	public partial class ProcessBehaviorsProcess
 	{
-		bool _shouldHandleProcess = true;
+		public ProcessBehaviorsProcess()
+		{
+			IgnoreWindows = new ProcessBehaviorsProcessIgnoreWindows { Window = new Window[0] };
+			HideBehavior = new ProcessBehaviorsProcessHideBehavior { Items = new object[0] };
+		}
 
+		bool _shouldHandleProcess = true;
 
 		public static ProcessBehaviorsProcess CreateDontHandleProcess()
 		{
@@ -34,20 +65,18 @@ namespace Generated.ProcessBehaviors
 		public bool Equals( ProcessBehaviorsProcess other )
 		{
 			return
-				string.Equals( Name, other.Name ) &&
-				string.Equals( CompanyName, other.CompanyName ) &&
-				string.Equals( Version, other.Version ) &&
-				string.Equals( Author, other.Author );
+				String.Equals( TargetProcessName, other.TargetProcessName ) &&
+				String.Equals( TargetProcessCompanyName, other.TargetProcessCompanyName ) &&
+				String.Equals( TargerProcessVersion, other.TargerProcessVersion );
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				int hashCode = (Name != null ? Name.GetHashCode() : 0);
-				hashCode = (hashCode * 397) ^ (CompanyName != null ? CompanyName.GetHashCode() : 0);
-				hashCode = (hashCode * 397) ^ (Version != null ? Version.GetHashCode() : 0);
-				hashCode = (hashCode * 397) ^ (Author != null ? Author.GetHashCode() : 0);
+				int hashCode = ( TargetProcessName != null ? TargetProcessName.GetHashCode() : 0 );
+				hashCode = ( hashCode * 397 ) ^ ( TargetProcessCompanyName != null ? TargetProcessCompanyName.GetHashCode() : 0 );
+				hashCode = ( hashCode * 397 ) ^ ( TargerProcessVersion != null ? TargerProcessVersion.GetHashCode() : 0 );
 				return hashCode;
 			}
 		}
@@ -107,25 +136,25 @@ namespace Generated.ProcessBehaviors
 			switch ( Hide )
 			{
 				case ProcessBehaviorsProcessHideBehaviorDefaultHide.SelectedWindow:
-					{
-						windows.Add( windowInfo );
-						break;
-					}
+				{
+					windows.Add( windowInfo );
+					break;
+				}
 				case ProcessBehaviorsProcessHideBehaviorDefaultHide.AllProcessWindows:
-					{
-						var searchWindows = CutHelper.WindowsToSearchIn( desktopManager, ConsiderWindows );
+				{
+					var searchWindows = CutHelper.WindowsToSearchIn( desktopManager, ConsiderWindows );
 
-						var processWindows = searchWindows.Where( w =>
-						{
-							Process cutProcess = windowInfo.GetProcess();
-							Process otherProcess = w.GetProcess();
-							return
-								cutProcess != null && otherProcess != null &&
+					var processWindows = searchWindows.Where( w =>
+					{
+						Process cutProcess = windowInfo.GetProcess();
+						Process otherProcess = w.GetProcess();
+						return
+							cutProcess != null && otherProcess != null &&
 							cutProcess.Id == otherProcess.Id;
-						} );
-						windows.AddRange( processWindows );
-						break;
-					}
+					} );
+					windows.AddRange( processWindows );
+					break;
+				}
 			}
 
 			return windows;

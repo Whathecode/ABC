@@ -9,6 +9,17 @@
   xmlns:pb="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
   xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <!-- Custom GUID type since it is not available in XSD definition. -->
+  <xs:simpleType name="guid">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        The representation of a GUID, generally the id of an element.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <!-- Type which can uniquely identify one particular window of a process. -->
   <xs:complexType name="Window">
@@ -110,10 +121,11 @@
                 </xs:element>
               </xs:sequence>
 
-              <xs:attribute name="Name" type="xs:string" use="required" />
-              <xs:attribute name="CompanyName" type="xs:string" />
-              <xs:attribute name="Version" type="xs:string" />
-              <xs:attribute name="Author" type="xs:string" />
+              <xs:attribute name="TargetProcessName" type="xs:string" use="required" />
+              <xs:attribute name="TargetProcessCompanyName" type="xs:string" use="required"/>
+              <xs:attribute name="TargerProcessVersion" type="xs:string"/>
+              <xs:attribute name="Guid" type="guid" use="required" />
+              <xs:attribute name="Version" type="xs:string" use="required" />
 
             </xs:complexType>
 
@@ -125,15 +137,9 @@
 
     <xs:unique name="UniqueProcess">
       <xs:selector xpath="pb:Process" />
-      <xs:field xpath="@Name" />
-      <xs:field xpath="@CompanyName" />
-      <xs:field xpath="@Version" />
-    </xs:unique>
-
-    <xs:unique name="UniqueNameVendor">
-      <xs:selector xpath="pb:Process" />
-      <xs:field xpath="@Name" />
-      <xs:field xpath="@CompanyName" />
+      <xs:field xpath="@TargetProcessName" />
+      <xs:field xpath="@TargetProcessCompanyName" />
+      <xs:field xpath="@TargerProcessVersion" />
     </xs:unique>
 
   </xs:element>

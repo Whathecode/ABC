@@ -1,18 +1,29 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <ProcessBehaviors
   xmlns="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://whatodo.at/whathecode/vdm-api ProcessBehaviors.xsd">
 
   <!-- Asus function key visualizations. -->
-  <Process Name="ATKOSD2" CompanyName="ASUSTek Computer Inc.">
+  <Process
+    Guid="{36E268EB-1CAB-403A-9080-B45355C71416}"
+    Version="1.0"
+    TargerProcessVersion="1.0"
+    TargetProcessName="ATKOSD2"
+    TargetProcessCompanyName="ASUSTek Computer Inc.">
     <IgnoreWindows>
       <Window ClassName="CNewOsd" />
     </IgnoreWindows>
   </Process>
 
   <!-- Asus Splendid Video Enhancement Technology. Window is never shown. -->
-  <Process Name="ACMON" CompanyName="ASUS" Author="Steven Jeuris" Version="3.0, 2.0">
+  <Process
+    Guid="{4C5280C2-9933-4AAF-AEA4-633D20381137}"
+    Version="1.0"
+    TargetProcessName="ACMON"
+    TargetProcessCompanyName="ASUS"
+    TargerProcessVersion="1.0">
     <IgnoreWindows>
       <Window ClassName="ACMON" />
     </IgnoreWindows>
