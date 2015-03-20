@@ -16,9 +16,12 @@ namespace PluginManager.PluginManagment
 		/// </summary>
 		public event PluginDownloadedEventHandler PluginDownloadedEvent;
 
-		const string DownloadPath = @"http:/members.upcpoczta.pl/z.grondziowska/Plugins/";
+		const string DownloadPath = @"http://members.upcpoczta.pl/z.grondziowska/plugins/";
 		readonly string _pluginDownloadPath;
 		readonly string _pluginSavePath;
+		const string PluginExtention = ".plugin";
+		const string PluginDllExtention = ".dll";
+		const string PluginXmlExtention = ".xml";
 
 		readonly WebClient _webClient;
 
@@ -27,13 +30,20 @@ namespace PluginManager.PluginManagment
 			_webClient = new WebClient();
 			_webClient.DownloadFileCompleted += ( sender, args ) => PluginDownloadedEvent( abcPluginGuid, args );
 
-			_pluginDownloadPath = DownloadPath + abcPluginGuid;
+			_pluginDownloadPath = DownloadPath + abcPluginGuid + PluginExtention;
 
-			_pluginSavePath = Path.Combine( abcPluginType == PluginType.Interruption
-				? App.InterruptionsPluginLibrary
-				: abcPluginType == PluginType.Persistence
-					? App.PersistencePluginLibrary
-					: App.VdmPluginLibrary, abcPluginGuid.ToString() );
+			switch ( abcPluginType )
+			{
+				case PluginType.Persistence:
+					_pluginSavePath = Path.Combine( App.PersistencePluginLibrary, abcPluginGuid.ToString() ) + PluginDllExtention;
+					break;
+				case PluginType.Interruption:
+					_pluginSavePath = Path.Combine( App.InterruptionsPluginLibrary, abcPluginGuid.ToString() ) + PluginDllExtention;
+					break;
+				case PluginType.Vdm:
+					_pluginSavePath = Path.Combine( App.VdmPluginLibrary, abcPluginGuid.ToString() ) + PluginXmlExtention;
+					break;
+			}
 		}
 
 		public void DownloadAsync()

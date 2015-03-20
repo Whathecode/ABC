@@ -136,7 +136,7 @@ namespace PluginManager
 			var container = GetContainer( pluginViewModel.PluginType );
 			if (container == null)
 				return;
-			container.InstallPlugin( pluginViewModel.Guid );
+			container.InstallPlugin( abcPluginGuid );
 		}
 	}
 }

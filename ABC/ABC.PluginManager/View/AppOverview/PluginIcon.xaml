@@ -14,7 +14,7 @@
 		BorderBrush="White"
 		BorderThickness="1">
 		<Border.Background>
-			<Binding ElementName="PluginIconControl" Path="IconBackground1" />
+			<Binding ElementName="PluginIconControl" Path="IconBackground" />
 		</Border.Background>
 		<TextBlock
 			Text="{Binding IconText, ElementName=PluginIconControl}"

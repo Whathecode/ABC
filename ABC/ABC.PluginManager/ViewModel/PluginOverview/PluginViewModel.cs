@@ -20,8 +20,6 @@ namespace PluginManager.ViewModel.PluginOverview
 		/// </summary>
 		public event PluginEventHandler IntallingPluginEvent;
 
-		public Guid Guid { get; private set; }
-
 		[NotifyProperty( PluginProperties.Author )]
 		public string Author { get; private set; }
 
@@ -43,7 +41,6 @@ namespace PluginManager.ViewModel.PluginOverview
 
 		public PluginViewModel( PluginManifestPlugin plugin )
 		{
-			Guid = plugin.Guid;
 			Author = plugin.Author;
 			Description = plugin.Description;
 			Version = new Version( plugin.Version );
@@ -59,10 +56,11 @@ namespace PluginManager.ViewModel.PluginOverview
 		{
 			_plugin.AbcPlugins.ForEach( abcplugin =>
 			{
-				var downloader = new PluginDownloader( Guid, PluginType );
+				var guid = new Guid( abcplugin.Guid );
+				var downloader = new PluginDownloader( guid, PluginType );
 
 				// TODO: Send event to install plug-in. 
-				downloader.PluginDownloadedEvent += ( plugin, args ) => IntallingPluginEvent( this, new Guid( abcplugin.Guid ) );
+				downloader.PluginDownloadedEvent += ( plugin, args ) => IntallingPluginEvent( this, guid );
 				downloader.DownloadAsync();
 			} );
 		}

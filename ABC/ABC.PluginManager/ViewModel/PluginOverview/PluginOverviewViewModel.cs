@@ -13,7 +13,7 @@ namespace PluginManager.ViewModel.PluginOverview
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class PluginOverviewViewModel
 	{
-		public delegate void PluginEventHandler( PluginViewModel pluginViewModel, Guid pluginGuid );
+		public delegate void PluginEventHandler( PluginViewModel pluginViewModel, Guid abcPluginGuid );
 
 		/// <summary>
 		///   Event which is triggered when plug-in being installed.
@@ -42,7 +42,7 @@ namespace PluginManager.ViewModel.PluginOverview
 			plugins.ForEach( plugin =>
 			{
 				var pluginViewModel = new PluginViewModel( plugin );
-				pluginViewModel.IntallingPluginEvent += ( model, abcPlugin ) => InstallingPluginEvent( model, abcPlugin );
+				pluginViewModel.IntallingPluginEvent += ( viewModel, abcPluginGuid ) => InstallingPluginEvent( viewModel, abcPluginGuid );
 				Plugins.Add( pluginViewModel );
 			} );
 		}

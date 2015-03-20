@@ -68,7 +68,7 @@
 					<StackPanel>
 						<StackPanel.Resources>
 							<Style TargetType="local:PluginIcon">
-								<Setter Property="IconBackground1" Value="{Binding Source={x:Static local:PluginIcon.AvailableColorBrush}}" />
+								<Setter Property="IconBackground" Value="DeepSkyBlue" />
 							</Style>
 						</StackPanel.Resources>
 
@@ -166,24 +166,27 @@
 									VerticalAlignment="Bottom"
 									HorizontalAlignment="Right">
 
+									<StackPanel.Resources>
+										<Style TargetType="local:PluginIcon">
+											<Setter Property="IconBackground" Value="DeepSkyBlue" />
+										</Style>
+									</StackPanel.Resources>
+
 									<local:PluginIcon
 										Visibility="{Binding AnyVdm,
 										Converter={converters:FromBooleanConverter IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-										IconText="V"
-										IconBackground1="DeepSkyBlue" />
+										IconText="V"/>
 
 									<local:PluginIcon
 										Visibility="{Binding AnyPersistence,
 										Converter={converters:FromBooleanConverter IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-										IconText="P"
-										IconBackground1="DeepSkyBlue" />
+										IconText="P"/>
 
 									<local:PluginIcon
 										Visibility="{Binding AnyInterruption,
 										Converter={converters:FromBooleanConverter IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-										IconText="I"
-										IconBackground1="DeepSkyBlue" />
-
+										IconText="I"/>
+									
 								</StackPanel>
 							</Grid>
 
