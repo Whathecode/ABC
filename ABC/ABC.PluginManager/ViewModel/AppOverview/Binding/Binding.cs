@@ -3,15 +3,28 @@
 	public enum Properties
 	{
 		SelectedApplication,
-		Applications,
 		CurrentPlugins,
 		Filters,
-		SelectedFilter
+		SelectedFilter,
+		ApplicationPlugins
 	}
 
 	public enum Commands
 	{
-		//SwitchOverviewState
 		SelectApplication
+	}
+
+	public enum ApplicationProperties
+	{
+		Name,
+		Author,
+		Icon,
+		AnyVdm,
+		AnyInterruption,
+		AnyPersistence
+	}
+
+	public enum ApplicationCommands
+	{
 	}
 }

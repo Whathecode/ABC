@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Windows.Input;
 using PluginManager.Common;
@@ -8,6 +8,7 @@ using PluginManager.Model;
 using PluginManager.ViewModel.AppOverview.Binding;
 using PluginManager.ViewModel.PluginOverview;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
+using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Aspects.ViewModel;
 using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 
@@ -24,11 +25,8 @@ namespace PluginManager.ViewModel.AppOverview
 		//</summary>
 		public event PluginOverviewEventHandler InstallingPluginEvent;
 
-		[NotifyProperty( Binding.Properties.Applications )]
-		public ObservableCollection<Application> Applications { get; set; }
-
 		[NotifyProperty( Binding.Properties.SelectedApplication )]
-		public Application SelectedApplication { get; set; }
+		public ApplicationViewModel SelectedApplication { get; set; }
 
 		[NotifyProperty( Binding.Properties.Filters )]
 		public List<string> Filters { get; private set; }
@@ -38,6 +36,9 @@ namespace PluginManager.ViewModel.AppOverview
 
 		[NotifyProperty( Binding.Properties.CurrentPlugins )]
 		public PluginOverviewViewModel CurrentPlugins { get; private set; }
+
+		[NotifyProperty( Binding.Properties.ApplicationPlugins )]
+		public ObservableConcurrentDictionary<ApplicationViewModel, List<PluginManifestPlugin>> ApplicationPlugins { get; set; }
 
 		[NotifyPropertyChanged( Binding.Properties.SelectedFilter )]
 		public void OnSelectedFilterChanged( string oldFilter, string newFilter )
@@ -54,12 +55,11 @@ namespace PluginManager.ViewModel.AppOverview
 		}
 
 		readonly PluginManifest _pluginManifest;
-		readonly Dictionary<Application, List<PluginManifestPlugin>> _applicationPlugins;
+
 
 		public AppOverviewViewModel( PluginManifest pluginManifest )
 		{
-			Applications = new ObservableCollection<Application>();
-			_applicationPlugins = new Dictionary<Application, List<PluginManifestPlugin>>();
+			ApplicationPlugins = new ObservableConcurrentDictionary<ApplicationViewModel, List<PluginManifestPlugin>>();
 			_pluginManifest = pluginManifest;
 
 			Filters = Enum.GetNames( typeof( PluginState ) ).ToList();
@@ -75,34 +75,38 @@ namespace PluginManager.ViewModel.AppOverview
 			// Set the filter and show applications + plug-ins.
 			SelectedFilter = Filters.First();
 
-			CurrentPlugins.InstallingPluginEvent += ( model, guid ) => InstallingPluginEvent( model, guid );
-
 			Mouse.OverrideCursor = Cursors.Arrow;
 		}
 
 		// If state is not provided no filter is used.
 		void FilterApps( PluginState state = 0 )
 		{
-			var availableApps = _pluginManifest.Application.Where( application => _pluginManifest.HasAnyPluginByState( new Guid( application.Guid ), state ) ).ToList();
+			ApplicationPlugins = new ObservableConcurrentDictionary<ApplicationViewModel, List<PluginManifestPlugin>>();
+			CurrentPlugins = null;
 
-			Applications.Clear();
-			_applicationPlugins.Clear();
-			availableApps.ForEach( manifestApplication =>
+			_pluginManifest.Application.ForEach( manifestApplication =>
 			{
 				var appPlugins = _pluginManifest.GivePlugins( new Guid( manifestApplication.Guid ), state ).ToList();
-				var application = new Application( manifestApplication, appPlugins );
-				Applications.Add( application );
-				_applicationPlugins.Add( application, appPlugins );
+				var application = new ApplicationViewModel( manifestApplication, appPlugins );
+				ApplicationPlugins.Add( application, appPlugins );
 			} );
-			
-			SelectedApplication = Applications.First();
-			CurrentPlugins = new PluginOverviewViewModel( _applicationPlugins[ SelectedApplication ] );
+
+			// Delete all applications that contain no plug-ins.
+			ApplicationPlugins.Where( applicationPlugin => applicationPlugin.Value.Count == 0 )
+				.ForEach( toRemove => ApplicationPlugins.Remove( toRemove.Key ) );
+
+			if ( ApplicationPlugins.Any() )
+			{
+				SelectedApplication = ApplicationPlugins.First().Key;
+				CurrentPlugins = new PluginOverviewViewModel( ApplicationPlugins.First().Value );
+				CurrentPlugins.InstallingPluginEvent += ( model, guid ) => InstallingPluginEvent( model, guid );
+			}
 		}
 
 		[CommandExecute( Commands.SelectApplication )]
 		public void SelectApplication()
 		{
-			CurrentPlugins = new PluginOverviewViewModel( _applicationPlugins[ SelectedApplication ].ToList() );
+			CurrentPlugins = new PluginOverviewViewModel( ApplicationPlugins[ SelectedApplication ].ToList() );
 		}
 	}
 }
