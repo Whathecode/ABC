@@ -76,6 +76,7 @@
     <Compile Include="Plugins\PluginException.cs" />
     <Compile Include="Plugins\PluginHelper.cs" />
     <Compile Include="Plugins\AssemblyTargetProcess.cs" />
+    <Compile Include="Plugins\PluginWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Workspaces\AbstractWorkspace.cs" />
@@ -120,8 +121,8 @@
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\skype.xml" />
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\spotifyhelper.xml" />
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\tortoisegit.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\visual_studio_2012.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_7.xml">
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\visual_studio.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_photo_viewer.xml" />

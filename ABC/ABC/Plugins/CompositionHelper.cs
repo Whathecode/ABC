@@ -10,7 +10,7 @@ namespace ABC.Plugins
 	/// <summary>
 	///   Helper class to help with MEF composition.
 	/// </summary>
-	public static class CompositionHelper
+	public class CompositionHelper
 	{
 		static CompositionHelper()
 		{
@@ -28,19 +28,25 @@ namespace ABC.Plugins
 		///   Create a composition container from assemblies located at a particular path.
 		/// </summary>
 		/// <param name = "toCompose">The object to compose a composition container for.</param>
-		/// <param name = "pluginFolderPath">The path where plugin assemblies are located.</param>
-		public static CompositionContainer ComposeFromPath( object toCompose, string pluginFolderPath )
+		/// <param name = "catalog">Plug-in container.</param>
+		public static CompositionContainer ComposeFromPath( object toCompose, DirectoryCatalog catalog )
 		{
-			// Set up plugin container.
+			var container = new CompositionContainer( catalog );
+			container.ComposeParts( toCompose );
+			return container;
+		}
+
+		/// <summary>
+		/// Set up plug-in directory container.
+		/// </summary>
+		/// <param name="pluginFolderPath">The path where plug-ins assemblies are located</param>
+		public static DirectoryCatalog CreateDirectory( string pluginFolderPath )
+		{
 			if ( !Directory.Exists( pluginFolderPath ) )
 			{
 				Directory.CreateDirectory( pluginFolderPath );
 			}
-			var catalog = new DirectoryCatalog( pluginFolderPath );
-			var container = new CompositionContainer( catalog );
-			container.ComposeParts( toCompose );
-
-			return container;
+			return new DirectoryCatalog( pluginFolderPath );
 		}
 	}
 }

@@ -5,6 +5,8 @@
 	/// </summary>
 	public interface IInstallable
 	{
+		AssemblyInfo AssemblyInfo { get; }
+
 		/// <summary>
 		/// Performs all actions that are necessary to make plug-in installed on user's system.
 		/// </summary>

@@ -14,11 +14,15 @@ namespace ABC.Applications.Persistence
 	public class PersistenceProvider : AbstractPersistenceProvider, IInstallablePluginContainer
 	{
 		CompositionContainer _pluginContainer;
-		readonly string _pluginFolderPath;
+		DirectoryCatalog _pluginCatalog;
 
-		[ImportMany]
-		readonly List<AbstractApplicationPersistence> _persistenceProviders = new List<AbstractApplicationPersistence>();
+		[ImportMany( AllowRecomposition = true )]
+		public List<AbstractApplicationPersistence> _persistenceProviders { get; set; }
 
+		public string PluginFolderPath
+		{
+			get { return _pluginCatalog.FullPath; }
+		}
 
 		/// <summary>
 		///   Create a new persistence provider with application persistence plugins loaded from the specified path.
@@ -26,15 +30,10 @@ namespace ABC.Applications.Persistence
 		/// <param name = "pluginFolderPath">The path where application persistence plugins are located.</param>
 		public PersistenceProvider( string pluginFolderPath )
 		{
-			_pluginFolderPath = pluginFolderPath;
-			Reload();
-		}
-
-		public void Reload()
-		{
 			try
 			{
-				_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginFolderPath );
+				_pluginCatalog = CompositionHelper.CreateDirectory( pluginFolderPath );
+				_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginCatalog );
 			}
 			catch ( CompositionException )
 			{
@@ -43,29 +42,32 @@ namespace ABC.Applications.Persistence
 			}
 		}
 
-		AbstractApplicationPersistence GetPluginByGuid( Guid guid )
+		public void Refresh()
 		{
-			return GetPersistenceProviders()
-				.FirstOrDefault( persistance => persistance.AssemblyInfo.Guid == guid );
+			_pluginCatalog.Refresh();
+		}
+
+		protected IEnumerable<AbstractApplicationPersistence> GetPersistenceProviders1()
+		{
+			return _persistenceProviders;
 		}
 
 		public Version GetPluginVersion( Guid guid )
 		{
-			var plugin = GetPluginByGuid( guid );
+			var plugin = GetAbstractApplicationPersistence( guid );
 			return plugin != null ? plugin.AssemblyInfo.Version : null;
 		}
 
-		public bool InstallPugin( Guid guid )
+		AbstractApplicationPersistence GetAbstractApplicationPersistence( Guid guid )
 		{
-			var installablePlugin = GetPluginByGuid( guid ) as IInstallable;
-			return installablePlugin == null || installablePlugin.Install();
+			var plugin = GetPersistenceProviders1()
+				.FirstOrDefault( persistance => persistance.AssemblyInfo.Guid == guid );
+			return plugin;
 		}
 
-		public bool UninstallPugin( Guid guid )
+		public IInstallable GetInstallablePlugin( Guid guid )
 		{
-			var installablePlugin = GetPersistenceProviders()
-				.FirstOrDefault( persistance => persistance.AssemblyInfo.Guid == guid ) as IInstallable;
-			return installablePlugin == null || installablePlugin.Unistall();
+			return GetAbstractApplicationPersistence( guid ) as IInstallable;
 		}
 
 

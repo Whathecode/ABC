@@ -17,23 +17,23 @@ namespace ABC.Interruptions
 	public class InterruptionAggregator : AbstractInterruptionTrigger, IInstallablePluginContainer
 	{
 		CompositionContainer _pluginContainer;
-		readonly string _pluginFolderPath;
+		readonly DirectoryCatalog _pluginCatalog;
 
 		[ImportMany]
 		readonly List<AbstractInterruptionTrigger> _interruptionTriggers =
 			new List<AbstractInterruptionTrigger>();
 
 
+		public string PluginFolderPath
+		{
+			get { return _pluginCatalog.FullPath; }
+		}
+
 		public InterruptionAggregator( string pluginFolderPath )
 			: base( Assembly.GetExecutingAssembly() )
 		{
-			_pluginFolderPath = pluginFolderPath;
-			Reload();
-		}
-
-		public void Reload()
-		{
-			_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginFolderPath );
+			_pluginCatalog = CompositionHelper.CreateDirectory( pluginFolderPath );
+			_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginCatalog );
 
 			// Initialize loaded interruption handlers.
 			foreach ( var handler in _interruptionTriggers )
@@ -41,6 +41,11 @@ namespace ABC.Interruptions
 				handler.InterruptionReceived -= TriggerInterruption;
 				handler.InterruptionReceived += TriggerInterruption;
 			}
+		}
+
+		public void Refresh()
+		{
+			_pluginCatalog.Refresh();
 		}
 
 		public override void Update( DateTime now )
@@ -71,7 +76,7 @@ namespace ABC.Interruptions
 				.ToList();
 		}
 
-		AbstractInterruptionTrigger GetPluginByGuid( Guid guid )
+		AbstractInterruptionTrigger GetInterruptionTrigger( Guid guid )
 		{
 			return _interruptionTriggers
 				.FirstOrDefault( interruption => interruption.AssemblyInfo.Guid == guid );
@@ -79,21 +84,13 @@ namespace ABC.Interruptions
 
 		public Version GetPluginVersion( Guid guid )
 		{
-			var plugin = GetPluginByGuid( guid );
+			var plugin = GetInterruptionTrigger( guid );
 			return plugin != null ? plugin.AssemblyInfo.Version : null;
 		}
 
-		public bool InstallPugin( Guid guid )
+		public IInstallable GetInstallablePlugin( Guid guid )
 		{
-			var installablePlugin = GetPluginByGuid( guid ) as IInstallable;
-			return installablePlugin == null || installablePlugin.Install();
-		}
-
-
-		public bool UninstallPugin( Guid guid )
-		{
-			var installablePlugin = GetPluginByGuid( guid ) as IInstallable;
-			return installablePlugin == null || installablePlugin.Unistall();
+			return GetInterruptionTrigger( guid ) as IInstallable;
 		}
 	}
 }

@@ -124,9 +124,13 @@
     <Compile Include="Model\PluginManifestPlugin.cs">
       <DependentUpon>PluginManifest.cs</DependentUpon>
     </Compile>
-    <Compile Include="PluginManagment\InstalledPluginContainer.cs" />
+    <Compile Include="PluginManagment\PluginErrorEventArgs.cs" />
+    <Compile Include="PluginManagment\PluginEventArgs.cs" />
     <Compile Include="PluginManagment\PluginManifestManager.cs" />
     <Compile Include="PluginManagment\PluginDownloader.cs" />
+    <Compile Include="PluginManagment\PluginProvider.cs" />
+    <Compile Include="PluginManagment\PluginProviderFactory.cs" />
+    <Compile Include="PluginManagment\RecycleBin.cs" />
     <Compile Include="ViewModel\AppOverview\ApplicationViewModel.cs" />
     <Compile Include="ViewModel\PluginOverview\PluginViewModel.cs" />
     <Compile Include="ViewModel\PluginOverview\PluginOverviewViewModel.cs" />
