@@ -6,24 +6,22 @@ namespace ABC.Plugins
 	public interface IInstallablePluginContainer
 	{
 		/// <summary>
-		/// Reloads container, discovers all newly added plug-ins.
+		/// Reloads container, discovers all newly added or deleted plug-ins.
 		/// </summary>
-		void Reload();
+		void Refresh();
 
 		/// <summary>
-		/// Run the install procedure on given plug-in.  
+		/// Get an installable plug-in from container.
 		/// </summary>
 		/// <param name="guid">Plug-in identifier.</param>
-		/// <returns>True if installing went successfully or is not needed, otherwise false.</returns>
-		bool InstallPugin( Guid guid );
+		/// <returns></returns>
+		IInstallable GetInstallablePlugin( Guid guid );
 
 		/// <summary>
-		/// Run the uninstall procedure on given plug-in.  
+		/// Path to plug-ins directory.
 		/// </summary>
-		/// <param name="guid">Plug-in identifier.</param>
-		/// <returns>True if uninstalling went successfully or is not needed, otherwise false.</returns>
-		bool UninstallPugin( Guid guid );
-
+		string PluginFolderPath { get; }
+		
 		/// <summary>
 		/// Gives a version of plug-in.  
 		/// </summary>

@@ -10,8 +10,7 @@
     Guid="{C56EE1F7-DED9-4522-AFF2-19A8ECCD6DF4}"
     Version="1.0"
     TargetProcessName="WINWORD"
-    TargetProcessCompanyName="Microsoft Corporation"
-    TargerProcessVersion="14">
+    TargetProcessCompanyName="Microsoft Corporation">
     <HideBehavior>
       <Default Hide="SelectedWindow" />
     </HideBehavior>
@@ -22,8 +21,7 @@
     Guid="{A4BC7D6D-42A5-47BA-90F9-D0D47301FCB4}"
     Version="1.0"
     TargetProcessName="ONENOTE"
-    TargetProcessCompanyName="Microsoft Corporation"
-    TargerProcessVersion="14">
+    TargetProcessCompanyName="Microsoft Corporation">
     <HideBehavior>
       <Default Hide="SelectedWindow" />
     </HideBehavior>
@@ -34,8 +32,7 @@
     Guid="{EB93E412-85BA-4319-90AD-F96D4B4D2461}"
     Version="1.0"
     TargetProcessName="POWERPNT"
-    TargetProcessCompanyName="Microsoft Corporation"
-    TargerProcessVersion="14">
+    TargetProcessCompanyName="Microsoft Corporation">
     <HideBehavior>
       <Default Hide="SelectedWindow" />
     </HideBehavior>
@@ -46,8 +43,7 @@
     Guid="{933726B2-8F61-4CBF-8555-A36AF0214813}"
     Version="1.0"
     TargetProcessName="INFOPATH"
-    TargetProcessCompanyName="Microsoft Corporation"
-    TargerProcessVersion="14">
+    TargetProcessCompanyName="Microsoft Corporation">
     <HideBehavior>
       <Default Hide="SelectedWindow" />
     </HideBehavior>

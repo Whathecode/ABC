@@ -27,7 +27,6 @@
     Guid="{123677AA-42EF-4DFB-A278-BE2EB2420D39}"
     Version="1.0.0.0"
     TargetProcessName="explorer"
-    TargerProcessVersion="6.1"
     TargetProcessCompanyName="Microsoft Corporation">
 
     <IgnoreWindows>
@@ -66,7 +65,6 @@
   <Process
     Guid="{CC9C4D33-5B15-401E-88D5-A09A01834E34}"
     Version="1.0.0.0"
-    TargerProcessVersion="6.1"
     TargetProcessName="Dxpserver"
     TargetProcessCompanyName="Microsoft Corporation">
 
@@ -79,7 +77,6 @@
   <Process
     Guid="{541E20F3-C516-4795-B742-A0EDF6FB3E03}"
     Version="1.0.0.0"
-    TargerProcessVersion="6.1"
     TargetProcessName="wisptis"
     TargetProcessCompanyName="Microsoft Corporation">
 
@@ -92,7 +89,6 @@
   <Process
     Guid="{FB8F3366-BF06-49D4-81B1-EA6B259510C2}"
     Version="1.0.0.0"
-    TargerProcessVersion="6.1"
     TargetProcessName="taskhost"
     TargetProcessCompanyName="Microsoft Corporation">
 

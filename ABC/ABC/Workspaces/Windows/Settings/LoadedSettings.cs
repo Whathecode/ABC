@@ -41,7 +41,6 @@ namespace ABC.Workspaces.Windows.Settings
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
 		readonly Func<Window, bool> _windowManagerFilter;
 		readonly bool _ignoreRequireElevatedPrivileges;
-		readonly string _pluginsDirectory;
 
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
@@ -49,8 +48,9 @@ namespace ABC.Workspaces.Windows.Settings
 		/// <param name = "ignoreRequireElevatedPrivileges">Setting to determine whether windows with higher privileges than the running application should be ignored or not.</param>
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
-		/// <param name = "pluginsDirectoty">Path to configurations directory (they can be loaded externally or by specifying this parameter).</param>
-		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null, string pluginsDirectoty = null )
+		/// <param name = "pluginFolderPath">Path to configurations directory (they can be loaded externally or by specifying this parameter).</param>
+		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = false, Func<Window, bool> customWindowFilter = null,
+			string pluginFolderPath = null )
 		{
 			_ignoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
 
@@ -85,10 +85,12 @@ namespace ABC.Workspaces.Windows.Settings
 				_windowManagerFilter = customWindowFilter;
 			}
 
-			_pluginsDirectory = pluginsDirectoty;
-			if ( _pluginsDirectory != null )
-				Reload();
+			PluginFolderPath = pluginFolderPath;
+			if ( PluginFolderPath != null )
+				Refresh();
 		}
+
+		public string PluginFolderPath { get; private set; }
 
 		public bool IgnoreRequireElevatedPrivileges
 		{
@@ -118,7 +120,7 @@ namespace ABC.Workspaces.Windows.Settings
 				ignoreWindowsList.AddRange( newBehaviors.CommonIgnoreWindows.Window
 					.Where( newCommon => Settings.CommonIgnoreWindows.Window
 						.FirstOrDefault( i => i.Equals( newCommon ) ) == null ) );
-				
+
 				newBehaviors.CommonIgnoreWindows = new WindowList { Window = ignoreWindowsList.ToArray() };
 			}
 
@@ -219,13 +221,25 @@ namespace ABC.Workspaces.Windows.Settings
 			{
 				FileVersionInfo versionInfo = process.MainModule.FileVersionInfo;
 
+				// Find configuration for given process name.
 				var matches = Settings.Process.Where( p =>
-					p.TargetProcessName == process.ProcessName &&
-					( p.TargerProcessVersion == null || versionInfo.FileVersion.StartsWith( p.TargerProcessVersion ) ) ).ToList();
+					p.TargetProcessName == process.ProcessName ).ToList();
 
+				// Check if there are any version specific configurations for given process.
+				var versionSpecificMatches = matches.Where( match => 
+					match.TargetProcessVersionHelper.Major == versionInfo.FileMajorPart &&
+					match.TargetProcessVersionHelper.Minor == versionInfo.FileMinorPart ).ToList();
+
+				// If any use version specific configurations, general otherwise.
+				matches = versionSpecificMatches.Any() 
+					? versionSpecificMatches 
+					: matches.Where( match => string.IsNullOrWhiteSpace( match.TargerProcessVersion ) )
+					.ToList();
+
+				// Take a default configuration if nothing matched, otherwise one with the highest version.
 				ProcessBehaviorsProcess processBehavior = matches.Count == 0
 					? _handleProcess
-					: matches.MaxBy( p => p.Version == null ? 0 : p.Version.Length );
+					: matches.MaxBy( p => p.VersionHelper );
 				_windowProcessBehaviors[ window ] = processBehavior;
 
 				return processBehavior;
@@ -237,9 +251,9 @@ namespace ABC.Workspaces.Windows.Settings
 			}
 		}
 
-		public void Reload()
+		public void Refresh()
 		{
-			var plugins = Directory.EnumerateFiles( _pluginsDirectory, "*.xml" );
+			var plugins = Directory.EnumerateFiles( PluginFolderPath, "*.xml" );
 			foreach ( var plugin in plugins )
 			{
 				try
@@ -253,16 +267,11 @@ namespace ABC.Workspaces.Windows.Settings
 			}
 		}
 
-		public bool InstallPugin( Guid guid )
+		public IInstallable GetInstallablePlugin( Guid guid )
 		{
-			// nothing to do right now;
-			return true;
-		}
-
-		public bool UninstallPugin( Guid guid )
-		{
-			// nothing to do right now;
-			return true;
+			// TODO: How to make VDM configuration installable?
+			var plugin = GetProcessBehaviorsProcess( guid ) as IInstallable;
+			return plugin;
 		}
 
 		public Version GetPluginVersion( Guid guid )

@@ -46,6 +46,19 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 
 		bool _shouldHandleProcess = true;
 
+		// TODO: Think about better idea how to override property in a partial class. 
+		[XmlIgnoreAttribute]
+		public Version TargetProcessVersionHelper
+		{
+			get { return targerProcessVersionField == null ? new Version( "0.0" ) : new Version( targerProcessVersionField ); }
+		}
+
+		[XmlIgnoreAttribute]
+		public Version VersionHelper
+		{
+			get { return versionField == null ? new Version( "0.0.0.0" ) : new Version( versionField ); }
+		}
+
 		public static ProcessBehaviorsProcess CreateDontHandleProcess()
 		{
 			return new ProcessBehaviorsProcess { _shouldHandleProcess = false };
@@ -67,7 +80,8 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 			return
 				String.Equals( TargetProcessName, other.TargetProcessName ) &&
 				String.Equals( TargetProcessCompanyName, other.TargetProcessCompanyName ) &&
-				String.Equals( TargerProcessVersion, other.TargerProcessVersion );
+				String.Equals( Version, other.Version ) &&
+				Equals( TargetProcessVersionHelper, other.TargetProcessVersionHelper );
 		}
 
 		public override int GetHashCode()

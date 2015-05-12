@@ -10,7 +10,6 @@
     Guid="{118D8090-774F-4125-A957-FA37B1D703D4}"
     TargetProcessName="iexplore"
     TargetProcessCompanyName="Microsoft Corporation"
-    TargerProcessVersion="6.1"
     Version="1.0.0.0">
     <HideBehavior>
       <Default Hide="SelectedWindow" />

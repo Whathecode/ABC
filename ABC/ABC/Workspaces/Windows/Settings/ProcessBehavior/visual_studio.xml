@@ -9,7 +9,6 @@
     Guid="{08C5ACD5-8C88-421F-97B9-5AB70B710A1D}"
     Version="1.0.0"
     TargetProcessName="devenv"
-    TargerProcessVersion="11"
     TargetProcessCompanyName="Microsoft Corporation">
     <IgnoreWindows>
       <Window ClassName="VsSolutionFileChangeTimerWindow" />

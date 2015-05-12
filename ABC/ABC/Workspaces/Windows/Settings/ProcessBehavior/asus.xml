@@ -9,7 +9,6 @@
   <Process
     Guid="{36E268EB-1CAB-403A-9080-B45355C71416}"
     Version="1.0"
-    TargerProcessVersion="1.0"
     TargetProcessName="ATKOSD2"
     TargetProcessCompanyName="ASUSTek Computer Inc.">
     <IgnoreWindows>
@@ -22,8 +21,7 @@
     Guid="{4C5280C2-9933-4AAF-AEA4-633D20381137}"
     Version="1.0"
     TargetProcessName="ACMON"
-    TargetProcessCompanyName="ASUS"
-    TargerProcessVersion="1.0">
+    TargetProcessCompanyName="ASUS">
     <IgnoreWindows>
       <Window ClassName="ACMON" />
     </IgnoreWindows>
