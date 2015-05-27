@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using Whathecode.System.Extensions;
 using Whathecode.System.Windows;
 
 
@@ -11,11 +12,6 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 {
 	public partial class ProcessBehaviors
 	{
-		public ProcessBehaviors()
-		{
-			CommonIgnoreWindows = new WindowList { Window = new Window[0] };
-		}
-
 		static XmlSerializer _serializer;
 
 		static XmlSerializer Serializer
@@ -32,7 +28,24 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 
 		public static ProcessBehaviors Deserialize( Stream s )
 		{
-			return ( (ProcessBehaviors)( Serializer.Deserialize( s ) ) );
+			var behaviors = (ProcessBehaviors)Serializer.Deserialize( s );
+
+			behaviors.CommonIgnoreWindows = behaviors.CommonIgnoreWindows ?? new WindowList { Window = new Window[0] };
+			behaviors.Process = behaviors.Process ?? new ProcessBehaviorsProcess[0];
+			behaviors.Process.ForEach( process => process.Initialize() );
+
+			return behaviors;
+		}
+
+		public void AddOrOverwriteProcess( ProcessBehaviorsProcess process )
+		{
+			var exisitingProcess = Process.FirstOrDefault( existingWindow => existingWindow.Equals( process ) );
+			if ( exisitingProcess != null )
+			{
+				Process.Swap( exisitingProcess, process );
+				return;
+			}
+			Process = Process.Concat( new[] { process } ).ToArray();
 		}
 	}
 
@@ -40,8 +53,13 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 	{
 		public ProcessBehaviorsProcess()
 		{
-			IgnoreWindows = new ProcessBehaviorsProcessIgnoreWindows { Window = new Window[0] };
-			HideBehavior = new ProcessBehaviorsProcessHideBehavior { Items = new object[0] };
+			Initialize();
+		}
+
+		public void Initialize()
+		{
+			IgnoreWindows = IgnoreWindows ?? new ProcessBehaviorsProcessIgnoreWindows { Window = new Window[0] };
+			HideBehavior = HideBehavior ?? new ProcessBehaviorsProcessHideBehavior { Items = new object[0] };
 		}
 
 		bool _shouldHandleProcess = true;
@@ -109,6 +127,19 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 				ClassName == window.GetClassName() &&
 				( Visible == WindowVisible.Both || ( window.IsVisible() && Visible == WindowVisible.True ) ) &&
 				( Title == null || window.GetTitle() == Title );
+		}
+	}
+
+	public partial class WindowList
+	{
+		public bool AddIfAbsent( Window window )
+		{
+			if ( Window.Contains( window ) )
+			{
+				return false;
+			}
+			Window = Window.Concat( new[] { window } ).ToArray();
+			return true;
 		}
 	}
 

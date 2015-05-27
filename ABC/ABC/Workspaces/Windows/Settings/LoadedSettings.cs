@@ -49,7 +49,7 @@ namespace ABC.Workspaces.Windows.Settings
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
 		/// <param name = "pluginFolderPath">Path to configurations directory (they can be loaded externally or by specifying this parameter).</param>
-		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = false, Func<Window, bool> customWindowFilter = null,
+		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null,
 			string pluginFolderPath = null )
 		{
 			_ignoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
@@ -114,30 +114,11 @@ namespace ABC.Workspaces.Windows.Settings
 			}
 
 			// Add new common behaviors.
-			if ( newBehaviors.CommonIgnoreWindows != null )
-			{
-				var ignoreWindowsList = newBehaviors.CommonIgnoreWindows.Window.ToList();
-				ignoreWindowsList.AddRange( newBehaviors.CommonIgnoreWindows.Window
-					.Where( newCommon => Settings.CommonIgnoreWindows.Window
-						.FirstOrDefault( i => i.Equals( newCommon ) ) == null ) );
-
-				newBehaviors.CommonIgnoreWindows = new WindowList { Window = ignoreWindowsList.ToArray() };
-			}
-
-
+			newBehaviors.CommonIgnoreWindows.Window
+				.ForEach( newCommon => Settings.CommonIgnoreWindows.AddIfAbsent( newCommon ) );
+			
 			// Add new or overwrite existing process behaviors.
-			foreach ( var newProcess in newBehaviors.Process )
-			{
-				var same = Settings.Process.FirstOrDefault( p => newProcess.Equals( p ) );
-				var processList = Settings.Process.ToList();
-
-				if ( same != null )
-				{
-					processList.Remove( same );
-				}
-				processList.Add( newProcess );
-				Settings.Process = processList.ToArray();
-			}
+			newBehaviors.Process.ForEach( newProcess => Settings.AddOrOverwriteProcess( newProcess ) );
 		}
 
 		public Func<Window, bool> CreateWindowFilter()
@@ -226,15 +207,15 @@ namespace ABC.Workspaces.Windows.Settings
 					p.TargetProcessName == process.ProcessName ).ToList();
 
 				// Check if there are any version specific configurations for given process.
-				var versionSpecificMatches = matches.Where( match => 
+				var versionSpecificMatches = matches.Where( match =>
 					match.TargetProcessVersionHelper.Major == versionInfo.FileMajorPart &&
 					match.TargetProcessVersionHelper.Minor == versionInfo.FileMinorPart ).ToList();
 
 				// If any use version specific configurations, general otherwise.
-				matches = versionSpecificMatches.Any() 
-					? versionSpecificMatches 
+				matches = versionSpecificMatches.Any()
+					? versionSpecificMatches
 					: matches.Where( match => string.IsNullOrWhiteSpace( match.TargerProcessVersion ) )
-					.ToList();
+						.ToList();
 
 				// Take a default configuration if nothing matched, otherwise one with the highest version.
 				ProcessBehaviorsProcess processBehavior = matches.Count == 0
