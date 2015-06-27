@@ -40,7 +40,13 @@ namespace ABC.Workspaces.Windows.Settings
 		readonly ProcessBehaviorsProcess _handleProcess = new ProcessBehaviorsProcess();
 		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
 		readonly Func<Window, bool> _windowManagerFilter;
-		readonly bool _ignoreRequireElevatedPrivileges;
+
+		readonly List<WindowInfo> _accessDeniedWindows = new List<WindowInfo>();
+		readonly Dictionary<WindowInfo, ProcessBehaviorsProcess> _windowProcessBehaviors = new Dictionary<WindowInfo, ProcessBehaviorsProcess>();
+		readonly bool _loadDefaultSettings;
+		
+		public bool IgnoreRequireElevatedPrivileges { get; private set; }
+		public string PluginFolderPath { get; private set; }
 
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
@@ -49,19 +55,13 @@ namespace ABC.Workspaces.Windows.Settings
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
 		/// <param name = "pluginFolderPath">Path to configurations directory (they can be loaded externally or by specifying this parameter).</param>
-		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null,
+		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = false, Func<Window, bool> customWindowFilter = null,
 			string pluginFolderPath = null )
 		{
-			_ignoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
+			IgnoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
 
-			if ( loadDefaultSettings )
-			{
-				Assembly assembly = Assembly.GetExecutingAssembly();
-				assembly
-					.GetManifestResourceNames()
-					.Where( name => name.StartsWith( SettingsFiles ) )
-					.ForEach( settingsFile => AddSettingsFile( assembly.GetManifestResourceStream( settingsFile ) ) );
-			}
+			_loadDefaultSettings = loadDefaultSettings;
+			LoadDefaultSetting();
 
 			// Ignore windows created by the window manager itself when no filter is specified.
 			Process windowManagerProcess = Process.GetCurrentProcess();
@@ -90,11 +90,18 @@ namespace ABC.Workspaces.Windows.Settings
 				Refresh();
 		}
 
-		public string PluginFolderPath { get; private set; }
-
-		public bool IgnoreRequireElevatedPrivileges
+		void LoadDefaultSetting()
 		{
-			get { return _ignoreRequireElevatedPrivileges; }
+			if ( !_loadDefaultSettings )
+			{
+				return;
+			}
+
+			var assembly = Assembly.GetExecutingAssembly();
+			assembly
+				.GetManifestResourceNames()
+				.Where( name => name.StartsWith( SettingsFiles ) )
+				.ForEach( settingsFile => AddSettingsFile( assembly.GetManifestResourceStream( settingsFile ) ) );
 		}
 
 		public void AddSettingsFile( Stream stream )
@@ -174,9 +181,6 @@ namespace ABC.Workspaces.Windows.Settings
 			};
 		}
 
-		readonly List<WindowInfo> _accessDeniedWindows = new List<WindowInfo>();
-		readonly Dictionary<WindowInfo, ProcessBehaviorsProcess> _windowProcessBehaviors = new Dictionary<WindowInfo, ProcessBehaviorsProcess>();
-
 		ProcessBehaviorsProcess GetProcessSettings( WindowInfo window )
 		{
 			// See whether settings are cached.
@@ -234,6 +238,9 @@ namespace ABC.Workspaces.Windows.Settings
 
 		public void Refresh()
 		{
+			Settings = null;
+			LoadDefaultSetting();
+
 			var plugins = Directory.EnumerateFiles( PluginFolderPath, "*.xml" );
 			foreach ( var plugin in plugins )
 			{

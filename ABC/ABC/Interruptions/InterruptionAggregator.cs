@@ -19,7 +19,7 @@ namespace ABC.Interruptions
 		CompositionContainer _pluginContainer;
 		readonly DirectoryCatalog _pluginCatalog;
 
-		[ImportMany]
+		[ImportMany( AllowRecomposition = true )]
 		readonly List<AbstractInterruptionTrigger> _interruptionTriggers =
 			new List<AbstractInterruptionTrigger>();
 

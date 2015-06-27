@@ -12,8 +12,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Threading;
 using System.Xml;
+using ABC.Plugins;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Threading;
+
 
 namespace ABC.Interruptions.Google
 {
@@ -21,18 +23,17 @@ namespace ABC.Interruptions.Google
 	///   Receives unread emails from the currently logged in gmail account and introduces them as interruptions.
 	/// </summary>
 	[Export( typeof( AbstractInterruptionTrigger ) )]
-	public class GmailInterruptionTrigger : AbstractIntervalInterruptionTrigger
+	public class GmailInterruptionTrigger : AbstractIntervalInterruptionTrigger, IInstallable
 	{
 		const string GmailAtomFeed = "https://mail.google.com/mail/feed/atom";
 
 		readonly Dispatcher _dispatcher;
 
-		readonly Configuration _config;
-		readonly GoogleConfiguration _settings;
+		Configuration _config;
+		GoogleConfiguration _settings;
 		const string GmailSection = "GmailSettings";
 		static readonly byte[] Entropy = Encoding.Unicode.GetBytes( "Gmail user settings should be saved securely!" );
 		SecureString _password;
-
 
 		public GmailInterruptionTrigger()
 			: base( TimeSpan.FromMinutes( 1 ), Assembly.GetExecutingAssembly() )
@@ -41,30 +42,26 @@ namespace ABC.Interruptions.Google
 
 			// Recover settings, or ask for them if not asked before.
 			_config = ConfigurationManager.OpenExeConfiguration( Assembly.GetExecutingAssembly().Location );
-			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
-			if ( _settings != null )
-			{
-				if ( _settings.Password.Length == 0 )
-				{
-					return;
-				}
 
-				byte[] decryptedData = ProtectedData.Unprotect(
-					Convert.FromBase64String( _settings.Password ),
-					Entropy,
-					DataProtectionScope.CurrentUser );
-				_password = Encoding.Unicode.GetString( decryptedData ).ToSecureString();
-			}
-			else
+			if ( _config == null )
 			{
-				_settings = new GoogleConfiguration();
-				_config.Sections.Add( GmailSection, _settings );
-				AskSettings();
+				return;
 			}
+
+			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
+			if ( _settings == null || _settings.Password.Length == 0 )
+			{
+				return;
+			}
+
+			byte[] decryptedData = ProtectedData.Unprotect(
+				Convert.FromBase64String( _settings.Password ),
+				Entropy,
+				DataProtectionScope.CurrentUser );
+			_password = Encoding.Unicode.GetString( decryptedData ).ToSecureString();
 		}
 
-
-		void AskSettings()
+		public void AskSettings()
 		{
 			var askForCredentials = new CredentialsDialog();
 			bool? result = askForCredentials.ShowDialog();
@@ -202,6 +199,45 @@ namespace ABC.Interruptions.Google
 		public override List<Type> GetInterruptionTypes()
 		{
 			return new List<Type> { typeof( GmailInterruption ) };
+		}
+
+		public bool Install( params object[] args )
+		{
+			var pluginPath = args[ 0 ].ToString();
+			if ( String.IsNullOrEmpty( pluginPath ) )
+			{
+				return false;
+			}
+
+			_config = ConfigurationManager.OpenExeConfiguration( pluginPath );
+			_settings = new GoogleConfiguration();
+			if ( _config.Sections.Get( GmailSection ) != null )
+			{
+				_config.Sections.Remove( GmailSection );
+			}
+			_config.Sections.Add( GmailSection, _settings );
+			AskSettings();
+			return true;
+		}
+
+		public bool Unistall( params object[] args )
+		{
+			var pluginPath = args[ 0 ].ToString();
+			if ( String.IsNullOrEmpty( pluginPath ) )
+			{
+				return false;
+			}
+
+			try
+			{
+				File.Delete( pluginPath + ".config" );
+				return true;
+			}
+			catch ( Exception exception )
+			{
+				Console.WriteLine( "Gmail plug-in uninstallation failure. " + exception.Message );
+				return false;
+			}
 		}
 	}
 }

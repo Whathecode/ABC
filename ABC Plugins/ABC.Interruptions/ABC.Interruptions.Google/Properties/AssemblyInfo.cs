@@ -21,7 +21,7 @@ using ABC.Plugins;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid( "874ba554-9736-44f0-bb57-9902a9cb6a4a" )]
+[assembly: Guid( "63eb2679-9ca9-498a-9026-12578c40cf52" )]
 
 // Version information for an assembly consists of the following four values:
 //
