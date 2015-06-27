@@ -2,24 +2,13 @@
 {
 	public enum Properties
 	{
-		SelectedPlugin,
-		Plugins
+		SelectedPlugins,
+		Plugins,
+		SelectedPluginIndex
 	}
 
 	public enum Commands
 	{
-		DownloadPlugin
+		DownloadPlugins
 	}
-
-	public enum PluginProperties
-	{
-		Author,
-		Description,
-		Icon,
-		Version,
-		State
-	}
-
-	public enum PluginCommands
-	{}
 }

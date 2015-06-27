@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using ABC.Applications.Persistence;
 using ABC.Interruptions;
 using ABC.Plugins;
@@ -10,21 +13,24 @@ using PluginManager.Model;
 
 namespace PluginManager.PluginManagment
 {
+	// Plug-in containers have to be initialized inside of an object which derives from MarshalByRefObject in order
+	// to communicate with other domains (plug-ins on the fly swapping).
 	public class PluginProvider : MarshalByRefObject, IDisposable
 	{
 		const string InstalledErrorMessage = "Plug-in was not installed correctly.";
 		const string UninstalledErrorMessage = "Plug-in was not uninstalled correctly.";
 		const string WatcherErrorMessage = "Plug-in directory watcher encountered a problem.";
+		const string CannotExtractFromAssembly = "Cannot extract GUID from an assembly";
 
 		//<summary>
 		//  Event which is triggered when plug-in was installed.
 		//</summary>
-		public event EventHandler<PluginEventArgs> Installed;
+		public event EventHandler Installed;
 
 		//<summary>
 		//  Event which is triggered when plug-in was uninstalled.
 		//</summary>
-		public event EventHandler<PluginEventArgs> Uninstalled;
+		public event EventHandler Uninstalled;
 
 		//<summary>
 		//  Event which is triggered when error is throw during plug-in detection, installation/uninstallation or composition.
@@ -35,8 +41,6 @@ namespace PluginManager.PluginManagment
 
 		public void Initialize( string pluginFolderPath, PluginType pluginType, string fileFilter )
 		{
-			// Plug-in containers have to be initialized inside of object which derives from MarshalByRefObject in order
-			// to be on separate domain ( plug-ins on the fly swapping).
 			switch ( pluginType )
 			{
 				case PluginType.Persistence:
@@ -50,10 +54,52 @@ namespace PluginManager.PluginManagment
 					break;
 			}
 
-			var watcher =  new PluginWatcher( _pluginContainer.PluginFolderPath, fileFilter );
-			watcher.Created += ( sender, args ) => InstallPugin( new AssemblyInfo(Assembly.LoadFile( args.FullPath )).Guid );
-			watcher.Deleted += ( sender, args ) => UninstallPugin( new AssemblyInfo(Assembly.LoadFile( args.FullPath )).Guid );
+			var watcher = new PluginWatcher( _pluginContainer.PluginFolderPath, fileFilter );
+			
+			// When plug-ins are installed they may require additional configuration, show some visual elements.
+			watcher.Created += ( sender, args ) => ExecuteSta( () => InstallPugin( GetGuidDromAssembly( args.FullPath ), args.FullPath ) );
+			watcher.Deleted += ( sender, args ) => ExecuteSta( () => UninstallPugin( GetGuidDromAssembly( args.FullPath ), args.FullPath ) );
+			
 			watcher.Error += ( sender, args ) => Error( watcher, new PluginErrorEventArgs( new Exception( WatcherErrorMessage ), null ) );
+		}
+
+		/// <summary>
+		///  Starts a new thread which is able to invoke GUI elements.
+		/// </summary>
+		static void ExecuteSta( Action action )
+		{
+			var thread = new Thread( o => action() );
+			thread.SetApartmentState( ApartmentState.STA );
+			thread.Start();
+		}
+
+		// TODO: Test if assembly loading is safe. Otherwise we should extract GUID from file name (bad idea but working for now).
+		static Guid GetGuidFromName( string name )
+		{
+			try
+			{
+				var guid = name.Substring( 0, name.LastIndexOf( '.' ) );
+				return new Guid( guid.Split( '\\' ).Last() );
+			}
+			catch ( Exception )
+			{
+				return new Guid();
+			}
+		}
+
+		// TODO: Is assembly loading on different domain safe?
+		static Guid GetGuidDromAssembly( string path )
+		{
+			try
+			{
+				var assembly = Assembly.LoadFrom( path );
+				return new AssemblyInfo( assembly ).Guid;
+			}
+			catch ( Exception exception )
+			{
+				Console.WriteLine( CannotExtractFromAssembly + exception.Message );
+				return GetGuidFromName( path );
+			}
 		}
 
 		void SafeContainerCreation( Action action )
@@ -80,32 +126,47 @@ namespace PluginManager.PluginManagment
 			return _pluginContainer.GetPluginVersion( guid ) != null;
 		}
 
-		void InstallPugin( Guid guid )
+		void InstallPugin( Guid guid, string pluginPath )
 		{
 			_pluginContainer.Refresh();
 			var installablePlugin = _pluginContainer.GetInstallablePlugin( guid );
-			if ( installablePlugin != null && installablePlugin.Install() )
+			if ( installablePlugin != null )
 			{
-				Installed( this, new PluginEventArgs( installablePlugin.AssemblyInfo ) );
+				if ( installablePlugin.Install( pluginPath ) )
+				{
+					Installed( this, new EventArgs() );
+				}
+				else
+				{
+					Error( this, new PluginErrorEventArgs( new Exception( InstalledErrorMessage ), installablePlugin.AssemblyInfo ) );
+				}
 			}
-			else if ( installablePlugin != null )
+			else
 			{
-				Error( this, new PluginErrorEventArgs( new Exception( InstalledErrorMessage ), installablePlugin.AssemblyInfo ) );
+				Installed( this, new EventArgs() );
 			}
 		}
 
-		void UninstallPugin( Guid guid )
+		void UninstallPugin( Guid guid, string pluginPath )
 		{
 			var installablePlugin = _pluginContainer.GetInstallablePlugin( guid );
-			if ( installablePlugin != null && installablePlugin.Unistall() )
+			if ( installablePlugin != null )
 			{
-				Uninstalled( this, new PluginEventArgs( installablePlugin.AssemblyInfo ) );
+				if ( installablePlugin.Unistall( pluginPath ) )
+				{
+					_pluginContainer.Refresh();
+					Uninstalled( this, new EventArgs() );
+				}
+				else
+				{
+					Error( this, new PluginErrorEventArgs( new Exception( UninstalledErrorMessage ), installablePlugin.AssemblyInfo ) );
+				}
 			}
-			else if ( installablePlugin != null )
+			else
 			{
-				Error( this, new PluginErrorEventArgs( new Exception( UninstalledErrorMessage ), installablePlugin.AssemblyInfo ) );
+				_pluginContainer.Refresh();
+				Uninstalled( this, new EventArgs() );
 			}
-			_pluginContainer.Refresh();
 		}
 
 		public void Dispose()

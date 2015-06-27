@@ -31,6 +31,7 @@ namespace PluginManager.PluginManagment
 			};
 			// Create separate domain.
 			var domain = AppDomain.CreateDomain( "Host_AppDomain", AppDomain.CurrentDomain.Evidence, setup );
+			
 			// Create new PluginContainer using new separate domain.
 			var persistenceContainer = (PluginProvider)domain.CreateInstanceAndUnwrap( typeof( PluginProvider ).Assembly.FullName,
 				typeof( PluginProvider ).FullName );

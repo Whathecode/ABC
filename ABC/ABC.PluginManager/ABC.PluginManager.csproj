@@ -124,19 +124,21 @@
     <Compile Include="Model\PluginManifestPlugin.cs">
       <DependentUpon>PluginManifest.cs</DependentUpon>
     </Compile>
+    <Compile Include="PluginManagerController.cs" />
     <Compile Include="PluginManagment\PluginErrorEventArgs.cs" />
     <Compile Include="PluginManagment\PluginEventArgs.cs" />
     <Compile Include="PluginManagment\PluginManifestManager.cs" />
-    <Compile Include="PluginManagment\PluginDownloader.cs" />
+    <Compile Include="PluginManagment\PluginFileManager.cs" />
     <Compile Include="PluginManagment\PluginProvider.cs" />
     <Compile Include="PluginManagment\PluginProviderFactory.cs" />
     <Compile Include="PluginManagment\RecycleBin.cs" />
     <Compile Include="ViewModel\AppOverview\ApplicationViewModel.cs" />
-    <Compile Include="ViewModel\PluginOverview\PluginViewModel.cs" />
     <Compile Include="ViewModel\PluginOverview\PluginOverviewViewModel.cs" />
     <Compile Include="ViewModel\PluginOverview\Binding\Binding.cs" />
     <Compile Include="ViewModel\AppOverview\AppOverviewViewModel.cs" />
     <Compile Include="ViewModel\AppOverview\Binding\Binding.cs" />
+    <Compile Include="ViewModel\Plugin\Binding\Binding.cs" />
+    <Compile Include="ViewModel\Plugin\PluginViewModel.cs" />
     <Compile Include="View\AppOverview\AppOverview.xaml.cs">
       <DependentUpon>AppOverview.xaml</DependentUpon>
     </Compile>
@@ -194,15 +196,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="View\icons\conf.png" />
-    <Resource Include="View\icons\excel.png" />
-    <Resource Include="View\icons\na.png" />
+    <Resource Include="View\icons\configure.png" />
     <Resource Include="View\icons\ok.ico" />
-    <Resource Include="View\icons\onenote.png" />
     <Resource Include="View\icons\plus.png" />
-    <Resource Include="View\icons\powerpoint.png" />
     <Resource Include="View\icons\update.png" />
-    <Resource Include="View\icons\word.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Shell32">
@@ -233,7 +230,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="View\icons\defaultApp.png" />
+    <Resource Include="View\icons\defaultApplication.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABC\ABC.csproj">
@@ -249,6 +246,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\icons\install.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\icons\uninstall.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

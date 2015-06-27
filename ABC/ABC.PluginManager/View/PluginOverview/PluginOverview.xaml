@@ -7,7 +7,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:commandFactory="clr-namespace:Whathecode.System.Windows.Input.CommandFactory;assembly=Whathecode.PresentationFramework"
 	xmlns:behaviors="clr-namespace:Whathecode.System.Xaml.Behaviors;assembly=Whathecode.PresentationFramework"
-	xmlns:binding="clr-namespace:PluginManager.ViewModel.PluginOverview.Binding"
+	xmlns:pluginbinding="clr-namespace:PluginManager.ViewModel.Plugin.Binding"
 	xmlns:data="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
 	xmlns:common="clr-namespace:PluginManager.Common"
 	xmlns:pluginOverview="clr-namespace:PluginManager.ViewModel.PluginOverview"
@@ -20,10 +20,11 @@
 		<ScrollViewer BorderThickness="0" VerticalScrollBarVisibility="Auto">
 			<ListView
 				HorizontalAlignment="Stretch"
+				SelectionChanged="SelectedPluginsChanged"
 				BorderThickness="0" MinWidth="250"
+				SelectionMode="Extended"
 				ItemsSource="{Binding Plugins}"
-				SelectedItem="{Binding SelectedPlugin}"
-				Name="ListView">
+				Name="PluginsListView">
 
 				<ListView.Resources>
 					<Style TargetType="TextBlock">
@@ -97,9 +98,12 @@
 									VerticalAlignment="Bottom"
 									HorizontalAlignment="Right">
 									<Image
-										Source="../icons/ok.ico"
+										Source="../icons/uninstall.ico"
 										Width="25"
 										Height="25"
+										MouseEnter="CursorToHand"
+										MouseLeave="CursorToArrow"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Delete}}"
 										Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
@@ -108,10 +112,9 @@
 										Source="../icons/install.png"
 										Width="25"
 										Height="25"
-										Cursor="Hand"
-										PreviewMouseLeftButtonDown="PreviewMouseLeftButtonDown"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadPlugin}, 
-											ElementName=Control}"
+										MouseEnter="CursorToHand"
+										MouseLeave="CursorToArrow"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}"
 										Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Availible}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
@@ -119,10 +122,9 @@
 										Source="../icons/update.png"
 										Width="25"
 										Height="25"
-										Cursor="Hand"
-										PreviewMouseLeftButtonDown="PreviewMouseLeftButtonDown"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static binding:Commands.DownloadPlugin}, 
-											ElementName=Control}"
+										MouseEnter="CursorToHand"
+										MouseLeave="CursorToArrow"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}"
 										Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Updates}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />

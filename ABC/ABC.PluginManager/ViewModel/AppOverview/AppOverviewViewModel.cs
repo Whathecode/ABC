@@ -6,6 +6,7 @@ using System.Windows.Input;
 using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.ViewModel.AppOverview.Binding;
+using PluginManager.ViewModel.Plugin;
 using PluginManager.ViewModel.PluginOverview;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Extensions;
@@ -43,15 +44,7 @@ namespace PluginManager.ViewModel.AppOverview
 		[NotifyPropertyChanged( Binding.Properties.SelectedFilter )]
 		public void OnSelectedFilterChanged( string oldFilter, string newFilter )
 		{
-			PluginState state;
-			if ( Enum.TryParse( newFilter, out state ) )
-			{
-				FilterApps( state );
-			}
-			else
-			{
-				FilterApps();
-			}
+			Populate( _pluginManifest, newFilter );
 		}
 
 		readonly PluginManifest _pluginManifest;
@@ -59,21 +52,28 @@ namespace PluginManager.ViewModel.AppOverview
 
 		public AppOverviewViewModel( PluginManifest pluginManifest )
 		{
-			ApplicationPlugins = new ObservableConcurrentDictionary<ApplicationViewModel, List<PluginManifestPlugin>>();
 			_pluginManifest = pluginManifest;
 
 			Filters = Enum.GetNames( typeof( PluginState ) ).ToList();
 			Filters.Insert( 0, "All" );
-
-			Populate( pluginManifest );
+			
+			// Set the filter and show applications + plug-ins.
+			SelectedFilter = Filters.First();
 		}
 
-		public void Populate( PluginManifest pluginManifest )
+		public void Populate( PluginManifest pluginManifest, string filter = "" )
 		{
 			Mouse.OverrideCursor = Cursors.Wait;
 
-			// Set the filter and show applications + plug-ins.
-			SelectedFilter = Filters.First();
+			PluginState state;
+			if ( Enum.TryParse( filter, out state ) )
+			{
+				FilterApps( state );
+			}
+			else
+			{
+				FilterApps();
+			}
 
 			Mouse.OverrideCursor = Cursors.Arrow;
 		}
@@ -99,7 +99,6 @@ namespace PluginManager.ViewModel.AppOverview
 			{
 				SelectedApplication = ApplicationPlugins.First().Key;
 				CurrentPlugins = new PluginOverviewViewModel( ApplicationPlugins.First().Value );
-				CurrentPlugins.InstallingPluginEvent += ( model, guid ) => InstallingPluginEvent( model, guid );
 			}
 		}
 

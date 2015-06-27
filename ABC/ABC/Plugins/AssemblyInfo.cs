@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 
 namespace ABC.Plugins
 {
+	// Cross domian communication requres objects to be serializable.
+	[Serializable]
 	public class AssemblyInfo 
 	{
 		public AssemblyInfo( Assembly assembly )

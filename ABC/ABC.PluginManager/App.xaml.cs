@@ -10,6 +10,8 @@ using PluginManager.ViewModel.AppOverview;
 
 namespace PluginManager
 {
+	// Cross-domain communication requires Serializable tag.
+	[Serializable]
 	public partial class App
 	{
 		public static string PluginManagerDirectory { get; private set; }
@@ -21,14 +23,9 @@ namespace PluginManager
 		AppOverviewViewModel _appOverviewViewModel;
 		AppOverview _appOverview;
 
-		PluginProvider _persistenceContainer;
-		PluginProvider _interruptionsContainer;
-		PluginProvider _vdmsContainer;
-
 		protected override void OnStartup( StartupEventArgs e )
 		{
 			base.OnStartup( e );
-
 
 			PluginManagerDirectory = e.Args.Length > 0 ? e.Args[ 0 ] : null;
 			if ( PluginManagerDirectory == null || !Directory.Exists( PluginManagerDirectory ) )
@@ -39,21 +36,27 @@ namespace PluginManager
 			}
 
 
-
 			InterruptionsPluginLibrary = Path.Combine( PluginManagerDirectory, "InterruptionHandlers" );
 			PersistencePluginLibrary = Path.Combine( PluginManagerDirectory, "ApplicationPersistence" );
 			VdmPluginLibrary = Path.Combine( PluginManagerDirectory, "VdmSettings" );
 
 			_manifestManager = new PluginManifestManager();
 
-			_persistenceContainer = PluginProviderFactory.CreateProvider( PersistencePluginLibrary, PluginType.Persistence, "*.dll" );
-						_persistenceContainer.Error += ( sender, args ) => {  };
+			var pluginManagerController = new PluginManagerController();
+
 			var providerDict = new Dictionary<PluginType, PluginProvider>
 			{
-				{ PluginType.Persistence, _persistenceContainer },
-				{ PluginType.Interruption, _interruptionsContainer },
-				{ PluginType.Vdm, _vdmsContainer }
+				{ PluginType.Persistence, pluginManagerController.PersistenceContainer },
+				{ PluginType.Interruption, pluginManagerController.InterruptionsContainer },
+				{ PluginType.Vdm, pluginManagerController.VdmContainer }
 			};
+
+			pluginManagerController.RefreshingEvent += ( sender, args ) =>
+			{
+				_manifestManager.PluginManifest.ChceckPluginState( providerDict );
+				Current.Dispatcher.Invoke( () => _appOverviewViewModel.Populate( _manifestManager.PluginManifest ) );
+			};
+
 			_manifestManager.PluginManifest.ChceckPluginState( providerDict );
 
 			_appOverviewViewModel = new AppOverviewViewModel( _manifestManager.PluginManifest );
@@ -61,10 +64,10 @@ namespace PluginManager
 			_appOverview.Show();
 
 			// Dispose MEF container on exit.
-			Exit += ( sender, args ) => { if ( _persistenceContainer != null ) _persistenceContainer.Dispose(); };
+			Exit += ( sender, args ) => pluginManagerController.Dispose();
 
 			// Dispose MEF container on unhandled exception.
-			//AppDomain.CurrentDomain.UnhandledException += ( s, a ) => { if ( _persistenceContainer != null ) _persistenceContainer.Dispose(); };
+			AppDomain.CurrentDomain.UnhandledException += ( s, a ) => pluginManagerController.Dispose();
 		}
 	}
 }

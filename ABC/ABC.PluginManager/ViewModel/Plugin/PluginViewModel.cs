@@ -2,42 +2,44 @@
 using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
-using PluginManager.ViewModel.PluginOverview.Binding;
+using PluginManager.ViewModel.Plugin.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Aspects.ViewModel;
+using Whathecode.System.Windows.Input.CommandFactory.Attributes;
 
 
-namespace PluginManager.ViewModel.PluginOverview
+namespace PluginManager.ViewModel.Plugin
 {
-	[ViewModel( typeof( PluginProperties ), typeof( PluginCommands ) )]
+	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class PluginViewModel
 	{
 		public delegate void PluginEventHandler( PluginViewModel pluginViewModel, Guid abcPlugin );
 
 		/// <summary>
-		///   Event which is triggered when plug-in being installed.
+		///   Event which is triggered when plug-in being configured.
 		/// </summary>
-		public event PluginEventHandler IntallingPluginEvent;
+		public event EventHandler ConfiguringPluginEvent;
 
-		[NotifyProperty( PluginProperties.Author )]
+		[NotifyProperty( Binding.Properties.Author )]
 		public string Author { get; private set; }
 
-		[NotifyProperty( PluginProperties.Description )]
+		[NotifyProperty( Binding.Properties.Description )]
 		public string Description { get; private set; }
 
-		[NotifyProperty( PluginProperties.Version )]
+		[NotifyProperty( Binding.Properties.Version )]
 		public Version Version { get; private set; }
 
 		public PluginType PluginType { get; private set; }
 
-		[NotifyProperty( PluginProperties.Icon )]
+		[NotifyProperty( Binding.Properties.Icon )]
 		public string Icon { get; private set; }
 
-		[NotifyProperty( PluginProperties.State )]
+		[NotifyProperty( Binding.Properties.State )]
 		public PluginState State { get; set; }
 
 		readonly PluginManifestPlugin _plugin;
+
 
 		public PluginViewModel( PluginManifestPlugin plugin )
 		{
@@ -52,16 +54,27 @@ namespace PluginManager.ViewModel.PluginOverview
 			_plugin = plugin;
 		}
 
-		public void DownloadAbcPlugins()
+		[CommandExecute( Commands.Download )]
+		public void Download()
 		{
 			_plugin.AbcPlugins.ForEach( abcplugin =>
 			{
 				var guid = new Guid( abcplugin.Guid );
-				var downloader = new PluginDownloader( guid, PluginType );
+				var manager = new PluginFileManager( guid, PluginType );
 
-				// TODO: Send event to install plug-in. 
-				downloader.PluginDownloadedEvent += ( plugin, args ) => IntallingPluginEvent( this, guid );
-				downloader.DownloadAsync();
+				manager.DownloadAsync();
+			} );
+		}
+
+		[CommandExecute( Commands.Delete )]
+		public void Delete()
+		{
+			_plugin.AbcPlugins.ForEach( abcplugin =>
+			{
+				var guid = new Guid( abcplugin.Guid );
+				var manager = new PluginFileManager( guid, PluginType );
+
+				manager.Delete();
 			} );
 		}
 	}
