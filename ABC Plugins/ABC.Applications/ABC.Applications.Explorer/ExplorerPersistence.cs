@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using ABC.Applications.Persistence;
-using ABC.Plugins;
 using SHDocVw;
 using Whathecode.Interop;
 using Whathecode.System.Extensions;
@@ -23,7 +22,7 @@ namespace ABC.Applications.Explorer
 
 
 	[Export( typeof( AbstractApplicationPersistence ) )]
-	public class ExplorerPersistence : AbstractApplicationPersistence, IInstallable
+	public class ExplorerPersistence : AbstractApplicationPersistence
 	{
 		public ExplorerPersistence()
 			: base( Assembly.GetExecutingAssembly() ) {}
@@ -93,20 +92,6 @@ namespace ABC.Applications.Explorer
 		public override Type GetPersistedDataType()
 		{
 			return typeof( List<ExplorerLocation> );
-		}
-
-		public bool Install()
-		{
-			// Nothing to do install.
-			Console.WriteLine( "Installing explorer plug-in" );
-			return true;
-		}
-
-		public bool Unistall()
-		{
-			// Nothing to do uninstall.
-			Console.WriteLine( "Uninstalling explorer plug-in" );
-			return true;
 		}
 	}
 }
