@@ -12,6 +12,14 @@ namespace PluginManager.Model
 		}
 
 		public PluginState PluginState { get; set; }
+		
 		public Guid Guid { get; set; }
+
+		public bool IsConfigurable { get; set; }
+	}
+
+	public partial class PluginManifestPluginAbcPlugin
+	{
+		public string PluginPath { get; set; }
 	}
 }

@@ -15,22 +15,12 @@ namespace PluginManager.ViewModel.PluginOverview
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class PluginOverviewViewModel
 	{
-		public delegate void PluginEventHandler( PluginViewModel pluginViewModel, Guid abcPluginGuid );
+		public delegate void PluginEventHandler( PluginViewModel pluginViewModel, EventArgs args );
 
 		/// <summary>
-		///   Event which is triggered when plug-in being installed.
+		///   Event which is triggered when plug-in being configured.
 		/// </summary>
-		public event PluginEventHandler InstallingPluginEvent;
-
-		/// <summary>
-		///   Event which is triggered when plug-in being uninstalled.
-		/// </summary>
-		public event PluginEventHandler UninstallingPluginEvent;
-
-		/// <summary>
-		///   Event which is triggered when plug-in being updated.
-		/// </summary>
-		public event PluginEventHandler UpdatingPluginEvent;
+		public event PluginEventHandler ConfiguringPluginEvent;
 
 		[NotifyProperty( Binding.Properties.SelectedPlugins )]
 		public ObservableCollection<PluginViewModel> SelectedPlugins { get; private set; }
@@ -49,6 +39,7 @@ namespace PluginManager.ViewModel.PluginOverview
 			plugins.ForEach( plugin =>
 			{
 				var pluginViewModel = new PluginViewModel( plugin );
+				pluginViewModel.ConfiguringPluginEvent += ( sender, args ) => ConfiguringPluginEvent( (PluginViewModel)sender, args );
 				Plugins.Add( pluginViewModel );
 			} );
 		}

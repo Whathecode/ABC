@@ -58,6 +58,11 @@ namespace ABC.Applications.Persistence
 			return plugin != null ? plugin.AssemblyInfo.Version : null;
 		}
 
+		public string GetPluginPath( Guid guid )
+		{
+			return _pluginCatalog.LoadedFiles.FirstOrDefault( loadedFile => loadedFile.IndexOf( guid.ToString(), StringComparison.OrdinalIgnoreCase ) >= 0 );;
+		}
+
 		AbstractApplicationPersistence GetAbstractApplicationPersistence( Guid guid )
 		{
 			var plugin = GetPersistenceProviders1()

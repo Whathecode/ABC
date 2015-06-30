@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows;
-using PluginManager.Model;
 using PluginManager.PluginManagment;
 using PluginManager.View.AppOverview;
 using PluginManager.ViewModel.AppOverview;
@@ -35,7 +33,6 @@ namespace PluginManager
 				return;
 			}
 
-
 			InterruptionsPluginLibrary = Path.Combine( PluginManagerDirectory, "InterruptionHandlers" );
 			PersistencePluginLibrary = Path.Combine( PluginManagerDirectory, "ApplicationPersistence" );
 			VdmPluginLibrary = Path.Combine( PluginManagerDirectory, "VdmSettings" );
@@ -43,23 +40,17 @@ namespace PluginManager
 			_manifestManager = new PluginManifestManager();
 
 			var pluginManagerController = new PluginManagerController();
-
-			var providerDict = new Dictionary<PluginType, PluginProvider>
-			{
-				{ PluginType.Persistence, pluginManagerController.PersistenceContainer },
-				{ PluginType.Interruption, pluginManagerController.InterruptionsContainer },
-				{ PluginType.Vdm, pluginManagerController.VdmContainer }
-			};
-
 			pluginManagerController.RefreshingEvent += ( sender, args ) =>
 			{
-				_manifestManager.PluginManifest.ChceckPluginState( providerDict );
+				_manifestManager.PluginManifest.ChceckPluginState( pluginManagerController.ProviderDictionary );
 				Current.Dispatcher.Invoke( () => _appOverviewViewModel.Populate( _manifestManager.PluginManifest ) );
 			};
 
-			_manifestManager.PluginManifest.ChceckPluginState( providerDict );
+			_manifestManager.PluginManifest.ChceckPluginState( pluginManagerController.ProviderDictionary );
 
 			_appOverviewViewModel = new AppOverviewViewModel( _manifestManager.PluginManifest );
+			_appOverviewViewModel.ConfiguringPluginEvent +=
+				( model, args ) => pluginManagerController.Configure( model.Guid, model.PluginType, model.PluginPath );
 			_appOverview = new AppOverview { DataContext = _appOverviewViewModel };
 			_appOverview.Show();
 

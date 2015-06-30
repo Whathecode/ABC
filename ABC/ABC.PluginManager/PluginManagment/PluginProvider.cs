@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -15,6 +14,7 @@ namespace PluginManager.PluginManagment
 {
 	// Plug-in containers have to be initialized inside of an object which derives from MarshalByRefObject in order
 	// to communicate with other domains (plug-ins on the fly swapping).
+	[Serializable]
 	public class PluginProvider : MarshalByRefObject, IDisposable
 	{
 		const string InstalledErrorMessage = "Plug-in was not installed correctly.";
@@ -55,11 +55,9 @@ namespace PluginManager.PluginManagment
 			}
 
 			var watcher = new PluginWatcher( _pluginContainer.PluginFolderPath, fileFilter );
-			
 			// When plug-ins are installed they may require additional configuration, show some visual elements.
-			watcher.Created += ( sender, args ) => ExecuteSta( () => InstallPugin( GetGuidDromAssembly( args.FullPath ), args.FullPath ) );
+			watcher.Created += ( sender, args ) => ExecuteSta( () => InstallPugin( GetGuidDromAssembly( args.FullPath ), args.FullPath, true ) );
 			watcher.Deleted += ( sender, args ) => ExecuteSta( () => UninstallPugin( GetGuidDromAssembly( args.FullPath ), args.FullPath ) );
-			
 			watcher.Error += ( sender, args ) => Error( watcher, new PluginErrorEventArgs( new Exception( WatcherErrorMessage ), null ) );
 		}
 
@@ -126,9 +124,12 @@ namespace PluginManager.PluginManagment
 			return _pluginContainer.GetPluginVersion( guid ) != null;
 		}
 
-		void InstallPugin( Guid guid, string pluginPath )
+		void InstallPugin( Guid guid, string pluginPath, bool refresh )
 		{
-			_pluginContainer.Refresh();
+			if ( refresh )
+			{
+				_pluginContainer.Refresh();
+			}
 			var installablePlugin = _pluginContainer.GetInstallablePlugin( guid );
 			if ( installablePlugin != null )
 			{
@@ -167,6 +168,22 @@ namespace PluginManager.PluginManagment
 				_pluginContainer.Refresh();
 				Uninstalled( this, new EventArgs() );
 			}
+		}
+
+		// TODO: Does plug-in configuration require more/different steps than installation?
+		public void Configure( Guid guid, string pluginPath )
+		{
+			InstallPugin( guid, pluginPath, false );
+		}
+
+		public string GetPluginPath( Guid guid )
+		{
+			return _pluginContainer.GetPluginPath( guid );
+		}
+
+		public bool IsPluginConfigurable( Guid guid )
+		{
+			return _pluginContainer.GetInstallablePlugin( guid ) != null;
 		}
 
 		public void Dispose()

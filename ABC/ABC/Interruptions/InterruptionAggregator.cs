@@ -92,5 +92,10 @@ namespace ABC.Interruptions
 		{
 			return GetInterruptionTrigger( guid ) as IInstallable;
 		}
+
+		public string GetPluginPath( Guid guid )
+		{
+			return _pluginCatalog.LoadedFiles.FirstOrDefault( loadedFile => loadedFile.IndexOf( guid.ToString(), StringComparison.OrdinalIgnoreCase ) >= 0 );
+		}
 	}
 }

@@ -75,62 +75,83 @@
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<DockPanel MinWidth="350">
-							<Grid Margin="2">
-								<StackPanel
-									Orientation="Horizontal"
-									VerticalAlignment="Center"
-									HorizontalAlignment="Stretch">
-									<Image
-										Width="30"
-										Height="30"
-										Source="{Binding Icon}"
-										Margin="5"
-										Cursor="Hand" />
-									<StackPanel Margin="5" VerticalAlignment="Center">
-										<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
-										<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
-										<TextBlock Text="{Binding Description}" Margin="0, 5, 0, 0" />
-									</StackPanel>
-								</StackPanel>
 
-								<StackPanel
-									Orientation="Horizontal"
-									VerticalAlignment="Bottom"
-									HorizontalAlignment="Right">
+							<Image
+								Width="30"
+								Height="30"
+								Source="{Binding Icon}"
+								Margin="5"
+								Cursor="Hand" />
+
+							<StackPanel Margin="5" VerticalAlignment="Center">
+								<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
+								<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
+								<TextBlock Text="{Binding Description}" Margin="0, 5, 0, 0" MaxWidth="200" TextWrapping="Wrap"/>
+							</StackPanel>
+
+							<StackPanel
+								DockPanel.Dock="Right"
+								Orientation="Horizontal"
+								VerticalAlignment="Bottom"
+								HorizontalAlignment="Right">
+								<Button
+									Background="Transparent"
+									BorderBrush="Transparent"
+									Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}">
 									<Image
 										Source="../icons/uninstall.ico"
 										Width="25"
 										Height="25"
 										MouseEnter="CursorToHand"
 										MouseLeave="CursorToArrow"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Delete}}"
-										Visibility="{Binding State, 
-												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
-												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
-
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Delete}}" />
+								</Button>
+								<Button
+									Background="Transparent"
+									BorderBrush="Transparent"
+									Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Availible}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}">
 									<Image
 										Source="../icons/install.png"
 										Width="25"
 										Height="25"
 										MouseEnter="CursorToHand"
 										MouseLeave="CursorToArrow"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}"
-										Visibility="{Binding State, 
-												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Availible}, 
-												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}" />
+								</Button>
+								<Button
+									Background="Transparent"
+									BorderBrush="Transparent"
+									Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Updates}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}">
 									<Image
 										Source="../icons/update.png"
 										Width="25"
 										Height="25"
 										MouseEnter="CursorToHand"
 										MouseLeave="CursorToArrow"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}"
-										Visibility="{Binding State, 
-												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Updates}, 
-												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}" />
-								</StackPanel>
-
-							</Grid>
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}" />
+								</Button>
+								<Button
+									Background="Transparent"
+									BorderBrush="Transparent"
+									Visibility="{Binding State, 
+												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
+												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
+									IsEnabled="{Binding IsConfigurable}">
+									<Image
+										Source="../icons/configure.png"
+										Width="25"
+										Height="25"
+										MouseEnter="CursorToHand"
+										MouseLeave="CursorToArrow"
+										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Configure}}" />
+								</Button>
+							</StackPanel>
 
 						</DockPanel>
 					</DataTemplate>

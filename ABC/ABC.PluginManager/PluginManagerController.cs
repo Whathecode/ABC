@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
@@ -16,29 +17,47 @@ namespace PluginManager
 
 		public PluginProvider VdmContainer { get; private set; }
 
+		public Dictionary<PluginType, PluginProvider> ProviderDictionary { get; private set; }
+
 
 		public PluginManagerController()
 		{
 			PersistenceContainer = PluginProviderFactory.CreateProvider( App.PersistencePluginLibrary, PluginType.Persistence, "*.dll" );
-			PersistenceContainer.Installed += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
-			PersistenceContainer.Uninstalled += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
+			AttachEvents( PersistenceContainer );
 			PersistenceContainer.Error += ( sender, args ) => MessageBox.Show( "Persistence composition error", args.ToString() );
 
 			InterruptionsContainer = PluginProviderFactory.CreateProvider( App.InterruptionsPluginLibrary, PluginType.Interruption, "*.dll" );
-			InterruptionsContainer.Installed += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
-			InterruptionsContainer.Uninstalled += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
-			InterruptionsContainer.Error += ( sender, args ) => MessageBox.Show( "Interruptions composition error", args.ToString() );
+			AttachEvents( InterruptionsContainer );
+			PersistenceContainer.Error += ( sender, args ) => MessageBox.Show( "Interruptions composition error", args.ToString() );
 
 			VdmContainer = PluginProviderFactory.CreateProvider( App.VdmPluginLibrary, PluginType.Vdm, "*.xml" );
-			VdmContainer.Installed += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
-			VdmContainer.Uninstalled += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
-			VdmContainer.Error += ( sender, args ) => MessageBox.Show( "Persistence composition error", args.ToString() );
+			AttachEvents( VdmContainer );
+			PersistenceContainer.Error += ( sender, args ) => MessageBox.Show( "VDM composition error", args.ToString() );
+
+			ProviderDictionary = new Dictionary<PluginType, PluginProvider>
+			{
+				{ PluginType.Persistence, PersistenceContainer },
+				{ PluginType.Interruption, InterruptionsContainer },
+				{ PluginType.Vdm, VdmContainer }
+			};
+		}
+
+		void AttachEvents( PluginProvider pluginProvider )
+		{
+			pluginProvider.Installed += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
+			pluginProvider.Uninstalled += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
 		}
 
 		public void Dispose()
 		{
 			if ( PersistenceContainer != null )
 				PersistenceContainer.Dispose();
+		}
+
+		public void Configure( Guid guid, PluginType type, string pluginPath )
+		{
+			var pluginContainer = type == PluginType.Persistence ? PersistenceContainer : type == PluginType.Interruption ? InterruptionsContainer : VdmContainer;
+			pluginContainer.Configure( guid, pluginPath );
 		}
 	}
 }

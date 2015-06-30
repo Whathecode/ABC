@@ -19,15 +19,23 @@ namespace PluginManager.ViewModel.AppOverview
 	[ViewModel( typeof( Binding.Properties ), typeof( Commands ) )]
 	public class AppOverviewViewModel
 	{
-		public delegate void PluginOverviewEventHandler( PluginViewModel pluginViewModel, Guid abcPluginGuid );
+		public delegate void PluginEventHandler( PluginViewModel pluginViewModel, EventArgs args );
 
-		//<summary>
-		//  Event which is triggered when plug-in being installed.
-		//</summary>
-		public event PluginOverviewEventHandler InstallingPluginEvent;
+		/// <summary>
+		///   Event which is triggered when plug-in being configured.
+		/// </summary>
+		public event PluginEventHandler ConfiguringPluginEvent;
+
 
 		[NotifyProperty( Binding.Properties.SelectedApplication )]
 		public ApplicationViewModel SelectedApplication { get; set; }
+
+		[NotifyPropertyChanged( Binding.Properties.SelectedApplication )]
+		public void OnSelectedApplicationChanged( ApplicationViewModel oldApp, ApplicationViewModel newApp )
+		{
+			CurrentPlugins = new PluginOverviewViewModel( ApplicationPlugins[ newApp ].ToList() );
+			CurrentPlugins.ConfiguringPluginEvent += ( sender, args ) => ConfiguringPluginEvent( sender, args );
+		}
 
 		[NotifyProperty( Binding.Properties.Filters )]
 		public List<string> Filters { get; private set; }
@@ -98,7 +106,6 @@ namespace PluginManager.ViewModel.AppOverview
 			if ( ApplicationPlugins.Any() )
 			{
 				SelectedApplication = ApplicationPlugins.First().Key;
-				CurrentPlugins = new PluginOverviewViewModel( ApplicationPlugins.First().Value );
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using PluginManager.Common;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
@@ -38,8 +39,21 @@ namespace PluginManager.ViewModel.Plugin
 		[NotifyProperty( Binding.Properties.State )]
 		public PluginState State { get; set; }
 
+		[NotifyProperty( Binding.Properties.IsConfigurable )]
+		public bool IsConfigurable { get; set; }
+
 		readonly PluginManifestPlugin _plugin;
 
+		public Guid Guid
+		{
+			get { return new Guid( _plugin.AbcPlugins.First().Guid ); }
+		}
+
+		// If one plug-in (plug-in manager) is consisted from many ABC sub plug-ins the first one should have a configuration logic.
+		public string PluginPath
+		{
+			get { return _plugin.AbcPlugins.First().PluginPath; }
+		}
 
 		public PluginViewModel( PluginManifestPlugin plugin )
 		{
@@ -50,6 +64,7 @@ namespace PluginManager.ViewModel.Plugin
 			PluginType = plugin.Type;
 			Icon = plugin.Icon;
 			State = plugin.PluginState;
+			IsConfigurable = plugin.IsConfigurable;
 
 			_plugin = plugin;
 		}
@@ -72,10 +87,16 @@ namespace PluginManager.ViewModel.Plugin
 			_plugin.AbcPlugins.ForEach( abcplugin =>
 			{
 				var guid = new Guid( abcplugin.Guid );
-				var manager = new PluginFileManager( guid, PluginType );
+				var manager = new PluginFileManager( guid, PluginType, PluginPath );
 
 				manager.Delete();
 			} );
+		}
+
+		[CommandExecute( Commands.Configure )]
+		public void Configure()
+		{
+			ConfiguringPluginEvent( this, new EventArgs() );
 		}
 	}
 }

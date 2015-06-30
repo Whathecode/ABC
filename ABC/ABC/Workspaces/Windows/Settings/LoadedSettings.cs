@@ -44,7 +44,9 @@ namespace ABC.Workspaces.Windows.Settings
 		readonly List<WindowInfo> _accessDeniedWindows = new List<WindowInfo>();
 		readonly Dictionary<WindowInfo, ProcessBehaviorsProcess> _windowProcessBehaviors = new Dictionary<WindowInfo, ProcessBehaviorsProcess>();
 		readonly bool _loadDefaultSettings;
-		
+
+		IEnumerable<string> _loadedFiles = new List<string>();
+
 		public bool IgnoreRequireElevatedPrivileges { get; private set; }
 		public string PluginFolderPath { get; private set; }
 
@@ -241,8 +243,8 @@ namespace ABC.Workspaces.Windows.Settings
 			Settings = null;
 			LoadDefaultSetting();
 
-			var plugins = Directory.EnumerateFiles( PluginFolderPath, "*.xml" );
-			foreach ( var plugin in plugins )
+			_loadedFiles = Directory.EnumerateFiles( PluginFolderPath, "*.xml" );
+			foreach ( var plugin in _loadedFiles )
 			{
 				try
 				{
@@ -266,6 +268,11 @@ namespace ABC.Workspaces.Windows.Settings
 		{
 			var plugin = GetProcessBehaviorsProcess( guid );
 			return plugin != null ? new Version( plugin.Version ) : null;
+		}
+
+		public string GetPluginPath( Guid guid )
+		{
+			return _loadedFiles.FirstOrDefault( pluginPath => pluginPath.IndexOf( guid.ToString(), StringComparison.OrdinalIgnoreCase ) >= 0 );
 		}
 
 		ProcessBehaviorsProcess GetProcessBehaviorsProcess( Guid guid )

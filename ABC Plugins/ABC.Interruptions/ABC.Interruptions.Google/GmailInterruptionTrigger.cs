@@ -39,31 +39,11 @@ namespace ABC.Interruptions.Google
 			: base( TimeSpan.FromMinutes( 1 ), Assembly.GetExecutingAssembly() )
 		{
 			_dispatcher = Dispatcher.CurrentDispatcher;
-
-			// Recover settings, or ask for them if not asked before.
-			_config = ConfigurationManager.OpenExeConfiguration( Assembly.GetExecutingAssembly().Location );
-
-			if ( _config == null )
-			{
-				return;
-			}
-
-			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
-			if ( _settings == null || _settings.Password.Length == 0 )
-			{
-				return;
-			}
-
-			byte[] decryptedData = ProtectedData.Unprotect(
-				Convert.FromBase64String( _settings.Password ),
-				Entropy,
-				DataProtectionScope.CurrentUser );
-			_password = Encoding.Unicode.GetString( decryptedData ).ToSecureString();
 		}
 
 		public void AskSettings()
 		{
-			var askForCredentials = new CredentialsDialog();
+			var askForCredentials = new CredentialsDialog( _settings.Username );
 			bool? result = askForCredentials.ShowDialog();
 			if ( result != null && result.Value )
 			{
@@ -210,12 +190,27 @@ namespace ABC.Interruptions.Google
 			}
 
 			_config = ConfigurationManager.OpenExeConfiguration( pluginPath );
-			_settings = new GoogleConfiguration();
-			if ( _config.Sections.Get( GmailSection ) != null )
+
+			if ( _config == null )
 			{
-				_config.Sections.Remove( GmailSection );
+				return false;
 			}
-			_config.Sections.Add( GmailSection, _settings );
+
+			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
+			if ( _settings == null || _settings.Password.Length == 0 )
+			{
+				_settings = new GoogleConfiguration();
+				_config.Sections.Add( GmailSection, _settings );
+			}
+			else
+			{
+				byte[] decryptedData = ProtectedData.Unprotect(
+					Convert.FromBase64String( _settings.Password ),
+					Entropy,
+					DataProtectionScope.CurrentUser );
+				_password = Encoding.Unicode.GetString( decryptedData ).ToSecureString();
+			}
+
 			AskSettings();
 			return true;
 		}

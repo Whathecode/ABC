@@ -25,12 +25,12 @@ namespace PluginManager.PluginManagment
 		readonly WebClient _webClient;
 
 
-		public PluginFileManager( Guid abcPluginGuid, PluginType abcPluginType )
+		public PluginFileManager( Guid abcPluginGuid, PluginType abcPluginType, string pluginPath = null )
 		{
 			// Plug-in paths setup.
 			_pluginDownloadPath = RemotePluginPath + abcPluginGuid + PluginExtention;
 			_pluginTempPath = Path.Combine( GetPluginDirectory( abcPluginType ), TempDirectory, abcPluginGuid.ToString() ) + GetPluginExtention( abcPluginType );
-			_pluginPath = Path.Combine( GetPluginDirectory( abcPluginType ), abcPluginGuid.ToString() ) + GetPluginExtention( abcPluginType );
+			_pluginPath = pluginPath ?? Path.Combine( GetPluginDirectory( abcPluginType ), abcPluginGuid.ToString() ) + GetPluginExtention( abcPluginType );
 
 			_pluginfileInfo = new FileInfo( _pluginTempPath );
 

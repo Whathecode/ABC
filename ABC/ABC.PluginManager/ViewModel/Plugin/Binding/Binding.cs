@@ -6,12 +6,14 @@
 		Description,
 		Icon,
 		Version,
-		State
+		State,
+		IsConfigurable
 	}
 
 	public enum Commands
 	{
 		Download,
-		Delete
+		Delete,
+		Configure
 	}
 }

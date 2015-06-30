@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Security;
+using System.Windows;
 
 
 namespace ABC.Interruptions.Google
@@ -8,9 +9,10 @@ namespace ABC.Interruptions.Google
 	/// </summary>
 	public partial class CredentialsDialog
 	{
-		public CredentialsDialog()
+		public CredentialsDialog( string username = "" )
 		{
 			InitializeComponent();
+			Username.Text = username;
 		}
 
 
