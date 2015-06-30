@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<PluginManifest
+  xmlns="http://whatodo.at/abc/abc-api/PluginManifest"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatodo.at/abc/abc-api PluginManifest.xsd">
+
+  <Application
+    Author="Microsoft Corporation"
+    Guid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
+    Name="Windows"
+    Icon="http://undeleteplus.com/assets/images/emblem_win7.gif">
+    <TargetExecutables>
+      <Executable ProcessName="explorer" CompanyName="Microsoft Corporation" Version="6.1" />
+      <Executable ProcessName="Dxpserver" CompanyName="Microsoft Corporation" Version="6.1" />
+      <Executable ProcessName="wisptis" CompanyName="Microsoft Corporation" Version="6.1" />
+      <Executable ProcessName="taskhost" CompanyName="Microsoft Corporation" Version="6.1" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="ASUSTek Computer Inc."
+    Guid="{7B7D90AC-1BBE-47D7-BF0A-53CCCB8782DE}"
+    Name="Asus"
+    Icon="http://img.informer.com/icons/png/48/2799/2799082.png">
+    <TargetExecutables>
+      <Executable ProcessName="ATKOSD2" CompanyName="ASUSTek Computer Inc." Version="1.0" />
+      <Executable ProcessName="ACMON" CompanyName="ASUS" Version="1.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="France Telecom"
+    Guid="{7424EA7A-BBD3-4CBC-90D2-5FB7343BFBE5}"
+    Name="USB Modem Detector"
+    Icon="http://www.napa-wine.eu/twiki/pub/Public/FranceTelecom/logoOrange.gif">
+    <TargetExecutables>
+      <Executable ProcessName="CardDetector" CompanyName="France Telecom" Version="1.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+   Author="Google Inc."
+   Guid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
+   Name="Chrome"
+   Icon="http://dvd-mac.com/images/chrome.png">
+    <TargetExecutables>
+      <Executable ProcessName="chrome" CompanyName="Google Inc." Version="1.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
+    Type="Vdm"
+    Icon="http://undeleteplus.com/assets/images/emblem_win7.gif"
+    Description="VDM stuff for several windows 7 applications.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{123677AA-42EF-4DFB-A278-BE2EB2420D39}"
+        Version="1.0.0.0" />
+      <AbcPlugin
+        Guid="{CC9C4D33-5B15-401E-88D5-A09A01834E34}"
+        Version="1.0.0.0" />
+      <AbcPlugin
+        Guid="{541E20F3-C516-4795-B742-A0EDF6FB3E03}"
+        Version="1.0.0.0" />
+      <AbcPlugin
+        Guid="{FB8F3366-BF06-49D4-81B1-EA6B259510C2}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
+    Type="Persistence"
+    Icon="http://upload.wikimedia.org/wikipedia/en/9/92/Windows_Explorer_Icon.png"
+    Description="Persistence functionality for Windows Explorer.">
+    <AbcPlugins>
+      <AbcPlugin
+        Version="1.0.0.0"
+        Guid="{83856e51-c288-4473-adfb-4254a7b154e9}" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
+    Type="Interruption"
+    Icon="http://icons.iconarchive.com/icons/cornmanthe3rd/plex/512/Communication-gmail-icon.png"
+    Description="Gmial plug-in notifies about new e-mails.">
+    <AbcPlugins>
+      <AbcPlugin
+        Version="1.0.0.0"
+        Guid="{63EB2679-9CA9-498A-9026-12578C40CF52}" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{7B7D90AC-1BBE-47D7-BF0A-53CCCB8782DE}"
+    Type="Vdm"
+    Icon="http://img.informer.com/icons/png/48/2799/2799082.png"
+    Description="Asus function key visualizations and Asus Splendid Video Enhancement Technology.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{018B536A-B78C-444F-AE21-0120075A13F7}"
+        Version="1.0.0.0" />
+      <AbcPlugin
+        Guid="{97AA22DB-6F8E-42ED-BE90-33303F525635}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Dominik Grondziowski"
+    ApplicationGuid="{7424EA7A-BBD3-4CBC-90D2-5FB7343BFBE5}"
+    Type="Vdm"
+    Icon="http://images2.okr.ro/serve/auctions.v7/2014/feb/20/cd545888387376c0b1c15b1ac6e6769e-106910-48_48.jpg"
+    Description="VDM, ignores USB modem detector app from Orange.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{31EF8FEB-01DE-423B-A599-28D12D280CCD}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
+    Type="Vdm"
+    Icon="http://dvd-mac.com/images/chrome.png"
+    Description="Chrome VDM plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{CE4157B1-EEBC-449B-9696-D403DEBE360B}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+</PluginManifest>

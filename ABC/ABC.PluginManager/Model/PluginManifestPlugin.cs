@@ -8,7 +8,7 @@ namespace PluginManager.Model
 	{
 		public PluginManifestPlugin()
 		{
-			Guid = new Guid();
+			Guid = Guid.NewGuid();
 		}
 
 		public PluginState PluginState { get; set; }

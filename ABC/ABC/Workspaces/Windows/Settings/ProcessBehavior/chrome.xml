@@ -7,7 +7,7 @@
 	<!-- Chrome. -->
 	<Process 
     Guid="{CE4157B1-EEBC-449B-9696-D403DEBE360B}" 
-    Version="1.0" 
+    Version="1.0.0.0" 
     TargetProcessName="chrome" 
     TargetProcessCompanyName="Google Inc.">
 		<IgnoreWindows>

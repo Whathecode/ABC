@@ -33,6 +33,7 @@ namespace PluginManager.ViewModel.AppOverview
 		[NotifyPropertyChanged( Binding.Properties.SelectedApplication )]
 		public void OnSelectedApplicationChanged( ApplicationViewModel oldApp, ApplicationViewModel newApp )
 		{
+			_lastSelectedAppGuid = newApp.Guid;
 			CurrentPlugins = new PluginOverviewViewModel( ApplicationPlugins[ newApp ].ToList() );
 			CurrentPlugins.ConfiguringPluginEvent += ( sender, args ) => ConfiguringPluginEvent( sender, args );
 		}
@@ -56,6 +57,8 @@ namespace PluginManager.ViewModel.AppOverview
 		}
 
 		readonly PluginManifest _pluginManifest;
+
+		Guid _lastSelectedAppGuid;
 
 
 		public AppOverviewViewModel( PluginManifest pluginManifest )
@@ -105,7 +108,8 @@ namespace PluginManager.ViewModel.AppOverview
 
 			if ( ApplicationPlugins.Any() )
 			{
-				SelectedApplication = ApplicationPlugins.First().Key;
+				var lastSelectedApp = ApplicationPlugins.Keys.FirstOrDefault( key => key.Guid == _lastSelectedAppGuid );
+				SelectedApplication =  lastSelectedApp ?? ApplicationPlugins.First().Key;
 			}
 		}
 

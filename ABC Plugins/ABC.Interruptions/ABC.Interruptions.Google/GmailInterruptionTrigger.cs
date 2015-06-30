@@ -197,7 +197,7 @@ namespace ABC.Interruptions.Google
 			}
 
 			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
-			if ( _settings == null || _settings.Password.Length == 0 )
+			if ( _settings == null )
 			{
 				_settings = new GoogleConfiguration();
 				_config.Sections.Add( GmailSection, _settings );

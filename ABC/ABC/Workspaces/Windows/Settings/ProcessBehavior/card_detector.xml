@@ -7,7 +7,7 @@
   <!-- Card detector is a background application that helps to detect USB modems, mobile Internet SIM cards. -->
   <Process 
     Guid="{31EF8FEB-01DE-423B-A599-28D12D280CCD}" 
-    Version="1.0"
+    Version="1.0.0.0"
     TargetProcessName="CardDetector" 
     TargetProcessCompanyName="France Telecom">
     <IgnoreWindows>
