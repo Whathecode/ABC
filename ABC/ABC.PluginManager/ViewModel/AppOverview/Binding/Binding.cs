@@ -6,7 +6,7 @@
 		CurrentPlugins,
 		Filters,
 		SelectedFilter,
-		ApplicationPlugins
+		Applications
 	}
 
 	public enum Commands

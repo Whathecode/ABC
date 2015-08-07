@@ -91,7 +91,7 @@
 				SelectedItem="{Binding SelectedFilter}" />
 
 			<ListView
-				ItemsSource="{Binding ApplicationPlugins.Keys}"
+				ItemsSource="{Binding Applications}"
 				Name="AppsListView"
 				BorderThickness="0"
 				Padding="5"

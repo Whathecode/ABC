@@ -54,10 +54,8 @@ namespace PluginManager
 			_appOverview = new AppOverview { DataContext = _appOverviewViewModel };
 			_appOverview.Show();
 
-			// Dispose MEF container on exit.
+			// Dispose MEF container on exit and any unhandled exception.
 			Exit += ( sender, args ) => pluginManagerController.Dispose();
-
-			// Dispose MEF container on unhandled exception.
 			AppDomain.CurrentDomain.UnhandledException += ( s, a ) => pluginManagerController.Dispose();
 		}
 	}
