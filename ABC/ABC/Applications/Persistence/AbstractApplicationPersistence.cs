@@ -17,8 +17,11 @@ namespace ABC.Applications.Persistence
 		/// AssemblyVersion have to be included as assembly attributes.</param>
 		protected AbstractApplicationPersistence( Assembly assembly )
 		{
-			// TODO: Verify if all assembly info is included.
 			AssemblyInfo = new AssemblyInfo( assembly );
+			if ( Guid.Empty == AssemblyInfo.Guid || String.IsNullOrEmpty( AssemblyInfo.TargetProcessName ) )
+			{
+				throw new ArgumentException("Plug-in GUID and target process name have to be provided in assembly info.");
+			}
 		}
 
 		/// <summary>

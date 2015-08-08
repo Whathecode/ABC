@@ -16,9 +16,13 @@ namespace ABC.Interruptions
 		protected AbstractInterruptionTrigger( Assembly assembly )
 		{
 			AssemblyInfo = new AssemblyInfo( assembly );
+			if ( Guid.Empty == AssemblyInfo.Guid || String.IsNullOrEmpty( AssemblyInfo.TargetProcessName ) )
+			{
+				throw new ArgumentException( "Plug-in GUID and target process name have to be provided in assembly info." );
+			}
 		}
 
-		public AssemblyInfo AssemblyInfo { get;  private set; }
+		public AssemblyInfo AssemblyInfo { get; private set; }
 
 		protected void TriggerInterruption( AbstractInterruption interruption )
 		{
