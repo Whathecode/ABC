@@ -1,20 +1,17 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+using ABC.Plugins;
+
 [assembly: AssemblyTitle( "ABC.Applications.Chrome.NativeHost" )]
-[assembly: AssemblyDescription( "" )]
-[assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "" )]
+[assembly: AssemblyCompany( "IT University of Copenhagen" )]
 [assembly: AssemblyProduct( "ABC.Applications.Chrome.NativeHost" )]
-[assembly: AssemblyCopyright( "Copyright ©  2014" )]
-[assembly: AssemblyTrademark( "" )]
-[assembly: AssemblyCulture( "" )]
+[assembly: AssemblyCopyright( "Copyright © Steven Jeuris  2014" )]
+[assembly: AssemblyTargetProcess( "chrome", "Google Inc.", "41.0.0.0" )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -40,6 +37,7 @@ using System.Windows;
 	// app, or any theme specific resource dictionaries)
 )]
 
+[assembly: Guid( "5265ab38-4f34-42bb-86c4-bf1cde832a14" )]
 
 // Version information for an assembly consists of the following four values:
 //

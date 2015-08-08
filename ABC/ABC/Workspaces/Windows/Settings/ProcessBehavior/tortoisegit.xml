@@ -7,7 +7,7 @@
 	<!-- TortoiseGit. -->
 	<Process 
     Guid="{4AE162A2-417E-443C-ADC9-F2D0B88A3699}"
-    Version="1.0"
+    Version="1.0.0.0"
     TargetProcessName="TGitCache"
     TargetProcessCompanyName="http://tortoisegit.org/">
 		<IgnoreWindows>

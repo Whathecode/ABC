@@ -118,6 +118,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\ABC\ABC\ABC.csproj">
+      <Project>{D53F1095-6DC0-4950-982F-3322AAE74A50}</Project>
+      <Name>ABC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ABC.Applications.Chrome.csproj">
       <Project>{92345979-b27e-49ea-8dd9-c99218471700}</Project>
       <Name>ABC.Applications.Chrome</Name>

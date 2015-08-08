@@ -40,12 +40,105 @@
   </Application>
 
   <Application
-   Author="Google Inc."
-   Guid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
-   Name="Chrome"
-   Icon="http://dvd-mac.com/images/chrome.png">
+    Author="Google Inc."
+    Guid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
+    Name="Chrome"
+    Icon="http://dvd-mac.com/images/chrome.png">
     <TargetExecutables>
       <Executable ProcessName="chrome" CompanyName="Google Inc." Version="1.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Mozilla Corporation"
+    Guid="{04840684-85A0-4FFC-9A7A-AB37BE0BFFCA}"
+    Name="Firefox"
+    Icon="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGK82j5mhrBWXky1kP5FicE3TquV3HfIeiSqIEje6z2bAZXRa7Cw">
+    <TargetExecutables>
+      <Executable ProcessName="firefox" CompanyName="Mozilla Corporation" Version="1.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Microsoft Corporation"
+    Guid="{D0F573E5-9C19-4238-B8BB-3FD3A937C35B}"
+    Name="Internet Explorer"
+    Icon="https://upload.wikimedia.org/wikipedia/en/0/0f/Internet_Explorer_logo_old.png">
+    <TargetExecutables>
+      <Executable ProcessName="iexplore" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Microsoft Corporation"
+    Guid="{170B7BF3-C803-43AB-B7DE-D3634235F30C}"
+    Name="Office"
+    Icon="http://content5.videojug.com/7c/7ce61f12-0623-6fcb-90b0-ff0008cb8c8f/MsOffice.MediumPortrait.jpg?v2">
+    <TargetExecutables>
+      <Executable ProcessName="WINWORD" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
+      <Executable ProcessName="ONENOTE" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
+      <Executable ProcessName="POWERPNT" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
+      <Executable ProcessName="INFOPATH" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Microsoft Corporation"
+    Guid="{70700DB1-FEB4-450A-95EA-2E1FC8F2D841}"
+    Name="Skype"
+    Icon="http://www.language-exchanges.org/sites/default/files/Skype.png">
+    <TargetExecutables>
+      <Executable ProcessName="skype" CompanyName="Skype Technologies S.A." Version="1.0.0.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Spotify"
+    Guid="{4CEA0E46-D0CA-43C8-8834-30043597885A}"
+    Name="Spotify Helper"
+    Icon="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSNykuknBfegGV9BVJ-MjtckVv-yXoiJvQJuLSJgMEi7c9E-LUz">
+    <TargetExecutables>
+      <Executable ProcessName="SpotifyHelper" CompanyName="" Version="1.0.0.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="http://tortoisegit.org/"
+    Guid="{15E3CFF6-CFAE-4A94-8480-1641A172181B}"
+    Name="Tortoise Git"
+    Icon="http://s3.amazonaws.com/cloud.ohloh.net/attachments/32768/logo_med.png">
+    <TargetExecutables>
+      <Executable ProcessName="TGitCache" CompanyName="" Version="1.0.0.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Microsoft Corporation"
+    Guid="{026FFEF9-3F8D-4AD7-9494-D2B7AFEB5C72}"
+    Name="Photo Viewer"
+    Icon="https://upload.wikimedia.org/wikipedia/en/0/05/Windows_Photo_Viewer_Icon_on_Windows_7.png">
+    <TargetExecutables>
+      <Executable ProcessName="dllhost" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Microsoft Corporation"
+    Guid="{F702C3D8-044B-43EA-ABC3-DBFB61930C2B}"
+    Name="Visual Studio"
+    Icon="https://pbs.twimg.com/profile_images/505104774153256960/SR2hUhQN_normal.png">
+    <TargetExecutables>
+      <Executable ProcessName="devenv" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
+    </TargetExecutables>
+  </Application>
+
+  <Application
+    Author="Microsoft Corporation"
+    Guid="{2844EF73-7320-4C8F-A726-FB4E0379FF15}"
+    Name="Notepad"
+    Icon="http://img.informer.com/icons/png/48/1370/1370750.png">
+    <TargetExecutables>
+      <Executable ProcessName="notepad" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
     </TargetExecutables>
   </Application>
 
@@ -141,6 +234,155 @@
     <AbcPlugins>
       <AbcPlugin
         Guid="{CE4157B1-EEBC-449B-9696-D403DEBE360B}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
+    Type="Persistence"
+    Icon="http://dvd-mac.com/images/chrome.png"
+    Description="Chrome persistence plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{2e5a5dd5-b173-42ea-b196-a8e71c499d56}"
+        Version="41.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{04840684-85A0-4FFC-9A7A-AB37BE0BFFCA}"
+    Type="Vdm"
+    Icon="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGK82j5mhrBWXky1kP5FicE3TquV3HfIeiSqIEje6z2bAZXRa7Cw"
+    Description="Firefox VDM plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{77C5DF97-897E-475E-911A-C979415D8DFC}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{D0F573E5-9C19-4238-B8BB-3FD3A937C35B}"
+    Type="Vdm"
+    Icon="https://upload.wikimedia.org/wikipedia/en/0/0f/Internet_Explorer_logo_old.png"
+    Description="Internet Explorer VDM plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{118D8090-774F-4125-A957-FA37B1D703D4}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Dominik Grondziowski"
+    ApplicationGuid="{170B7BF3-C803-43AB-B7DE-D3634235F30C}"
+    Type="Vdm"
+    Icon="http://i.i.cbsi.com/cnwk.1d/i/tim2/2014/10/02/Foreman_11345372_4896_Microsoft-office-2007_64x64.png"
+    Description="Microsoft Word, InfoPath, PowerPoint and OneNote VDM plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{C56EE1F7-DED9-4522-AFF2-19A8ECCD6DF4}"
+        Version="1.0.0.0" />
+      <AbcPlugin
+        Guid="{A4BC7D6D-42A5-47BA-90F9-D0D47301FCB4}"
+        Version="1.0.0.0" />
+      <AbcPlugin
+        Guid="{EB93E412-85BA-4319-90AD-F96D4B4D2461}"
+        Version="1.0.0.0" />
+      <AbcPlugin
+        Guid="{933726B2-8F61-4CBF-8555-A36AF0214813}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{70700DB1-FEB4-450A-95EA-2E1FC8F2D841}"
+    Type="Vdm"
+    Icon="http://www.language-exchanges.org/sites/default/files/Skype.png"
+    Description="Skype VDM plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{186709E5-D06E-47BF-8EF7-2DF9FA44C979}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{4CEA0E46-D0CA-43C8-8834-30043597885A}"
+    Type="Vdm"
+    Icon="https://addons.cdn.mozilla.net/user-media/addon_icons/508/508454-64.png?modified=1430261430"
+    Description="Spotify helper VDM plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{156C5B34-EAA1-4DD3-B464-7610FDA75AA9}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{15E3CFF6-CFAE-4A94-8480-1641A172181B}"
+    Type="Vdm"
+    Icon="http://s3.amazonaws.com/cloud.ohloh.net/attachments/32768/logo_med.png"
+    Description="Tortoise Git VDM plug-in, fixes hidden cache window.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{4AE162A2-417E-443C-ADC9-F2D0B88A3699}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{026FFEF9-3F8D-4AD7-9494-D2B7AFEB5C72}"
+    Type="Vdm"
+    Icon="https://upload.wikimedia.org/wikipedia/en/0/05/Windows_Photo_Viewer_Icon_on_Windows_7.png"
+    Description="Photo Viewer VDM plug-in, hides problematic select window.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{E215B602-8959-4590-B74B-6AA4E52197FB}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+    Version="1.0.0.0"
+    Author="Steven Jeuris"
+    ApplicationGuid="{F702C3D8-044B-43EA-ABC3-DBFB61930C2B}"
+    Type="Vdm"
+    Icon="https://pbs.twimg.com/profile_images/505104774153256960/SR2hUhQN_normal.png"
+    Description=" VDM plug-in, ignores tray icon notification about plug-in updates.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{08C5ACD5-8C88-421F-97B9-5AB70B710A1D}"
+        Version="1.0.0.0" />
+    </AbcPlugins>
+  </Plugin>
+
+  <Plugin
+  Version="1.0.0.0"
+  Author="Steven Jeuris"
+  ApplicationGuid="{2844EF73-7320-4C8F-A726-FB4E0379FF15}"
+  Type="Persistence"
+  Icon="http://img.informer.com/icons/png/48/1370/1370750.png"
+  Description=" Notepad persistence plug-in.">
+    <AbcPlugins>
+      <AbcPlugin
+        Guid="{bff0b78e-54f7-4df2-aa3f-61b4e4095d5c}"
         Version="1.0.0.0" />
     </AbcPlugins>
   </Plugin>
