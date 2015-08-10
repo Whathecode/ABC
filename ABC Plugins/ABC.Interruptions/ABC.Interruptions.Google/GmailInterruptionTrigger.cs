@@ -39,6 +39,23 @@ namespace ABC.Interruptions.Google
 			: base( TimeSpan.FromMinutes( 1 ), Assembly.GetExecutingAssembly() )
 		{
 			_dispatcher = Dispatcher.CurrentDispatcher;
+
+			// In Plug-in Manager .dll shadow copy is used, thus configuration can be null (file location is different).
+			_config = ConfigurationManager.OpenExeConfiguration( Assembly.GetExecutingAssembly().Location );
+			if ( _config == null )
+			{
+				return;
+			}
+
+			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
+			if ( _settings != null )
+			{
+				byte[] decryptedData = ProtectedData.Unprotect(
+					Convert.FromBase64String( _settings.Password ),
+					Entropy,
+					DataProtectionScope.CurrentUser );
+				_password = Encoding.Unicode.GetString( decryptedData ).ToSecureString();
+			}
 		}
 
 		public void AskSettings()
@@ -55,6 +72,13 @@ namespace ABC.Interruptions.Google
 					Entropy,
 					DataProtectionScope.CurrentUser );
 				_settings.Password = Convert.ToBase64String( encryptedPassword );
+
+				// Check if the login and password are incorrect, if not ask for the setting again.
+				var mailStream = GetEmailFeed();
+				if ( mailStream == null )
+				{
+					AskSettings();
+				}
 			}
 			else
 			{
@@ -82,28 +106,16 @@ namespace ABC.Interruptions.Google
 
 		protected override void IntervalUpdate( DateTime now )
 		{
-			if ( !HasInternetConnection() )
+			if ( !HasInternetConnection() || !_settings.IsEnabled )
 			{
 				return;
 			}
 
-			// Try retrieving the unread email stream until the correct login is specified, or decided not to log in.
-			Stream mailStream = null;
-			while ( _settings.IsEnabled && mailStream == null )
-			{
-				var client = new WebClient { Credentials = new NetworkCredential( _settings.Username, _password ) };
-				try
-				{
-					mailStream = client.OpenRead( GmailAtomFeed );
-				}
-				catch ( WebException )
-				{
-					DispatcherHelper.SafeDispatch( _dispatcher, AskSettings );
-				}
-			}
+			// Try retrieving the unread email stream.
+			var mailStream = GetEmailFeed();
 
-			// Early out when the user does not want to receive email interruptions.
-			if ( !_settings.IsEnabled || mailStream == null )
+			// Early out when a email stream cannot be downloaded.
+			if ( mailStream == null )
 			{
 				return;
 			}
@@ -159,6 +171,21 @@ namespace ABC.Interruptions.Google
 			_config.Save();
 		}
 
+		Stream GetEmailFeed()
+		{
+			Stream mailStream = null;
+			var client = new WebClient { Credentials = new NetworkCredential( _settings.Username, _password ) };
+			try
+			{
+				mailStream = client.OpenRead( GmailAtomFeed );
+			}
+			catch ( WebException )
+			{
+				DispatcherHelper.SafeDispatch( _dispatcher, AskSettings );
+			}
+			return mailStream;
+		}
+
 		/// <summary>
 		///   Apparently the Gmail atom feed sometimes returns incorrect timestamps, after 24:00?
 		///   Added this fix as a precaution: http://stackoverflow.com/q/2000343/590790
@@ -190,25 +217,16 @@ namespace ABC.Interruptions.Google
 			}
 
 			_config = ConfigurationManager.OpenExeConfiguration( pluginPath );
-
 			if ( _config == null )
 			{
 				return false;
 			}
-
+			
 			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
 			if ( _settings == null )
 			{
 				_settings = new GoogleConfiguration();
 				_config.Sections.Add( GmailSection, _settings );
-			}
-			else
-			{
-				byte[] decryptedData = ProtectedData.Unprotect(
-					Convert.FromBase64String( _settings.Password ),
-					Entropy,
-					DataProtectionScope.CurrentUser );
-				_password = Encoding.Unicode.GetString( decryptedData ).ToSecureString();
 			}
 
 			AskSettings();
