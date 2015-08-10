@@ -11,7 +11,7 @@ namespace ABC.Interruptions
 	/// </summary>
 	public abstract class AbstractInterruptionTrigger
 	{
-		public event Action<AbstractInterruption> InterruptionReceived = delegate { };
+		public event EventHandler<AbstractInterruption> InterruptionReceived;
 
 		protected AbstractInterruptionTrigger( Assembly assembly )
 		{
@@ -26,7 +26,7 @@ namespace ABC.Interruptions
 
 		protected void TriggerInterruption( AbstractInterruption interruption )
 		{
-			InterruptionReceived( interruption );
+			InterruptionReceived( this, interruption );
 		}
 
 		public abstract void Update( DateTime now );

@@ -65,6 +65,7 @@
     <Compile Include="Applications\Services\AbstractService.cs" />
     <Compile Include="Applications\Services\Browser.cs" />
     <Compile Include="Applications\Services\ServiceProvider.cs" />
+    <Compile Include="Interruptions\AbstractInterruptionAggregator.cs" />
     <Compile Include="Interruptions\AbstractInterruption.cs" />
     <Compile Include="Interruptions\AbstractInterruptionTrigger.cs" />
     <Compile Include="Interruptions\AbstractIntervalInterruptionTrigger.cs" />

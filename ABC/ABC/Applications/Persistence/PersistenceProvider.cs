@@ -13,11 +13,10 @@ namespace ABC.Applications.Persistence
 	/// </summary>
 	public class PersistenceProvider : AbstractPersistenceProvider, IInstallablePluginContainer
 	{
-		CompositionContainer _pluginContainer;
-		DirectoryCatalog _pluginCatalog;
+		readonly DirectoryCatalog _pluginCatalog;
 
 		[ImportMany( AllowRecomposition = true )]
-		public List<AbstractApplicationPersistence> _persistenceProviders { get; set; }
+		readonly List<AbstractApplicationPersistence> _persistenceProviders = new List<AbstractApplicationPersistence>();
 
 		public string PluginFolderPath
 		{
@@ -33,7 +32,7 @@ namespace ABC.Applications.Persistence
 			try
 			{
 				_pluginCatalog = CompositionHelper.CreateDirectory( pluginFolderPath );
-				_pluginContainer = CompositionHelper.ComposeFromPath( this, _pluginCatalog );
+				CompositionHelper.ComposeFromPath( this, _pluginCatalog );
 			}
 			catch ( CompositionException )
 			{
@@ -45,11 +44,6 @@ namespace ABC.Applications.Persistence
 		public void Refresh()
 		{
 			_pluginCatalog.Refresh();
-		}
-
-		protected IEnumerable<AbstractApplicationPersistence> GetPersistenceProviders1()
-		{
-			return _persistenceProviders;
 		}
 
 		public Version GetPluginVersion( Guid guid )
@@ -65,7 +59,7 @@ namespace ABC.Applications.Persistence
 
 		AbstractApplicationPersistence GetAbstractApplicationPersistence( Guid guid )
 		{
-			var plugin = GetPersistenceProviders1()
+			var plugin = GetPersistenceProviders()
 				.FirstOrDefault( persistance => persistance.AssemblyInfo.Guid == guid );
 			return plugin;
 		}
@@ -74,7 +68,6 @@ namespace ABC.Applications.Persistence
 		{
 			return GetAbstractApplicationPersistence( guid ) as IInstallable;
 		}
-
 
 		protected override List<AbstractApplicationPersistence> GetPersistenceProviders()
 		{
