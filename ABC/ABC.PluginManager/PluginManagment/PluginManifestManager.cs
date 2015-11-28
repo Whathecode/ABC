@@ -9,7 +9,7 @@ namespace PluginManager.PluginManagment
 {
 	public class PluginManifestManager
 	{
-		const string AppsFeed = "http://members.upcpoczta.pl/z.grondziowska/PluginManifest.xml";
+		const string AppsFeed = "http://domi.frwaw.itu.dk/pluginManager/PluginManifest.xml";
 
 		public PluginManifest PluginManifest { get; private set; }
 
