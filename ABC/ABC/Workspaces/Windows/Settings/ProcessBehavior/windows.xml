@@ -98,4 +98,28 @@
     </IgnoreWindows>
   </Process>
 
+  <!-- Window 10 weather metro app. -->
+  <Process
+    Guid="{6ED3E0CE-313D-4A2D-AD57-6AEDE9D27660}"
+    Version="1.0.0.0"
+    TargetProcessName="Microsoft.Msn.Weather"
+    TargetProcessCompanyName="Microsoft Corporation">
+
+    <IgnoreWindows>
+      <Window ClassName="Windows.UI.Core.CoreWindow" />
+    </IgnoreWindows>
+  </Process>
+
+  <!-- Window 10 e-mail metro app. -->
+  <Process
+    Guid="{1E593B10-CF18-4FFE-8AD2-2D0089D43A46}"
+    Version="1.0.0.0"
+    TargetProcessName="HxMail"
+    TargetProcessCompanyName="Microsoft Corporation">
+
+    <IgnoreWindows>
+      <Window ClassName="Windows.UI.Core.CoreWindow" />
+    </IgnoreWindows>
+  </Process>
+
 </ProcessBehaviors>

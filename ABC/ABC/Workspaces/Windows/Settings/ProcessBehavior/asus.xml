@@ -27,4 +27,15 @@
     </IgnoreWindows>
   </Process>
 
+  <!-- Asus tochpad driver. -->
+  <Process
+    Guid="{0C8245C4-5C29-4E1D-BDDB-D451AC839202}"
+    Version="1.0.0.0"
+    TargetProcessName="ETDCtrl"
+    TargetProcessCompanyName="ELAN Microelectronics">
+    <IgnoreWindows>
+      <Window ClassName="#32770" />
+    </IgnoreWindows>
+  </Process>
+
 </ProcessBehaviors>
