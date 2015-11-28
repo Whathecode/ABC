@@ -135,32 +135,60 @@ namespace ABC.Interruptions.Google
 			}
 			foreach ( XmlNode entry in entries )
 			{
+				string title = "", link ="" , id = "", summary ="", issued = "";
+				var collaborators = new List<string>();
+
 				XmlNode titleNode = entry[ "title" ];
-				if ( titleNode == null )
+				if ( titleNode != null )
 				{
-					break;
+					title = titleNode.InnerText;
 				}
-				string title = titleNode.InnerText;
 
 				XmlNode linkNode = entry[ "link" ];
-				if ( linkNode == null || linkNode.Attributes == null )
+				if ( linkNode != null && linkNode.Attributes != null )
 				{
-					break;
+					link = linkNode.Attributes[ "href" ].InnerText;
 				}
-				string link = linkNode.Attributes[ "href" ].InnerText;
 
 				XmlNode idNode = entry[ "id" ];
-				if ( idNode == null )
+				if ( idNode != null )
 				{
-					break;
+					id = idNode.InnerText;
+					idsInFeed.Add( id );
 				}
-				string id = idNode.InnerText;
-				idsInFeed.Add( id );
+
+				XmlNode summaryNode = entry[ "summary" ];
+				if ( summaryNode != null )
+				{
+					summary = summaryNode.InnerText;
+				}
+
+				XmlNode issuedNode = entry[ "issued" ];
+				if ( issuedNode != null )
+				{
+					issued = issuedNode.InnerText;
+				}
+
+				XmlNode authorNode = entry[ "author" ];
+				if ( authorNode != null )
+				{
+					XmlNode nameNode = authorNode[ "name" ];
+					if ( nameNode != null )
+					{
+						collaborators.Add( nameNode.InnerText );
+					}
+
+					XmlNode emailNode = authorNode[ "email" ];
+					if ( emailNode != null )
+					{
+						collaborators.Add( emailNode.InnerText );
+					}
+				}
 
 				if ( !_settings.ProcessedEmails.Cast<ProcessedEmail>().Select( e => e.Id ).Contains( id ) )
 				{
 					_settings.ProcessedEmails.Add( id );
-					TriggerInterruption( new GmailInterruption( title, link ) );
+					TriggerInterruption( new GmailInterruption( title, summary, link, issued, collaborators, null ) );
 				}
 			}
 
@@ -221,7 +249,7 @@ namespace ABC.Interruptions.Google
 			{
 				return false;
 			}
-			
+
 			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
 			if ( _settings == null )
 			{

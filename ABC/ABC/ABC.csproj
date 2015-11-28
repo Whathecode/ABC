@@ -69,6 +69,7 @@
     <Compile Include="Interruptions\AbstractInterruption.cs" />
     <Compile Include="Interruptions\AbstractInterruptionTrigger.cs" />
     <Compile Include="Interruptions\AbstractIntervalInterruptionTrigger.cs" />
+    <Compile Include="Interruptions\ImportanceLevel.cs" />
     <Compile Include="Interruptions\InterruptionAggregator.cs" />
     <Compile Include="Plugins\AssemblyInfo.cs" />
     <Compile Include="Plugins\CompositionHelper.cs" />

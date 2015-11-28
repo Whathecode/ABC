@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 
 namespace ABC.Interruptions.Google
@@ -10,10 +12,14 @@ namespace ABC.Interruptions.Google
 		readonly string _link;
 
 
-		public GmailInterruption( string name, string link )
+		public GmailInterruption( string name, string content, string link, string issued, List<string> collaborators, List<string> files )
 			: base( name )
 		{
+			Content = content;
+			Collaborators = collaborators;
 			_link = link;
+			TriggeredAt = DateTime.Parse( issued );
+			Files = files;
 		}
 
 
