@@ -12,128 +12,57 @@
 	xmlns:local="clr-namespace:PluginManager.View.AppOverview"
 	xmlns:converters="clr-namespace:Whathecode.System.Windows.Data;assembly=Whathecode.PresentationFramework"
 	xmlns:appOverview="clr-namespace:PluginManager.ViewModel.AppOverview"
-	xmlns:pluginOverview="clr-namespace:PluginManager.View.PluginOverview"
-	MinWidth="940"
-	MinHeight="600">
+	xmlns:pluginOverview="clr-namespace:PluginManager.View.PluginOverview">
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="../Common/Styles.xaml"></ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Window.Resources>
+	
 	<DockPanel LastChildFill="True">
 
-		<ScrollViewer BorderThickness="0" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Right">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="30" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
 
-			<DockPanel>
-
-				<StackPanel
-					DockPanel.Dock="Top"
-					Margin="10, 10, 10, 10"
-					Name="Plugins">
-
-					<StackPanel.Resources>
-						<Style TargetType="StackPanel">
-							<Setter Property="Margin" Value="0,0,0,10" />
-						</Style>
-						<Style TargetType="Image">
-							<Setter Property="Width" Value="20" />
-							<Setter Property="Height" Value="20" />
-							<Setter Property="Margin" Value="7,0,0,0" />
-							<Setter Property="VerticalAlignment" Value="Center" />
-						</Style>
-						<Style TargetType="TextBlock">
-							<Setter Property="VerticalAlignment" Value="Center" />
-						</Style>
-					</StackPanel.Resources>
-
-					<pluginOverview:PluginOverview
-						DataContext="{Binding CurrentPlugins}" />
-
-				</StackPanel>
-
-				<StackPanel
-					Orientation="Horizontal"
-					VerticalAlignment="Bottom"
-					DockPanel.Dock="Bottom"
-					Margin="10, 10, 10, 10"
-					HorizontalAlignment="Right">
-
-					<StackPanel VerticalAlignment="Center" Margin="0, 0, 5, 0">
-						<StackPanel.Resources>
-							<Style TargetType="TextBlock">
-								<Setter Property="Margin" Value="0,0,0,2" />
-							</Style>
-						</StackPanel.Resources>
-
-						<TextBlock Text="Virtual desktop configuration" />
-						<TextBlock Text="Persistence configuration" />
-						<TextBlock Text="Interruption configuration" />
-					</StackPanel>
-
-					<StackPanel>
-						<StackPanel.Resources>
-							<Style TargetType="local:PluginIcon">
-								<Setter Property="IconBackground" Value="DeepSkyBlue" />
-							</Style>
-						</StackPanel.Resources>
-
-						<local:PluginIcon IconText="V" />
-						<local:PluginIcon IconText="P" />
-						<local:PluginIcon IconText="I" />
-					</StackPanel>
-
-				</StackPanel>
-
-			</DockPanel>
-		</ScrollViewer>
-
-		<StackPanel>
 			<ComboBox
+				Margin="7, 7, 25, 0"
 				ItemsSource="{Binding Filters}"
-				Width="200"
-				HorizontalAlignment="Left"
+				IsEditable="True"
+				HorizontalContentAlignment="Stretch"
 				SelectedIndex="0"
-				SelectedItem="{Binding SelectedFilter}" />
+				SelectedItem="{Binding SelectedFilter}"
+				Grid.Row="0" />
 
 			<ListView
+				Grid.Row="1"
 				ItemsSource="{Binding Applications}"
-				Name="AppsListView"
-				BorderThickness="0"
-				Padding="5"
-				DockPanel.Dock="Left"
-				SelectedItem="{Binding SelectedApplication}">
+				SelectedItem="{Binding SelectedApplication}"
+				MinWidth="500">
 
+				<ListView.Style >
+					<Style BasedOn="{StaticResource ListViewStyle}" TargetType="ListView"/>
+				</ListView.Style>
+				
 				<ListView.Resources>
-					<Style TargetType="TextBlock">
-						<Setter Property="Margin" Value="10,0,0,0" />
-						<Setter Property="VerticalAlignment" Value="Center" />
-					</Style>
-					<Style TargetType="StackPanel">
-						<Setter Property="VerticalAlignment" Value="Center" />
-					</Style>
-					<Style TargetType="DockPanel">
-						<Setter Property="MinHeight" Value="55" />
-						<Setter Property="MinWidth" Value="300" />
-						<Setter Property="LastChildFill" Value="False" />
-					</Style>
+					<Style TargetType="TextBlock" BasedOn="{StaticResource ListTextBlockStyle}"/>
+					<Style TargetType="StackPanel" BasedOn="{StaticResource ListStackPanelStyle}"/>
+					<Style TargetType="DockPanel" BasedOn="{StaticResource ListDockPanelStyle}"/>
 				</ListView.Resources>
 
-				<ListView.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel
-							Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}" />
-					</ItemsPanelTemplate>
-				</ListView.ItemsPanel>
-
 				<ListView.ItemContainerStyle>
-					<Style TargetType="ListBoxItem">
-						<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-						<Setter Property="BorderThickness" Value="1" />
-						<Setter Property="BorderBrush" Value="Black" />
-						<Setter Property="Margin" Value="1" />
-					</Style>
+					<Style TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemStyle}"/>
 				</ListView.ItemContainerStyle>
 
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<DockPanel
 							MinWidth="400"
-							MaxWidth="400"
 							MinHeight="60">
 
 							<Image
@@ -167,29 +96,26 @@
 									HorizontalAlignment="Right">
 
 									<StackPanel.Resources>
-										<Style TargetType="local:PluginIcon">
-											<Setter Property="IconBackground" Value="DeepSkyBlue" />
-										</Style>
+										<Style TargetType="local:PluginIcon" BasedOn="{StaticResource PluginIconStyle}"/>
 									</StackPanel.Resources>
 
 									<local:PluginIcon
 										Visibility="{Binding AnyVdm,
 										Converter={converters:FromBooleanConverter IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-										IconText="V"/>
+										IconText="V" />
 
 									<local:PluginIcon
 										Visibility="{Binding AnyPersistence,
 										Converter={converters:FromBooleanConverter IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-										IconText="P"/>
+										IconText="P" />
 
 									<local:PluginIcon
 										Visibility="{Binding AnyInterruption,
 										Converter={converters:FromBooleanConverter IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-										IconText="I"/>
-									
+										IconText="I" />
+
 								</StackPanel>
 							</Grid>
-
 
 							<!--TODO: Buttons that will be used to control plug-ins.-->
 							<!--<StackPanel
@@ -238,27 +164,50 @@
 						</DockPanel>
 					</DataTemplate>
 				</ListView.ItemTemplate>
-
-				<ListView.Style>
-					<Style TargetType="ListView">
-						<Style.Triggers>
-							<Trigger Property="HasItems" Value="False">
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate TargetType="ListView">
-											<TextBlock
-												Text="No items found."
-												Margin="20"
-												HorizontalAlignment="Center" />
-										</ControlTemplate>
-									</Setter.Value>
-								</Setter>
-							</Trigger>
-						</Style.Triggers>
-					</Style>
-				</ListView.Style>
 			</ListView>
-		</StackPanel>
 
+		</Grid>
+
+		<Grid MinWidth="200">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="75" />
+			</Grid.RowDefinitions>
+
+			<pluginOverview:PluginOverview
+				Grid.Row="0"
+				DataContext="{Binding CurrentPlugins}" />
+
+			<StackPanel
+				Grid.Row="1"
+				Orientation="Horizontal"
+				VerticalAlignment="Bottom"
+				Margin="10"
+				HorizontalAlignment="Right">
+
+				<StackPanel VerticalAlignment="Center" Margin="0, 0, 5, 0">
+					<StackPanel.Resources>
+						<Style TargetType="TextBlock">
+							<Setter Property="Margin" Value="0,0,0,2" />
+						</Style>
+					</StackPanel.Resources>
+
+					<TextBlock Text="Virtual desktop configuration" />
+					<TextBlock Text="Persistence configuration" />
+					<TextBlock Text="Interruption configuration" />
+				</StackPanel>
+
+				<StackPanel>
+					<StackPanel.Resources>
+						<Style TargetType="local:PluginIcon" BasedOn="{StaticResource PluginIconStyle}"/>
+					</StackPanel.Resources>
+
+					<local:PluginIcon IconText="V" />
+					<local:PluginIcon IconText="P" />
+					<local:PluginIcon IconText="I" />
+				</StackPanel>
+			</StackPanel>
+
+		</Grid>
 	</DockPanel>
 </Window>

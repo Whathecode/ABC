@@ -15,149 +15,118 @@
 	d:DesignHeight="300" d:DesignWidth="300"
 	d:DataContext="{d:DesignInstance Type=pluginOverview:PluginOverviewViewModel}">
 
-	<StackPanel>
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="../Common/Styles.xaml"></ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
 
-		<ScrollViewer BorderThickness="0" VerticalScrollBarVisibility="Auto">
-			<ListView
-				HorizontalAlignment="Stretch"
-				SelectionChanged="SelectedPluginsChanged"
-				BorderThickness="0" MinWidth="250"
-				SelectionMode="Extended"
-				ItemsSource="{Binding Plugins}"
-				Name="PluginsListView">
+	<ListView
+		SelectionChanged="SelectedPluginsChanged"
+		MinWidth="250"
+		ItemsSource="{Binding Plugins}"
+		Name="PluginsListView">
 
-				<ListView.Resources>
-					<Style TargetType="TextBlock">
-						<Setter Property="Margin" Value="10,0,0,0" />
-						<Setter Property="VerticalAlignment" Value="Center" />
-					</Style>
-					<Style TargetType="StackPanel">
-						<Setter Property="VerticalAlignment" Value="Center" />
-					</Style>
-					<Style TargetType="DockPanel">
-						<Setter Property="MinHeight" Value="55" />
-						<Setter Property="MinWidth" Value="200" />
-						<Setter Property="LastChildFill" Value="False" />
-					</Style>
-				</ListView.Resources>
+		<ListView.Resources>
+			<Style TargetType="TextBlock" BasedOn="{StaticResource ListTextBlockStyle}"/>
+			<Style TargetType="StackPanel" BasedOn="{StaticResource ListStackPanelStyle}"/>
+			<Style TargetType="DockPanel" BasedOn="{StaticResource ListDockPanelStyle}"/>
+		</ListView.Resources>
 
-				<ListView.ItemContainerStyle>
-					<Style TargetType="ListBoxItem">
-						<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-						<Setter Property="BorderThickness" Value="1" />
-						<Setter Property="BorderBrush" Value="Black" />
-						<Setter Property="Margin" Value="1" />
-					</Style>
-				</ListView.ItemContainerStyle>
+		<ListView.ItemContainerStyle>
+			<Style TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemStyle}"/>
+		</ListView.ItemContainerStyle>
 
-				<ListView.Style>
-					<Style TargetType="ListView">
-						<Style.Triggers>
-							<Trigger Property="HasItems" Value="False">
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate TargetType="ListView">
-											<Border MinWidth="320" BorderThickness="1" BorderBrush="Black">
-												<TextBlock
-													Text="No items found."
-													Margin="20"
-													HorizontalAlignment="Center"
-													VerticalAlignment="Center" />
-											</Border>
-										</ControlTemplate>
-									</Setter.Value>
-								</Setter>
-							</Trigger>
-						</Style.Triggers>
-					</Style>
-				</ListView.Style>
+		<ListView.Style>
+			<Style BasedOn="{StaticResource ListViewStyle}" TargetType="ListView"/>
+		</ListView.Style>
 
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<DockPanel MinWidth="350">
+		<ListView.ItemTemplate>
+			<DataTemplate>
+				<DockPanel MinWidth="350">
 
-							<Image
-								Width="30"
-								Height="30"
-								Source="{Binding Icon}"
-								Margin="5"
-								Cursor="Hand" />
+					<Image
+						Width="30"
+						Height="30"
+						Source="{Binding Icon}"
+						Margin="5"
+						Cursor="Hand" />
 
-							<StackPanel Margin="5" VerticalAlignment="Center">
-								<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
-								<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
-								<TextBlock Text="{Binding Description}" Margin="0, 5, 0, 0" MaxWidth="200" TextWrapping="Wrap"/>
-							</StackPanel>
+					<StackPanel Margin="5" VerticalAlignment="Center">
+						<TextBlock Text="{Binding Version, StringFormat='Plug-in Version: {0}'}" />
+						<TextBlock Text="{Binding Author, StringFormat='Author: {0}'}" />
+						<TextBlock Text="{Binding Description}" Margin="0, 5, 0, 0" TextWrapping="Wrap" />
+					</StackPanel>
 
-							<StackPanel
-								DockPanel.Dock="Right"
-								Orientation="Horizontal"
-								VerticalAlignment="Bottom"
-								HorizontalAlignment="Right">
-								<Button
-									Background="Transparent"
-									BorderBrush="Transparent"
-									Visibility="{Binding State, 
+					<StackPanel
+						DockPanel.Dock="Right"
+						Orientation="Horizontal"
+						VerticalAlignment="Bottom"
+						HorizontalAlignment="Right">
+						<Button
+							Background="Transparent"
+							BorderBrush="Transparent"
+							Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}">
-									<Image
-										Source="../icons/uninstall.ico"
-										Width="25"
-										Height="25"
-										MouseEnter="CursorToHand"
-										MouseLeave="CursorToArrow"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Delete}}" />
-								</Button>
-								<Button
-									Background="Transparent"
-									BorderBrush="Transparent"
-									Visibility="{Binding State, 
+							<Image
+								Source="../icons/uninstall.ico"
+								Width="25"
+								Height="25"
+								MouseEnter="CursorToHand"
+								MouseLeave="CursorToArrow"
+								behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Delete}}" />
+						</Button>
+						<Button
+							Background="Transparent"
+							BorderBrush="Transparent"
+							Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Availible}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}">
-									<Image
-										Source="../icons/install.png"
-										Width="25"
-										Height="25"
-										MouseEnter="CursorToHand"
-										MouseLeave="CursorToArrow"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}" />
-								</Button>
-								<Button
-									Background="Transparent"
-									BorderBrush="Transparent"
-									Visibility="{Binding State, 
+							<Image
+								Source="../icons/install.png"
+								Width="25"
+								Height="25"
+								MouseEnter="CursorToHand"
+								MouseLeave="CursorToArrow"
+								behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}" />
+						</Button>
+						<Button
+							Background="Transparent"
+							BorderBrush="Transparent"
+							Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Updates}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}">
-									<Image
-										Source="../icons/update.png"
-										Width="25"
-										Height="25"
-										MouseEnter="CursorToHand"
-										MouseLeave="CursorToArrow"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}" />
-								</Button>
-								<Button
-									Background="Transparent"
-									BorderBrush="Transparent"
-									Visibility="{Binding State, 
+							<Image
+								Source="../icons/update.png"
+								Width="25"
+								Height="25"
+								MouseEnter="CursorToHand"
+								MouseLeave="CursorToArrow"
+								behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Download}}" />
+						</Button>
+						<Button
+							Background="Transparent"
+							BorderBrush="Transparent"
+							Visibility="{Binding State, 
 												Converter={data:EnumHasFlagConverter Flag={x:Static common:PluginState.Installed}, 
 												IfTrue={x:Static Visibility.Visible}, IfFalse={x:Static Visibility.Collapsed}}}"
-									IsEnabled="{Binding IsConfigurable}">
-									<Image
-										Source="../icons/configure.png"
-										Width="25"
-										Height="25"
-										MouseEnter="CursorToHand"
-										MouseLeave="CursorToArrow"
-										behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Configure}}" />
-								</Button>
-							</StackPanel>
+							IsEnabled="{Binding IsConfigurable}">
+							<Image
+								Source="../icons/configure.png"
+								Width="25"
+								Height="25"
+								MouseEnter="CursorToHand"
+								MouseLeave="CursorToArrow"
+								behaviors:MouseBehavior.LeftClickCommand="{commandFactory:CommandBinding {x:Static pluginbinding:Commands.Configure}}" />
+						</Button>
+					</StackPanel>
 
-						</DockPanel>
-					</DataTemplate>
-				</ListView.ItemTemplate>
+				</DockPanel>
+			</DataTemplate>
+		</ListView.ItemTemplate>
+	</ListView>
 
-			</ListView>
-		</ScrollViewer>
-	</StackPanel>
 </UserControl>
