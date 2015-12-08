@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using PluginManager.Common;
 using PluginManager.PluginManagment;
 using Whathecode.System.Extensions;
@@ -57,6 +58,12 @@ namespace PluginManager.Model
 					plugin.PluginState = PluginState.Availible;
 				}
 			} );
+		}
+
+		[SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+		public override object InitializeLifetimeService()
+		{
+			return null;
 		}
 	}
 }

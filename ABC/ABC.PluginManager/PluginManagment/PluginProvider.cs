@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
+using System.Security.Permissions;
 using System.Threading;
 using ABC.Applications.Persistence;
 using ABC.Interruptions;
@@ -193,6 +194,12 @@ namespace PluginManager.PluginManagment
 			{
 				provider.Dispose();
 			}
+		}
+
+		[SecurityPermission( SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure )]
+		public override object InitializeLifetimeService()
+		{
+			return null;
 		}
 	}
 }

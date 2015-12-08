@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows;
 
@@ -35,7 +36,6 @@ namespace ABC.Workspaces.Windows.Server
 			_desktopManager = desktopManager;
 		}
 
-
 		public List<List<WindowInfo>> GetWindowAssociations()
 		{
 			_desktopManager.UpdateWindowAssociations();
@@ -64,6 +64,7 @@ namespace ABC.Workspaces.Windows.Server
 			toCut.ForEach( w => _desktopManager.WindowClipboard.Push( w ) );
 		}
 
+		[SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
 		public override object InitializeLifetimeService()
 		{
 			// Guarantee infinite lifetime.

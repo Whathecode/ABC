@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using System.Windows;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
@@ -58,6 +59,12 @@ namespace PluginManager
 		{
 			var pluginContainer = type == PluginType.Persistence ? PersistenceContainer : type == PluginType.Interruption ? InterruptionsContainer : VdmContainer;
 			pluginContainer.Configure( guid, pluginPath );
+		}
+
+		[SecurityPermission( SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure )]
+		public override object InitializeLifetimeService()
+		{
+			return null;
 		}
 	}
 }
