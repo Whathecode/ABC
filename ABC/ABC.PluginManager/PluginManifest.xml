@@ -9,7 +9,7 @@
     Author="Microsoft Corporation"
     Guid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
     Name="Windows"
-    Icon="http://undeleteplus.com/assets/images/emblem_win7.gif">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/win8.png">
     <TargetExecutables>
       <Executable ProcessName="explorer" CompanyName="Microsoft Corporation" Version="6.1" />
       <Executable ProcessName="Dxpserver" CompanyName="Microsoft Corporation" Version="6.1" />
@@ -22,7 +22,7 @@
     Author="ASUSTek Computer Inc."
     Guid="{7B7D90AC-1BBE-47D7-BF0A-53CCCB8782DE}"
     Name="Asus"
-    Icon="http://img.informer.com/icons/png/48/2799/2799082.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/asus.png">
     <TargetExecutables>
       <Executable ProcessName="ATKOSD2" CompanyName="ASUSTek Computer Inc." Version="1.0" />
       <Executable ProcessName="ACMON" CompanyName="ASUS" Version="1.0" />
@@ -33,7 +33,7 @@
     Author="France Telecom"
     Guid="{7424EA7A-BBD3-4CBC-90D2-5FB7343BFBE5}"
     Name="USB Modem Detector"
-    Icon="http://www.napa-wine.eu/twiki/pub/Public/FranceTelecom/logoOrange.gif">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/orange.png">
     <TargetExecutables>
       <Executable ProcessName="CardDetector" CompanyName="France Telecom" Version="1.0" />
     </TargetExecutables>
@@ -43,7 +43,7 @@
     Author="Google Inc."
     Guid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
     Name="Chrome"
-    Icon="http://dvd-mac.com/images/chrome.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/chrome.png">
     <TargetExecutables>
       <Executable ProcessName="chrome" CompanyName="Google Inc." Version="1.0" />
     </TargetExecutables>
@@ -53,7 +53,7 @@
     Author="Mozilla Corporation"
     Guid="{04840684-85A0-4FFC-9A7A-AB37BE0BFFCA}"
     Name="Firefox"
-    Icon="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGK82j5mhrBWXky1kP5FicE3TquV3HfIeiSqIEje6z2bAZXRa7Cw">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/firefox.png">
     <TargetExecutables>
       <Executable ProcessName="firefox" CompanyName="Mozilla Corporation" Version="1.0" />
     </TargetExecutables>
@@ -63,7 +63,7 @@
     Author="Microsoft Corporation"
     Guid="{D0F573E5-9C19-4238-B8BB-3FD3A937C35B}"
     Name="Internet Explorer"
-    Icon="https://upload.wikimedia.org/wikipedia/en/0/0f/Internet_Explorer_logo_old.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/internetExplorer.png">
     <TargetExecutables>
       <Executable ProcessName="iexplore" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
     </TargetExecutables>
@@ -73,7 +73,7 @@
     Author="Microsoft Corporation"
     Guid="{170B7BF3-C803-43AB-B7DE-D3634235F30C}"
     Name="Office"
-    Icon="http://content5.videojug.com/7c/7ce61f12-0623-6fcb-90b0-ff0008cb8c8f/MsOffice.MediumPortrait.jpg?v2">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/msOffice.png">
     <TargetExecutables>
       <Executable ProcessName="WINWORD" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
       <Executable ProcessName="ONENOTE" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
@@ -86,7 +86,7 @@
     Author="Microsoft Corporation"
     Guid="{70700DB1-FEB4-450A-95EA-2E1FC8F2D841}"
     Name="Skype"
-    Icon="http://www.language-exchanges.org/sites/default/files/Skype.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/skype.png">
     <TargetExecutables>
       <Executable ProcessName="skype" CompanyName="Skype Technologies S.A." Version="1.0.0.0" />
     </TargetExecutables>
@@ -96,7 +96,7 @@
     Author="Spotify"
     Guid="{4CEA0E46-D0CA-43C8-8834-30043597885A}"
     Name="Spotify Helper"
-    Icon="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSNykuknBfegGV9BVJ-MjtckVv-yXoiJvQJuLSJgMEi7c9E-LUz">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/spotify.png">
     <TargetExecutables>
       <Executable ProcessName="SpotifyHelper" CompanyName="" Version="1.0.0.0" />
     </TargetExecutables>
@@ -106,7 +106,7 @@
     Author="http://tortoisegit.org/"
     Guid="{15E3CFF6-CFAE-4A94-8480-1641A172181B}"
     Name="Tortoise Git"
-    Icon="http://s3.amazonaws.com/cloud.ohloh.net/attachments/32768/logo_med.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/tortoise.png">
     <TargetExecutables>
       <Executable ProcessName="TGitCache" CompanyName="" Version="1.0.0.0" />
     </TargetExecutables>
@@ -116,7 +116,7 @@
     Author="Microsoft Corporation"
     Guid="{026FFEF9-3F8D-4AD7-9494-D2B7AFEB5C72}"
     Name="Photo Viewer"
-    Icon="https://upload.wikimedia.org/wikipedia/en/0/05/Windows_Photo_Viewer_Icon_on_Windows_7.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/msPhotoViewer.png">
     <TargetExecutables>
       <Executable ProcessName="dllhost" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
     </TargetExecutables>
@@ -126,7 +126,7 @@
     Author="Microsoft Corporation"
     Guid="{F702C3D8-044B-43EA-ABC3-DBFB61930C2B}"
     Name="Visual Studio"
-    Icon="https://pbs.twimg.com/profile_images/505104774153256960/SR2hUhQN_normal.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/visualStudio.png">
     <TargetExecutables>
       <Executable ProcessName="devenv" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
     </TargetExecutables>
@@ -136,7 +136,7 @@
     Author="Microsoft Corporation"
     Guid="{2844EF73-7320-4C8F-A726-FB4E0379FF15}"
     Name="Notepad"
-    Icon="http://img.informer.com/icons/png/48/1370/1370750.png">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/notepad.png">
     <TargetExecutables>
       <Executable ProcessName="notepad" CompanyName="Microsoft Corporation" Version="1.0.0.0" />
     </TargetExecutables>
@@ -147,7 +147,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
     Type="Vdm"
-    Icon="http://undeleteplus.com/assets/images/emblem_win7.gif"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/win8.png"
     Description="VDM stuff for several windows 7 applications.">
     <AbcPlugins>
       <AbcPlugin
@@ -170,7 +170,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
     Type="Persistence"
-    Icon="http://upload.wikimedia.org/wikipedia/en/9/92/Windows_Explorer_Icon.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/windowsExplorer.png"
     Description="Persistence functionality for Windows Explorer.">
     <AbcPlugins>
       <AbcPlugin
@@ -184,7 +184,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{8E3C1F5A-6970-49A2-8D41-5224169A0804}"
     Type="Interruption"
-    Icon="http://icons.iconarchive.com/icons/cornmanthe3rd/plex/512/Communication-gmail-icon.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/gmail.png"
     Description="Gmial plug-in notifies about new e-mails.">
     <AbcPlugins>
       <AbcPlugin
@@ -198,7 +198,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{7B7D90AC-1BBE-47D7-BF0A-53CCCB8782DE}"
     Type="Vdm"
-    Icon="http://img.informer.com/icons/png/48/2799/2799082.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/asus.png"
     Description="Asus function key visualizations and Asus Splendid Video Enhancement Technology.">
     <AbcPlugins>
       <AbcPlugin
@@ -215,7 +215,7 @@
     Author="Dominik Grondziowski"
     ApplicationGuid="{7424EA7A-BBD3-4CBC-90D2-5FB7343BFBE5}"
     Type="Vdm"
-    Icon="http://images2.okr.ro/serve/auctions.v7/2014/feb/20/cd545888387376c0b1c15b1ac6e6769e-106910-48_48.jpg"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/modem.jpg"
     Description="VDM, ignores USB modem detector app from Orange.">
     <AbcPlugins>
       <AbcPlugin
@@ -229,7 +229,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
     Type="Vdm"
-    Icon="http://dvd-mac.com/images/chrome.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/chrome.png"
     Description="Chrome VDM plug-in.">
     <AbcPlugins>
       <AbcPlugin
@@ -243,7 +243,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{74903502-210F-4FF9-AF10-88B4D42BC819}"
     Type="Persistence"
-    Icon="http://dvd-mac.com/images/chrome.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/chrome.png"
     Description="Chrome persistence plug-in.">
     <AbcPlugins>
       <AbcPlugin
@@ -257,7 +257,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{04840684-85A0-4FFC-9A7A-AB37BE0BFFCA}"
     Type="Vdm"
-    Icon="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGK82j5mhrBWXky1kP5FicE3TquV3HfIeiSqIEje6z2bAZXRa7Cw"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/firefox.png"
     Description="Firefox VDM plug-in.">
     <AbcPlugins>
       <AbcPlugin
@@ -271,7 +271,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{D0F573E5-9C19-4238-B8BB-3FD3A937C35B}"
     Type="Vdm"
-    Icon="https://upload.wikimedia.org/wikipedia/en/0/0f/Internet_Explorer_logo_old.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/internetExplorer.png"
     Description="Internet Explorer VDM plug-in.">
     <AbcPlugins>
       <AbcPlugin
@@ -285,7 +285,7 @@
     Author="Dominik Grondziowski"
     ApplicationGuid="{170B7BF3-C803-43AB-B7DE-D3634235F30C}"
     Type="Vdm"
-    Icon="http://i.i.cbsi.com/cnwk.1d/i/tim2/2014/10/02/Foreman_11345372_4896_Microsoft-office-2007_64x64.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/msOffice.png"
     Description="Microsoft Word, InfoPath, PowerPoint and OneNote VDM plug-in.">
     <AbcPlugins>
       <AbcPlugin
@@ -308,7 +308,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{70700DB1-FEB4-450A-95EA-2E1FC8F2D841}"
     Type="Vdm"
-    Icon="http://www.language-exchanges.org/sites/default/files/Skype.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/skype.png"
     Description="Skype VDM plug-in.">
     <AbcPlugins>
       <AbcPlugin
@@ -322,7 +322,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{4CEA0E46-D0CA-43C8-8834-30043597885A}"
     Type="Vdm"
-    Icon="https://addons.cdn.mozilla.net/user-media/addon_icons/508/508454-64.png?modified=1430261430"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/spotifyHelper.png"
     Description="Spotify helper VDM plug-in.">
     <AbcPlugins>
       <AbcPlugin
@@ -336,7 +336,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{15E3CFF6-CFAE-4A94-8480-1641A172181B}"
     Type="Vdm"
-    Icon="http://s3.amazonaws.com/cloud.ohloh.net/attachments/32768/logo_med.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/tortoise.png"
     Description="Tortoise Git VDM plug-in, fixes hidden cache window.">
     <AbcPlugins>
       <AbcPlugin
@@ -350,7 +350,7 @@
     Author="Steven Jeuris"
     ApplicationGuid="{026FFEF9-3F8D-4AD7-9494-D2B7AFEB5C72}"
     Type="Vdm"
-    Icon="https://upload.wikimedia.org/wikipedia/en/0/05/Windows_Photo_Viewer_Icon_on_Windows_7.png"
+    Icon="http://itu.dk/people/domi/PluginManager/icons/win8.png"
     Description="Photo Viewer VDM plug-in, hides problematic select window.">
     <AbcPlugins>
       <AbcPlugin
@@ -364,8 +364,8 @@
     Author="Steven Jeuris"
     ApplicationGuid="{F702C3D8-044B-43EA-ABC3-DBFB61930C2B}"
     Type="Vdm"
-    Icon="https://pbs.twimg.com/profile_images/505104774153256960/SR2hUhQN_normal.png"
-    Description=" VDM plug-in, ignores tray icon notification about plug-in updates.">
+    Icon="http://itu.dk/people/domi/PluginManager/icons/visualStudio.png"
+    Description="Visual Studio VDM plug-in, ignores tray icon notification about plug-in updates.">
     <AbcPlugins>
       <AbcPlugin
         Guid="{08C5ACD5-8C88-421F-97B9-5AB70B710A1D}"
@@ -378,7 +378,7 @@
   Author="Steven Jeuris"
   ApplicationGuid="{2844EF73-7320-4C8F-A726-FB4E0379FF15}"
   Type="Persistence"
-  Icon="http://img.informer.com/icons/png/48/1370/1370750.png"
+  Icon="http://itu.dk/people/domi/PluginManager/icons/notepad.png"
   Description=" Notepad persistence plug-in.">
     <AbcPlugins>
       <AbcPlugin
