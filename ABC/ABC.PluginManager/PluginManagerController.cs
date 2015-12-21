@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Security.Permissions;
 using System.Windows;
+using ABC.Plugins;
 using PluginManager.Model;
 using PluginManager.PluginManagment;
 
 
 namespace PluginManager
 {
-	[Serializable]
 	class PluginManagerController : MarshalByRefObject, IDisposable
 	{
 		public event EventHandler RefreshingEvent;
@@ -23,17 +23,17 @@ namespace PluginManager
 
 		public PluginManagerController()
 		{
-			PersistenceContainer = PluginProviderFactory.CreateProvider( App.PersistencePluginLibrary, PluginType.Persistence, "*.dll" );
+			PersistenceContainer = ShadowCopyFactory<PluginProvider>.Create( App.PersistencePluginLibrary );
+			PersistenceContainer.Initialize( App.PersistencePluginLibrary, PluginType.Persistence, "*.dll" );
 			AttachEvents( PersistenceContainer );
-			PersistenceContainer.Error += ( sender, args ) => MessageBox.Show( "Persistence composition error", args.ToString() );
 
-			InterruptionsContainer = PluginProviderFactory.CreateProvider( App.InterruptionsPluginLibrary, PluginType.Interruption, "*.dll" );
+			InterruptionsContainer = ShadowCopyFactory<PluginProvider>.Create( App.InterruptionsPluginLibrary );
+			InterruptionsContainer.Initialize( App.InterruptionsPluginLibrary, PluginType.Interruption, "*.dll" );
 			AttachEvents( InterruptionsContainer );
-			PersistenceContainer.Error += ( sender, args ) => MessageBox.Show( "Interruptions composition error", args.ToString() );
 
-			VdmContainer = PluginProviderFactory.CreateProvider( App.VdmPluginLibrary, PluginType.Vdm, "*.xml" );
+			VdmContainer = ShadowCopyFactory<PluginProvider>.Create( App.VdmPluginLibrary );
+			VdmContainer.Initialize( App.VdmPluginLibrary, PluginType.Vdm, "*.xml" );
 			AttachEvents( VdmContainer );
-			PersistenceContainer.Error += ( sender, args ) => MessageBox.Show( "VDM composition error", args.ToString() );
 
 			ProviderDictionary = new Dictionary<PluginType, PluginProvider>
 			{
@@ -45,8 +45,10 @@ namespace PluginManager
 
 		void AttachEvents( PluginProvider pluginProvider )
 		{
+			// Connection to plug-ins providers (MarshalByRefObject has to be implemented).
 			pluginProvider.Installed += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
 			pluginProvider.Uninstalled += ( sender, args ) => RefreshingEvent( this, new EventArgs() );
+			PersistenceContainer.Error += ( sender, args ) => MessageBox.Show( args.GetException().Message );
 		}
 
 		public void Dispose()
@@ -64,6 +66,7 @@ namespace PluginManager
 		[SecurityPermission( SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure )]
 		public override object InitializeLifetimeService()
 		{
+			// Guarantee infinite lifetime for remoting.
 			return null;
 		}
 	}

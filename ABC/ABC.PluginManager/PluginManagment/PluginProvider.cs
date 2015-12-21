@@ -13,9 +13,6 @@ using PluginManager.Model;
 
 namespace PluginManager.PluginManagment
 {
-	// Plug-in containers have to be initialized inside of an object which derives from MarshalByRefObject in order
-	// to communicate with other domains (plug-ins on the fly swapping).
-	[Serializable]
 	public class PluginProvider : MarshalByRefObject, IDisposable
 	{
 		const string InstalledErrorMessage = "Plug-in was not installed correctly.";
@@ -24,17 +21,17 @@ namespace PluginManager.PluginManagment
 		const string CannotExtractFromAssembly = "Cannot extract GUID from an assembly";
 
 		//<summary>
-		//  Event which is triggered when plug-in was installed.
+		//  Event which is triggered when a plug-in was installed.
 		//</summary>
 		public event EventHandler Installed;
 
 		//<summary>
-		//  Event which is triggered when plug-in was uninstalled.
+		//  Event which is triggered when a plug-in was uninstalled.
 		//</summary>
 		public event EventHandler Uninstalled;
 
 		//<summary>
-		//  Event which is triggered when error is throw during plug-in detection, installation/uninstallation or composition.
+		//  Event which is triggered when an error is thrown during the plug-in manipulation (installation, uninstallation).
 		//</summary>
 		public event EventHandler<PluginErrorEventArgs> Error;
 
@@ -42,6 +39,7 @@ namespace PluginManager.PluginManagment
 
 		public void Initialize( string pluginFolderPath, PluginType pluginType, string fileFilter )
 		{
+			// Plug-in containers have to be initialized on the other domain in order to enable "on the fly" plug-in swapping.
 			switch ( pluginType )
 			{
 				case PluginType.Persistence:
@@ -51,12 +49,11 @@ namespace PluginManager.PluginManagment
 					SafeContainerCreation( () => _pluginContainer = new InterruptionAggregator( pluginFolderPath ) );
 					break;
 				case PluginType.Vdm:
-					SafeContainerCreation( () => _pluginContainer = new LoadedSettings( false, false, null, pluginFolderPath ) );
+					SafeContainerCreation( () => _pluginContainer = new LoadedSettings( pluginFolderPath ) );
 					break;
 			}
 
-			var watcher = new PluginWatcher( _pluginContainer.PluginFolderPath, fileFilter );
-			// When plug-ins are installed they may require additional configuration, show some visual elements.
+			var watcher = new PluginWatcher( pluginFolderPath, fileFilter );
 			watcher.Created += ( sender, args ) => ExecuteSta( () => InstallPugin( GetGuidDromAssembly( args.FullPath ), args.FullPath, true ) );
 			watcher.Deleted += ( sender, args ) => ExecuteSta( () => UninstallPugin( GetGuidDromAssembly( args.FullPath ), args.FullPath ) );
 			watcher.Error += ( sender, args ) => Error( watcher, new PluginErrorEventArgs( new Exception( WatcherErrorMessage ), null ) );

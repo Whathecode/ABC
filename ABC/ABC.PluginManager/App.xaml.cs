@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using PluginManager.PluginManagment;
 using PluginManager.View.AppOverview;
 using PluginManager.ViewModel.AppOverview;
@@ -17,19 +20,31 @@ namespace PluginManager
 		public static string PersistencePluginLibrary { get; private set; }
 		public static string VdmPluginLibrary { get; private set; }
 
+		/// <summary>
+		/// Process to run after application is closed.
+		/// </summary>
+		public string PostProcessPath { get; private set; }
+
 		PluginManifestManager _manifestManager;
 		AppOverviewViewModel _appOverviewViewModel;
 		AppOverview _appOverview;
+
 
 		protected override void OnStartup( StartupEventArgs e )
 		{
 			base.OnStartup( e );
 
-			PluginManagerDirectory = e.Args.Length > 0 ? e.Args[ 0 ] : null;
-			if ( PluginManagerDirectory == null || !Directory.Exists( PluginManagerDirectory ) )
+			PluginManagerDirectory = e.Args.ElementAtOrDefault( 0 );
+			if ( string.IsNullOrEmpty( PluginManagerDirectory ) || !Directory.Exists( PluginManagerDirectory ) )
 			{
-				throw new ArgumentException("Plug-in installation directory has to be passed as a command line parameter." );
+				MessageBox.Show( "Plug-in installation directory has to be passed as a command line parameter." );
+				Current.Shutdown();
+
+				// In rare case shutdown does not work causing application crash?
+				Environment.Exit( 0 );
 			}
+
+			PostProcessPath = e.Args.ElementAtOrDefault( 1 );
 
 			InterruptionsPluginLibrary = Path.Combine( PluginManagerDirectory, "InterruptionHandlers" );
 			PersistencePluginLibrary = Path.Combine( PluginManagerDirectory, "ApplicationPersistence" );
@@ -55,6 +70,15 @@ namespace PluginManager
 			// Dispose MEF container on exit and any unhandled exception.
 			Exit += ( sender, args ) => pluginManagerController.Dispose();
 			AppDomain.CurrentDomain.UnhandledException += ( s, a ) => pluginManagerController.Dispose();
+		}
+
+		void OnExit( object sender, ExitEventArgs e )
+		{
+			if (string.IsNullOrEmpty( PostProcessPath ))
+				return;
+
+			Mouse.OverrideCursor = Cursors.Wait;
+			Process.Start( PostProcessPath );
 		}
 	}
 }
