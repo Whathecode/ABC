@@ -15,7 +15,7 @@ namespace PluginManager.PluginManagment
 
 		const string CannotFindAPlugInToDelete = "Cannot find a plug-in to delete. ";
 
-		const string RemotePluginPath = @"http://domi.frwaw.itu.dk/pluginManager/plugins/";
+		const string RemotePluginPath = @"http://itu.dk/people/domi/PluginManager/plugins/";
 		readonly string _pluginDownloadPath;
 		readonly string _pluginTempPath;
 		readonly string _pluginPath;
