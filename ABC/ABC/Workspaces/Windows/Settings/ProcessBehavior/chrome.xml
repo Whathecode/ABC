@@ -6,7 +6,7 @@
 
 	<!-- Chrome. -->
 	<Process 
-    Guid="{CE4157B1-EEBC-449B-9696-D403DEBE360B}" 
+    Guid="{ce4157b1-eebc-449b-9696-d403debe360b}" 
     Version="1.0.0.0" 
     TargetProcessName="chrome" 
     TargetProcessCompanyName="Google Inc.">

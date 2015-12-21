@@ -6,7 +6,7 @@
 
 	<!-- Skype is a single instance application. For now ignore it entirely. -->
 	<Process 
-    Guid="{186709E5-D06E-47BF-8EF7-2DF9FA44C979}"
+    Guid="{186709e5-d06e-47bf-8ef7-2df9fa44c979}"
     Version="1.0.0.0" 
     TargetProcessName="Skype" 
     TargetProcessCompanyName="Skype Technologies S.A.">

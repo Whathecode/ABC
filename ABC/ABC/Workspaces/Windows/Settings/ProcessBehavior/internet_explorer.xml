@@ -7,7 +7,7 @@
 
   <!-- Internet explorer. -->
   <Process
-    Guid="{118D8090-774F-4125-A957-FA37B1D703D4}"
+    Guid="{118d8090-774f-4125-a957-fa37b1d703d4}"
     TargetProcessName="iexplore"
     TargetProcessCompanyName="Microsoft Corporation"
     Version="1.0.0.0">

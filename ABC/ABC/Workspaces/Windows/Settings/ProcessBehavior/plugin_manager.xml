@@ -4,15 +4,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://whatodo.at/whathecode/vdm-api ProcessBehaviors.xsd">
 
-  <!-- Default built-in windows photo viewer. -->
   <Process 
-    Guid="{e215b602-8959-4590-b74b-6aa4e52197fb}" 
-    Version="1.0.0.0" 
-    TargetProcessName="dllhost"
-    TargetProcessCompanyName="Microsoft Corporation">
-    <HideBehavior>
-      <Default Hide="SelectedWindow" />
-    </HideBehavior>
+    Guid="{DC67926A-5CE7-4C34-B3AC-1D528A1C67F6}" 
+    Version="1.0.0.0"
+    TargetProcessName="PluginManager" 
+    TargetProcessCompanyName="ITU">
+    <IgnoreWindows Mode="NoneExcept"/>
   </Process>
 
 </ProcessBehaviors>

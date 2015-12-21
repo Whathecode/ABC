@@ -24,7 +24,7 @@
 
   <!-- Default windows 7. -->
   <Process
-    Guid="{123677AA-42EF-4DFB-A278-BE2EB2420D39}"
+    Guid="{123677aa-42ef-4dfb-a278-be2eb2420d39}"
     Version="1.0.0.0"
     TargetProcessName="explorer"
     TargetProcessCompanyName="Microsoft Corporation">

@@ -7,7 +7,7 @@
 
   <!-- MS Word 2010 -->
   <Process
-    Guid="{C56EE1F7-DED9-4522-AFF2-19A8ECCD6DF4}"
+    Guid="{c56ee1f7-ded9-4522-aff2-19a8eccd6df4}"
     Version="1.0.0.0"
     TargetProcessName="WINWORD"
     TargetProcessCompanyName="Microsoft Corporation">

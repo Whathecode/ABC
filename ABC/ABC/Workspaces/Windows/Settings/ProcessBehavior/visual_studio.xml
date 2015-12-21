@@ -6,7 +6,7 @@
 
   <!-- Visual Studio 2012. -->
   <Process 
-    Guid="{08C5ACD5-8C88-421F-97B9-5AB70B710A1D}"
+    Guid="{08c5acd5-8c88-421f-97b9-5ab70b710a1d}"
     Version="1.0.0.0"
     TargetProcessName="devenv"
     TargetProcessCompanyName="Microsoft Corporation">

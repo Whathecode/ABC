@@ -48,22 +48,25 @@ namespace ABC.Workspaces.Windows.Settings
 		IEnumerable<string> _loadedFiles = new List<string>();
 
 		public bool IgnoreRequireElevatedPrivileges { get; private set; }
+		
 		public string PluginFolderPath { get; private set; }
 
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
 		/// </summary>
+		/// <param name = "pluginFolderPath">Path to the external configurations directory.</param>
 		/// <param name = "ignoreRequireElevatedPrivileges">Setting to determine whether windows with higher privileges than the running application should be ignored or not.</param>
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
 		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
-		/// <param name = "pluginFolderPath">Path to configurations directory (they can be loaded externally or by specifying this parameter).</param>
-		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = false, Func<Window, bool> customWindowFilter = null,
-			string pluginFolderPath = null )
+		public LoadedSettings( string pluginFolderPath, bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = false, Func<Window, bool> customWindowFilter = null )
 		{
 			IgnoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
 
 			_loadDefaultSettings = loadDefaultSettings;
-			LoadDefaultSetting();
+			if ( loadDefaultSettings )
+			{
+				LoadDefaultSetting();
+			}
 
 			// Ignore windows created by the window manager itself when no filter is specified.
 			Process windowManagerProcess = Process.GetCurrentProcess();
@@ -88,17 +91,42 @@ namespace ABC.Workspaces.Windows.Settings
 			}
 
 			PluginFolderPath = pluginFolderPath;
-			if ( PluginFolderPath != null )
-				Refresh();
+			LoadSettingsFromPath( PluginFolderPath );
+
+		}
+
+		/// <summary>
+		/// Reloads all settings.
+		/// </summary>
+		public void Refresh()
+		{
+			Settings = null;
+			if ( _loadDefaultSettings )
+			{
+				LoadDefaultSetting();
+			}
+
+			LoadSettingsFromPath( PluginFolderPath );
+		}
+
+		void LoadSettingsFromPath( string settingsFolderPath )
+		{
+			_loadedFiles = Directory.EnumerateFiles( settingsFolderPath, "*.xml" );
+			foreach ( var plugin in _loadedFiles )
+			{
+				try
+				{
+					using ( var stream = new FileStream( plugin, FileMode.Open ) )
+					{
+						AddSettingsFile( stream );
+					}
+				}
+				catch ( InvalidOperationException ) {}
+			}
 		}
 
 		void LoadDefaultSetting()
 		{
-			if ( !_loadDefaultSettings )
-			{
-				return;
-			}
-
 			var assembly = Assembly.GetExecutingAssembly();
 			assembly
 				.GetManifestResourceNames()
@@ -125,7 +153,7 @@ namespace ABC.Workspaces.Windows.Settings
 			// Add new common behaviors.
 			newBehaviors.CommonIgnoreWindows.Window
 				.ForEach( newCommon => Settings.CommonIgnoreWindows.AddIfAbsent( newCommon ) );
-			
+
 			// Add new or overwrite existing process behaviors.
 			newBehaviors.Process.ForEach( newProcess => Settings.AddOrOverwriteProcess( newProcess ) );
 		}
@@ -235,25 +263,6 @@ namespace ABC.Workspaces.Windows.Settings
 			{
 				_accessDeniedWindows.Add( window );
 				return _dontHandleProcess;
-			}
-		}
-
-		public void Refresh()
-		{
-			Settings = null;
-			LoadDefaultSetting();
-
-			_loadedFiles = Directory.EnumerateFiles( PluginFolderPath, "*.xml" );
-			foreach ( var plugin in _loadedFiles )
-			{
-				try
-				{
-					using ( var stream = new FileStream( plugin, FileMode.Open ) )
-					{
-						AddSettingsFile( stream );
-					}
-				}
-				catch ( InvalidOperationException ) {}
 			}
 		}
 

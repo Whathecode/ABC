@@ -7,7 +7,7 @@
 
   <!-- Asus function key visualizations. -->
   <Process
-    Guid="{018B536A-B78C-444F-AE21-0120075A13F7}"
+    Guid="{018b536a-b78c-444f-ae21-0120075a13f7}"
     Version="1.0.0.0"
     TargetProcessName="ATKOSD2"
     TargetProcessCompanyName="ASUSTek Computer Inc.">
