@@ -48,7 +48,7 @@ namespace ABC.Interruptions.Google
 			}
 
 			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
-			if ( _settings != null )
+			if ( _settings != null && _settings.IsEnabled )
 			{
 				byte[] decryptedData = ProtectedData.Unprotect(
 					Convert.FromBase64String( _settings.Password ),
