@@ -64,12 +64,32 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 
 		bool _shouldHandleProcess = true;
 
-		// TODO: Think about better idea how to override property in a partial class. 
 		[XmlIgnoreAttribute]
 		public Version TargetProcessVersionHelper
 		{
-			get { return targerProcessVersionField == null ? new Version( "0.0" ) : new Version( targerProcessVersionField ); }
+			get
+			{
+				var version = new Version( "0.0" );
+				try
+				{
+					version = new Version( targetProcessVersionField );
+				}
+				catch ( ArgumentException )
+				{
+					IsGeneral = true;
+					// Ignore when value not provided, use 0.0 version.
+				}
+				catch ( FormatException )
+				{
+					IsGeneral = true;
+					// Ignore bad format, use 0.0 version.
+				}
+				return version;
+			}
 		}
+
+		[XmlIgnoreAttribute]
+		public bool IsGeneral { get; private set; }
 
 		[XmlIgnoreAttribute]
 		public Version VersionHelper
@@ -108,7 +128,7 @@ namespace ABC.Workspaces.Windows.Settings.ProcessBehavior
 			{
 				int hashCode = ( TargetProcessName != null ? TargetProcessName.GetHashCode() : 0 );
 				hashCode = ( hashCode * 397 ) ^ ( TargetProcessCompanyName != null ? TargetProcessCompanyName.GetHashCode() : 0 );
-				hashCode = ( hashCode * 397 ) ^ ( TargerProcessVersion != null ? TargerProcessVersion.GetHashCode() : 0 );
+				hashCode = ( hashCode * 397 ) ^ ( TargetProcessVersion != null ? TargetProcessVersion.GetHashCode() : 0 );
 				return hashCode;
 			}
 		}

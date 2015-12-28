@@ -245,10 +245,10 @@ namespace ABC.Workspaces.Windows.Settings
 					match.TargetProcessVersionHelper.Major == versionInfo.FileMajorPart &&
 					match.TargetProcessVersionHelper.Minor == versionInfo.FileMinorPart ).ToList();
 
-				// If any use version specific configurations, general otherwise.
+				// If any use version specific configurations, application general otherwise.
 				matches = versionSpecificMatches.Any()
 					? versionSpecificMatches
-					: matches.Where( match => string.IsNullOrWhiteSpace( match.TargerProcessVersion ) )
+					: matches.Where( match => match.IsGeneral )
 						.ToList();
 
 				// Take a default configuration if nothing matched, otherwise one with the highest version.

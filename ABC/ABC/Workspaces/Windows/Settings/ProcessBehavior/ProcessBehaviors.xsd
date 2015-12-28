@@ -123,7 +123,7 @@
 
               <xs:attribute name="TargetProcessName" type="xs:string" use="required" />
               <xs:attribute name="TargetProcessCompanyName" type="xs:string" use="required"/>
-              <xs:attribute name="TargerProcessVersion" type="xs:string"/>
+              <xs:attribute name="TargetProcessVersion" type="xs:string"/>
               <xs:attribute name="Guid" type="guid" use="required" />
               <xs:attribute name="Version" type="xs:string" use="required" />
 
@@ -139,7 +139,7 @@
       <xs:selector xpath="pb:Process" />
       <xs:field xpath="@TargetProcessName" />
       <xs:field xpath="@TargetProcessCompanyName" />
-      <xs:field xpath="@TargerProcessVersion" />
+      <xs:field xpath="@TargetProcessVersion" />
     </xs:unique>
 
   </xs:element>
