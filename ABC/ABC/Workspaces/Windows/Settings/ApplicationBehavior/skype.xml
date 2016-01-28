@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- Skype: video calls. -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{188E0AAF-7F69-4DFC-B12F-67B9370898BE}">
+
+	<!-- Skype is a single instance application. For now ignore it entirely. -->
+	<Process Name="Skype" CompanyName="Skype Technologies S.A.">
+		<IgnoreWindows Mode="AllExcept" />
+	</Process>
+
+</ApplicationBehaviors>

@@ -82,6 +82,7 @@
     <Compile Include="Plugins\PluginException.cs" />
     <Compile Include="Plugins\PluginHelper.cs" />
     <Compile Include="Plugins\AssemblyTargetProcess.cs" />
+    <Compile Include="Plugins\PluginVdmSettings.cs" />
     <Compile Include="Plugins\PluginWatcher.cs" />
     <Compile Include="Plugins\ShadowCopyFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,13 +103,14 @@
     <Compile Include="Workspaces\Windows\Server\IMonitorVdmService.cs" />
     <Compile Include="Workspaces\Windows\Server\MonitorVdmServer.cs" />
     <Compile Include="Workspaces\Windows\Server\MonitorVdmService.cs" />
+    <Compile Include="Workspaces\Windows\Settings\Extensions.Version.cs" />
     <Compile Include="Workspaces\Windows\Settings\ISettings.cs" />
     <Compile Include="Workspaces\Windows\Settings\LoadedSettings.cs" />
-    <Compile Include="Workspaces\Windows\Settings\ProcessBehavior\ProcessBehaviors.cs">
-      <DependentUpon>ProcessBehaviors.xsd</DependentUpon>
+    <Compile Include="Workspaces\Windows\Settings\ApplicationBehavior\ApplicationBehaviors.cs">
+      <DependentUpon>ApplicationBehaviors.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Workspaces\Windows\Settings\ProcessBehavior\ProcessBehaviors.designer.cs">
-      <DependentUpon>ProcessBehaviors.cs</DependentUpon>
+    <Compile Include="Workspaces\Windows\Settings\ApplicationBehavior\ApplicationBehaviors.designer.cs">
+      <DependentUpon>ApplicationBehaviors.cs</DependentUpon>
     </Compile>
     <Compile Include="Workspaces\Windows\StoredSession.cs" />
     <Compile Include="Workspaces\Windows\VirtualDesktop.cs" />
@@ -119,24 +121,26 @@
     <Compile Include="Workspaces\WorkspaceSession.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\asus.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\card_detector.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\chrome.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\firefox.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\internet_explorer.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\ms_office.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\skype.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\spotifyhelper.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\tortoisegit.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\visual_studio.xml" />
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows.xml">
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\asus.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\windows_photo_viewer.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\orange.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\chrome.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\firefox.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\internet_explorer.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\ms_office.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\skype.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\spotify.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\tortoisegit.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\visual_studio.xml" />
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\windows.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\windows_photo_viewer.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Workspaces\Windows\Settings\ProcessBehavior\ProcessBehaviors.xsd">
+    <None Include="Workspaces\Windows\Settings\ApplicationBehavior\ApplicationBehaviors.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -150,9 +154,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ProcessBehavior\plugin_manager.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

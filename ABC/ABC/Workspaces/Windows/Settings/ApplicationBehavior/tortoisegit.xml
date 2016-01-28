@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- TortoiseGit. -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{F9511A47-9E03-43C1-A2EF-26A1E5208F19}">
+
+	<Process Name="TGitCache" CompanyName="http://tortoisegit.org/">
+		<IgnoreWindows>
+			<!-- Hidden log message window. -->
+			<Window ClassName="TGitCacheWindow" />
+		</IgnoreWindows>
+	</Process>
+
+</ApplicationBehaviors>

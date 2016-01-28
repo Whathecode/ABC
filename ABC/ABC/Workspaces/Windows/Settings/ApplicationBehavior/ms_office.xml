@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Microsoft Office (originally created for 2010). -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{5E35C3F5-E5E7-4953-AE5D-4D9729875D55}">
+
+  <!-- Word. -->
+  <Process Name="WINWORD" CompanyName="Microsoft Corporation">
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+    </HideBehavior>
+  </Process>
+
+  <!-- OneNote. -->
+  <Process Name="ONENOTE" CompanyName="Microsoft Corporation">
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+    </HideBehavior>
+  </Process>
+
+  <!-- PowerPoint. -->
+  <Process Name="POWERPNT" CompanyName="Microsoft Corporation">
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+    </HideBehavior>
+  </Process>
+
+  <!-- InfoPath. -->
+  <Process Name="INFOPATH" CompanyName="Microsoft Corporation">
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+    </HideBehavior>
+  </Process>
+
+</ApplicationBehaviors>

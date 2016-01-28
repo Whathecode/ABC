@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ProcessBehaviors
-  xmlns="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
+
+<!-- Applications installed as part of mobile internet of Orange. -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://whatodo.at/whathecode/vdm-api ProcessBehaviors.xsd">
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{943768A2-0E3A-4902-9DBB-F8B7BEDD21AB}">
 
   <!-- Card detector is a background application that helps to detect USB modems, mobile Internet SIM cards. -->
-  <Process 
-    Guid="{31ef8feb-01de-423b-a599-28d12d280ccd}" 
-    Version="1.0.0.0"
-    TargetProcessName="CardDetector" 
-    TargetProcessCompanyName="France Telecom">
+  <Process Name="CardDetector" CompanyName="France Telecom">
     <IgnoreWindows>
       <!-- Card detector background windows. -->
       <Window ClassName="Afx:10000000:0:00010005:00000000:00000000" />
@@ -17,4 +16,4 @@
     </IgnoreWindows>
   </Process>
 
-</ProcessBehaviors>
+</ApplicationBehaviors>

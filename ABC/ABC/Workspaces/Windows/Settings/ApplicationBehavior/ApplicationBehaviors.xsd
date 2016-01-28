@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
+<!-- Schema used to specify how to handle specific application windows, part of the virtual desktop manager of the ABC toolkit. -->
 <xs:schema
-  id="ProcessBehaviors"
-  targetNamespace="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
+  id="ApplicationBehaviors"
+  targetNamespace="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified"
-  xmlns="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
-  xmlns:pb="http://whatodo.at/whathecode/vdm-api/ProcessBehaviors"
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:ab="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
   xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <!-- Custom GUID type since it is not available in XSD definition. -->
-  <xs:simpleType name="guid">
+  <xs:simpleType name="Guid">
     <xs:annotation>
       <xs:documentation xml:lang="en">
         The representation of a GUID, generally the id of an element.
@@ -21,9 +22,23 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="ProcessVersion">
+    <xs:annotation>
+      <xs:documentation>Defines a process version number (major.minor.build.revision). Only major is mandatory.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(\d+\.){0,3}(\d+)" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <!-- Type which can uniquely identify one particular window of a process. -->
   <xs:complexType name="Window">
-    <xs:attribute name="ClassName" type="xs:string" />
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Uniquely identifies a window, hosted by a process.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="ClassName" type="xs:string" use="required" />
     <xs:attribute name="Title" type="xs:string" />
     <xs:attribute name="Visible" default="Both">
       <xs:simpleType>
@@ -38,6 +53,11 @@
 
   <!-- Type which lists a set of windows. -->
   <xs:complexType name="WindowList">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        A list of windows.
+      </xs:documentation>
+    </xs:annotation>
     <xs:sequence minOccurs="0" maxOccurs="unbounded">
       <xs:element name="Window" type="Window" />
     </xs:sequence>
@@ -45,6 +65,11 @@
 
   <!-- Type which determines the windows which should be considered during a window operation. -->
   <xs:simpleType name="ConsiderWindows">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Determines the windows which should be considered during window operations.
+      </xs:documentation>
+    </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:enumeration value="AllWindows" />
       <xs:enumeration value="CurrentDesktopWindowsOnly" />
@@ -53,20 +78,40 @@
   </xs:simpleType>
 
 
-  <!-- List of processes with desired behaviors on how the Virtual Desktop Manager should handle its containing windows. -->
-  <xs:element name="ProcessBehaviors">
+  <!-- Specifies for an application, how its process windows should be handled. -->
+  <xs:element name="ApplicationBehaviors">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Specifies for an application, how its process windows should be handled.
+      </xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="CommonIgnoreWindows" type="WindowList" minOccurs="0" maxOccurs="1" />
+        <xs:element name="CommonIgnoreWindows" type="WindowList" minOccurs="0" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              A list of windows which need to be ignored, independent of the process that hosts them.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
 
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
-
           <xs:element name="Process">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                Specifies for one process, how to handle its windows.
+              </xs:documentation>
+            </xs:annotation>
             <xs:complexType>
 
               <xs:sequence>
                 <!-- A list of windows which should be ignored entirely by the Virtual Desktop Manager. -->
                 <xs:element name="IgnoreWindows" minOccurs="0" maxOccurs="1">
+                  <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                      A list of windows which should be ignored entirely by the Virtual Desktop Manager.
+                    </xs:documentation>
+                  </xs:annotation>
                   <xs:complexType>
                     <xs:complexContent>
                       <xs:extension base="WindowList">
@@ -85,6 +130,11 @@
 
                 <!-- Describes which windows should be cut when a window of this process is cut. -->
                 <xs:element name="HideBehavior" minOccurs="0" maxOccurs="1">
+                  <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                      Describes which windows should be cut when a window of this process is cut.
+                    </xs:documentation>
+                  </xs:annotation>
                   <xs:complexType>
                     <xs:sequence minOccurs="0" maxOccurs="unbounded">
                       <xs:choice>
@@ -99,8 +149,7 @@
                                 </xs:restriction>
                               </xs:simpleType>
                             </xs:attribute>
-                            <xs:attribute name="ConsiderWindows" type="ConsiderWindows"
-                                          default="CurrentDesktopWindowsOnly" />
+                            <xs:attribute name="ConsiderWindows" type="ConsiderWindows" default="CurrentDesktopWindowsOnly" />
                           </xs:complexType>
                         </xs:element>
 
@@ -109,8 +158,7 @@
                           <xs:complexType>
                             <xs:complexContent>
                               <xs:extension base="WindowList">
-                                <xs:attribute name="ConsiderWindows" type="ConsiderWindows"
-                                              default="CurrentDesktopWindowsOnly" />
+                                <xs:attribute name="ConsiderWindows" type="ConsiderWindows" default="CurrentDesktopWindowsOnly" />
                               </xs:extension>
                             </xs:complexContent>
                           </xs:complexType>
@@ -121,25 +169,36 @@
                 </xs:element>
               </xs:sequence>
 
-              <xs:attribute name="TargetProcessName" type="xs:string" use="required" />
-              <xs:attribute name="TargetProcessCompanyName" type="xs:string" use="required"/>
-              <xs:attribute name="TargetProcessVersion" type="xs:string"/>
-              <xs:attribute name="Guid" type="guid" use="required" />
-              <xs:attribute name="Version" type="xs:string" use="required" />
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="CompanyName" type="xs:string" use="required"/>
+              <xs:attribute name="Version" type="ProcessVersion">
+                <xs:annotation>
+                  <xs:documentation>
+                    The version to which this configuration applies. All versions are targeted by default.
+                    Version numbers do not need to be complete; 'underlying' versions are also targeted.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:attribute>
 
             </xs:complexType>
 
           </xs:element>
-
         </xs:sequence>
       </xs:sequence>
+
+      <xs:attribute name="Guid" type="Guid" use="required">
+        <xs:annotation>
+          <xs:documentation>Uniquely describes this configuration for the virtual desktop manager.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      
     </xs:complexType>
 
     <xs:unique name="UniqueProcess">
-      <xs:selector xpath="pb:Process" />
-      <xs:field xpath="@TargetProcessName" />
-      <xs:field xpath="@TargetProcessCompanyName" />
-      <xs:field xpath="@TargetProcessVersion" />
+      <xs:selector xpath="ab:Process" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@CompanyName" />
+      <xs:field xpath="@Version" />
     </xs:unique>
 
   </xs:element>

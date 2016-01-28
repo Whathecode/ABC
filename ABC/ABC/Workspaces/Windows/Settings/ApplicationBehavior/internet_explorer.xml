@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Internet explorer web browser. -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{8AC1B692-D774-4D95-8073-F63A118D92E9}">
+
+  <Process Name="iexplore" CompanyName="Microsoft Corporation">
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+    </HideBehavior>
+  </Process>
+
+</ApplicationBehaviors>

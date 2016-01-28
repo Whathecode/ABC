@@ -5,8 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ABC.Plugins;
-using ABC.Workspaces.Windows.Settings.ProcessBehavior;
+using ABC.Workspaces.Windows.Settings.ApplicationBehavior;
 using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
 using Whathecode.System.Windows;
@@ -33,39 +32,41 @@ namespace ABC.Workspaces.Windows.Settings
 	///   You should have received a copy of the GNU General Public License
 	///   along with VirtualDesktopManager.  If not, see http://www.gnu.org/licenses/.
 	/// </license>
-	public class LoadedSettings : ISettings, IInstallablePluginContainer
+	public class LoadedSettings : ISettings
 	{
-		const string SettingsFiles = "ABC.Workspaces.Windows.Settings.ProcessBehavior";
-		public ProcessBehaviors Settings { get; private set; }
-		readonly ProcessBehaviorsProcess _handleProcess = new ProcessBehaviorsProcess();
-		readonly ProcessBehaviorsProcess _dontHandleProcess = ProcessBehaviorsProcess.CreateDontHandleProcess();
+		const string SettingsFiles = "ABC.Workspaces.Windows.Settings.ApplicationBehavior";
+		readonly ApplicationBehaviors _settings = new ApplicationBehaviors();
+		readonly ApplicationBehaviorsProcess _handleProcess = ApplicationBehaviorsProcess.CreateHandleProcess();
+		readonly ApplicationBehaviorsProcess _dontHandleProcess = ApplicationBehaviorsProcess.CreateDontHandleProcess();
 		readonly Func<Window, bool> _windowManagerFilter;
 
-		readonly List<WindowInfo> _accessDeniedWindows = new List<WindowInfo>();
-		readonly Dictionary<WindowInfo, ProcessBehaviorsProcess> _windowProcessBehaviors = new Dictionary<WindowInfo, ProcessBehaviorsProcess>();
-		readonly bool _loadDefaultSettings;
+		/// <summary>
+		///   Setting to determine whether windows with higher privileges than the running application should be ignored or not. False by default.
+		/// </summary>
+		/// <returns>True when windows with higher privileges than the running application are ignored, false otherwise.</returns>
+		public bool IgnoreRequireElevatedPrivileges { get; }
 
-		IEnumerable<string> _loadedFiles = new List<string>();
-
-		public bool IgnoreRequireElevatedPrivileges { get; private set; }
-		
-		public string PluginFolderPath { get; private set; }
 
 		/// <summary>
 		///   Create settings which can be loaded from separate setting files.
 		/// </summary>
-		/// <param name = "pluginFolderPath">Path to the external configurations directory.</param>
 		/// <param name = "ignoreRequireElevatedPrivileges">Setting to determine whether windows with higher privileges than the running application should be ignored or not.</param>
 		/// <param name = "loadDefaultSettings">Start out with default settings containing the correct behavior for a common set of applications.</param>
-		/// <param name = "customWindowFilter">Windows from the calling process are ignored by default, or a custom passed window filter can be used.</param>
-		public LoadedSettings( string pluginFolderPath, bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = false, Func<Window, bool> customWindowFilter = null )
+		/// <param name = "customWindowFilter">
+		///   Windows from the calling process are ignored by default, or a custom passed window filter can be used.
+		///   Returning true indicates the window needs to be handled; return false, the window will be ignored.
+		/// </param>
+		public LoadedSettings( bool ignoreRequireElevatedPrivileges = false, bool loadDefaultSettings = true, Func<Window, bool> customWindowFilter = null )
 		{
 			IgnoreRequireElevatedPrivileges = ignoreRequireElevatedPrivileges;
 
-			_loadDefaultSettings = loadDefaultSettings;
 			if ( loadDefaultSettings )
 			{
-				LoadDefaultSetting();
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				assembly
+					.GetManifestResourceNames()
+					.Where( name => name.StartsWith( SettingsFiles ) )
+					.ForEach( settingsFile => AddSettingsFile( assembly.GetManifestResourceStream( settingsFile ) ) );
 			}
 
 			// Ignore windows created by the window manager itself when no filter is specified.
@@ -81,7 +82,6 @@ namespace ABC.Workspaces.Windows.Settings
 					}
 
 					bool isWindowManager = process.Id == windowManagerProcess.Id;
-
 					return !isWindowManager;
 				};
 			}
@@ -89,73 +89,35 @@ namespace ABC.Workspaces.Windows.Settings
 			{
 				_windowManagerFilter = customWindowFilter;
 			}
-
-			PluginFolderPath = pluginFolderPath;
-			LoadSettingsFromPath( PluginFolderPath );
-
-		}
-
-		/// <summary>
-		/// Reloads all settings.
-		/// </summary>
-		public void Refresh()
-		{
-			Settings = null;
-			if ( _loadDefaultSettings )
-			{
-				LoadDefaultSetting();
-			}
-
-			LoadSettingsFromPath( PluginFolderPath );
-		}
-
-		void LoadSettingsFromPath( string settingsFolderPath )
-		{
-			_loadedFiles = Directory.EnumerateFiles( settingsFolderPath, "*.xml" );
-			foreach ( var plugin in _loadedFiles )
-			{
-				try
-				{
-					using ( var stream = new FileStream( plugin, FileMode.Open ) )
-					{
-						AddSettingsFile( stream );
-					}
-				}
-				catch ( InvalidOperationException ) {}
-			}
-		}
-
-		void LoadDefaultSetting()
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-			assembly
-				.GetManifestResourceNames()
-				.Where( name => name.StartsWith( SettingsFiles ) )
-				.ForEach( settingsFile => AddSettingsFile( assembly.GetManifestResourceStream( settingsFile ) ) );
 		}
 
 		public void AddSettingsFile( Stream stream )
 		{
 			using ( var xmlStream = new StreamReader( stream ) )
 			{
-				AddBehaviors( ProcessBehaviors.Deserialize( xmlStream.BaseStream ) );
+				AddBehaviors( ApplicationBehaviors.Deserialize( xmlStream.BaseStream ) );
 			}
 		}
 
-		void AddBehaviors( ProcessBehaviors newBehaviors )
+		void AddBehaviors( ApplicationBehaviors newBehaviors )
 		{
-			if ( Settings == null )
-			{
-				Settings = newBehaviors;
-				return;
-			}
-
 			// Add new common behaviors.
-			newBehaviors.CommonIgnoreWindows.Window
-				.ForEach( newCommon => Settings.CommonIgnoreWindows.AddIfAbsent( newCommon ) );
+			_settings.CommonIgnoreWindows.Window = newBehaviors.CommonIgnoreWindows.Window
+				.Union( _settings.CommonIgnoreWindows.Window )
+				.ToArray();
 
 			// Add new or overwrite existing process behaviors.
-			newBehaviors.Process.ForEach( newProcess => Settings.AddOrOverwriteProcess( newProcess ) );
+			List<ApplicationBehaviorsProcess> processes = _settings.Process.ToList();
+			foreach ( ApplicationBehaviorsProcess newProcess in newBehaviors.Process )
+			{
+				ApplicationBehaviorsProcess same = processes.FirstOrDefault( p => newProcess.Equals( p ) );
+				if ( same != null )
+				{
+					processes.Remove( same );
+				}
+				processes.Add( newProcess );
+			}
+			_settings.Process = processes.ToArray();
 		}
 
 		public Func<Window, bool> CreateWindowFilter()
@@ -163,21 +125,21 @@ namespace ABC.Workspaces.Windows.Settings
 			return w =>
 			{
 				// Custom filter and common windows to filter.
-				if ( !_windowManagerFilter( w ) || Settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) ) != null )
+				if ( !_windowManagerFilter( w ) || _settings.CommonIgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) ) != null )
 				{
 					return false;
 				}
 
 				// Check whether the process needs to be managed at all.
-				ProcessBehaviorsProcess process = GetProcessSettings( w.WindowInfo );
-				if ( !process.ShouldHandleProcess() )
+				ApplicationBehaviorsProcess process = GetProcessSettings( w.WindowInfo );
+				if ( !process.ShouldHandleProcess )
 				{
 					return false;
 				}
 
 				// Process specific settings.
-				ProcessBehavior.Window listedWindow = process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) );
-				return process.IgnoreWindows.Mode == ProcessBehaviorsProcessIgnoreWindowsMode.NoneExcept
+				ApplicationBehavior.Window listedWindow = process.IgnoreWindows.Window.FirstOrDefault( i => i.Equals( w.WindowInfo ) );
+				return process.IgnoreWindows.Mode == ApplicationBehaviorsProcessIgnoreWindowsMode.NoneExcept
 					? listedWindow == null
 					: listedWindow != null;
 			};
@@ -187,14 +149,14 @@ namespace ABC.Workspaces.Windows.Settings
 		{
 			return ( w, m ) =>
 			{
-				ProcessBehaviorsProcess process = GetProcessSettings( w.WindowInfo );
+				ApplicationBehaviorsProcess process = GetProcessSettings( w.WindowInfo );
 				var windows = new List<WindowInfo>();
 
 				// Ensure at least a default setting is included.
 				var hideBehaviors = new List<object>();
 				if ( process == null || process.HideBehavior.Items.Length == 0 )
 				{
-					hideBehaviors.Add( new ProcessBehaviorsProcessHideBehaviorDefault { Hide = ProcessBehaviorsProcessHideBehaviorDefaultHide.AllProcessWindows } );
+					hideBehaviors.Add( new ApplicationBehaviorsProcessHideBehaviorDefault { Hide = ApplicationBehaviorsProcessHideBehaviorDefaultHide.AllProcessWindows } );
 				}
 				else
 				{
@@ -211,7 +173,10 @@ namespace ABC.Workspaces.Windows.Settings
 			};
 		}
 
-		ProcessBehaviorsProcess GetProcessSettings( WindowInfo window )
+		readonly List<WindowInfo> _accessDeniedWindows = new List<WindowInfo>();
+		readonly Dictionary<WindowInfo, ApplicationBehaviorsProcess> _windowProcessBehaviors = new Dictionary<WindowInfo, ApplicationBehaviorsProcess>();
+
+		ApplicationBehaviorsProcess GetProcessSettings( WindowInfo window )
 		{
 			// See whether settings are cached.
 			if ( _accessDeniedWindows.Contains( window ) )
@@ -234,27 +199,18 @@ namespace ABC.Workspaces.Windows.Settings
 
 			try
 			{
-				FileVersionInfo versionInfo = process.MainModule.FileVersionInfo;
+				// Find matching settings based on file version.
+				FileVersionInfo info = process.MainModule.FileVersionInfo;
+				Version fileVersion = new Version( info.FileMajorPart, info.FileMinorPart, info.FileBuildPart, info.FilePrivatePart );
+				var matches = _settings.Process.Where( p =>
+					p.Name == process.ProcessName &&
+					( p.Version == null || fileVersion.Matches( p.Version ) ) )
+					.ToList();
 
-				// Find configuration for given process name.
-				var matches = Settings.Process.Where( p =>
-					p.TargetProcessName == process.ProcessName ).ToList();
-
-				// Check if there are any version specific configurations for given process.
-				var versionSpecificMatches = matches.Where( match =>
-					match.TargetProcessVersionHelper.Major == versionInfo.FileMajorPart &&
-					match.TargetProcessVersionHelper.Minor == versionInfo.FileMinorPart ).ToList();
-
-				// If any use version specific configurations, application general otherwise.
-				matches = versionSpecificMatches.Any()
-					? versionSpecificMatches
-					: matches.Where( match => match.IsGeneral )
-						.ToList();
-
-				// Take a default configuration if nothing matched, otherwise one with the highest version.
-				ProcessBehaviorsProcess processBehavior = matches.Count == 0
+				// Select the most optimal match, or handle the process by default when no match found.
+				ApplicationBehaviorsProcess processBehavior = matches.Count == 0
 					? _handleProcess
-					: matches.MaxBy( p => p.VersionHelper );
+					: matches.MaxBy( p => p.Version?.Length ?? 0 );  // Longest version number that matches is most 'specific'.
 				_windowProcessBehaviors[ window ] = processBehavior;
 
 				return processBehavior;
@@ -264,29 +220,6 @@ namespace ABC.Workspaces.Windows.Settings
 				_accessDeniedWindows.Add( window );
 				return _dontHandleProcess;
 			}
-		}
-
-		public IInstallable GetInstallablePlugin( Guid guid )
-		{
-			// TODO: How to make VDM configuration installable?
-			var plugin = GetProcessBehaviorsProcess( guid ) as IInstallable;
-			return plugin;
-		}
-
-		public Version GetPluginVersion( Guid guid )
-		{
-			var plugin = GetProcessBehaviorsProcess( guid );
-			return plugin != null ? new Version( plugin.Version ) : null;
-		}
-
-		public string GetPluginPath( Guid guid )
-		{
-			return _loadedFiles.FirstOrDefault( pluginPath => pluginPath.IndexOf( guid.ToString(), StringComparison.OrdinalIgnoreCase ) >= 0 );
-		}
-
-		ProcessBehaviorsProcess GetProcessBehaviorsProcess( Guid guid )
-		{
-			return Settings.Process.FirstOrDefault( process => new Guid( process.Guid ) == guid );
 		}
 	}
 }

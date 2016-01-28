@@ -25,7 +25,7 @@ namespace ABC.Workspaces.Windows.Settings
 	public interface ISettings
 	{
 		/// <summary>
-		///   Setting to determine whether windows with higher privileges than the running application should be ignored or not. False by default.
+		///   Setting to determine whether windows with higher privileges than the running application should be ignored or not.
 		/// </summary>
 		/// <returns>True when windows with higher privileges than the running application are ignored, false otherwise.</returns>
 		bool IgnoreRequireElevatedPrivileges { get; }

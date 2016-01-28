@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Preinstalled applications on ASUS laptops. -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{16BFEB43-5C67-48C8-896C-3217593E7B29}">
+
+  <!-- Asus function key visualizations. -->
+  <Process Name="ATKOSD2" CompanyName="ASUSTek Computer Inc.">
+    <IgnoreWindows>
+      <Window ClassName="CNewOsd" />
+    </IgnoreWindows>
+  </Process>
+
+  <!-- Asus Splendid Video Enhancement Technology. Window is never shown. -->
+  <Process Name="ACMON" CompanyName="ASUS">
+    <IgnoreWindows>
+      <Window ClassName="ACMON" />
+    </IgnoreWindows>
+  </Process>
+
+  <!-- Asus touchpad driver. -->
+  <Process Name="ETDCtrl" CompanyName="ELAN Microelectronics">
+    <IgnoreWindows>
+      <Window ClassName="#32770" />
+    </IgnoreWindows>
+  </Process>
+  <Process Name="ETDCtrlHelper" CompanyName="ELAN Microelectronics">
+    <IgnoreWindows>
+      <Window ClassName="#32770" />
+    </IgnoreWindows>
+  </Process>
+
+</ApplicationBehaviors>

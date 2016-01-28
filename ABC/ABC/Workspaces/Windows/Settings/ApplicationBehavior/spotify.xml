@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- Spotify: music player. -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{59488E55-89B8-48FA-89B7-EEB0C9171D36}">
+
+	<Process Name="SpotifyHelper" CompanyName="">
+		<IgnoreWindows Mode="AllExcept" />
+	</Process>
+
+</ApplicationBehaviors>

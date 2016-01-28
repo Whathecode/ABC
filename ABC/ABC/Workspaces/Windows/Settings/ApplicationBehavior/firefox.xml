@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Firefox web browser. -->
+<ApplicationBehaviors
+  xmlns="http://whatheco.de/abc/workspaces/windows/ApplicationBehaviors"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://whatheco.de/abc/workspaces/windows ApplicationBehaviors.xsd"
+  Guid="{73D38AEB-7E92-4C0E-B1C7-E81EBD005F89}">
+
+  <Process Name="firefox" CompanyName="Mozilla Corporation">
+    <HideBehavior>
+      <Default Hide="SelectedWindow" />
+    </HideBehavior>
+  </Process>
+
+</ApplicationBehaviors>
