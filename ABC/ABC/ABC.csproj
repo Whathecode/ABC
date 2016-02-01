@@ -96,7 +96,7 @@
     <Compile Include="Workspaces\Windows\Server\IMonitorVdmService.cs" />
     <Compile Include="Workspaces\Windows\Server\MonitorVdmServer.cs" />
     <Compile Include="Workspaces\Windows\Server\MonitorVdmService.cs" />
-    <Compile Include="Workspaces\Windows\Settings\Extensions.Version.cs" />
+    <Compile Include="Plugins\Extensions.Version.cs" />
     <Compile Include="Workspaces\Windows\Settings\ISettings.cs" />
     <Compile Include="Workspaces\Windows\Settings\LoadedSettings.cs" />
     <Compile Include="Workspaces\Windows\Settings\ApplicationBehavior\ApplicationBehaviors.cs">

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ABC.Plugins;
 using ABC.Workspaces.Windows.Settings.ApplicationBehavior;
 using Whathecode.System.Extensions;
 using Whathecode.System.Linq;
@@ -198,14 +199,8 @@ namespace ABC.Workspaces.Windows.Settings
 			Process process = window.GetProcess();
 			try
 			{
-				// Find matching settings based on file info.
-				FileVersionInfo info = process.MainModule.FileVersionInfo;
-				Version fileVersion = new Version( info.FileMajorPart, info.FileMinorPart, info.FileBuildPart, info.FilePrivatePart );
-				var matches = _settings.Process.Where( p =>
-					p.Name == process.ProcessName &&
-					p.CompanyName == info.CompanyName &&
-					( p.Version == null || fileVersion.Matches( p.Version ) ) )
-					.ToList();
+				// Find matching settings based on process file info.
+				var matches = _settings.Process.Where( p => PluginHelper.TargetsProcess( p.Name, p.CompanyName, p.Version, process ) ).ToList();
 
 				// Select the most optimal match, or handle the process by default when no match found.
 				ApplicationBehaviorsProcess processBehavior = matches.Count == 0

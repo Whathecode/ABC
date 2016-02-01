@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 
 namespace ABC.Plugins
@@ -41,6 +42,27 @@ namespace ABC.Plugins
 
 				throw new PluginException<TPlugin>( message, plugin, ex );
 			}
+		}
+
+		/// <summary>
+		///   Verifies whether a given process satisfies expected process parameters.
+		/// </summary>
+		/// <param name="processName">The expected name of the process.</param>
+		/// <param name="companyName">The expected company name of the process, as specified in <see cref="FileVersionInfo" />.</param>
+		/// <param name="version">
+		///   The expected version of the process. When null, all versions are targeted by default.
+		///   Version numbers do not need to be complete; 'underlying' versions are also targeted.
+		/// </param>
+		/// <param name="process">The process to check the given parameters against.</param>
+		/// <returns>True when the given parameters match the process; false otherwise.</returns>
+		public static bool TargetsProcess( string processName, string companyName, string version, Process process )
+		{
+			FileVersionInfo info = process.MainModule.FileVersionInfo;
+			Version fileVersion = new Version( info.FileMajorPart, info.FileMinorPart, info.FileBuildPart, info.FilePrivatePart );
+			return
+				processName == process.ProcessName &&
+				companyName == info.CompanyName &&
+				( version == null || fileVersion.Matches( version ) ); // 'null' matches any version.
 		}
 	}
 }

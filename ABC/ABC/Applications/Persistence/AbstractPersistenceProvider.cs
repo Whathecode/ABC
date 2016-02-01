@@ -42,7 +42,7 @@ namespace ABC.Applications.Persistence
 				let process = Process.GetProcessById( processWindows.Key )
 				where process != null
 				let applicationPath = process.Modules[ 0 ].FileName
-				let persistor = GetPersistenceProviders().FirstOrDefault( p => p.ProcessName == process.ProcessName && p.CompanyName == process.MainModule.FileVersionInfo.CompanyName )
+				let persistor = GetPersistenceProviders().FirstOrDefault( p => PluginHelper.TargetsProcess( p.ProcessName, p.CompanyName, p.TargetVersion, process ) )
 				where persistor != null
 				let persistedData = PluginHelper.SafePluginInvoke( persistor, p => p.Suspend(
 					new SuspendInformation

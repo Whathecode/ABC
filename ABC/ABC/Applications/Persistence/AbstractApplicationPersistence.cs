@@ -20,16 +20,27 @@ namespace ABC.Applications.Persistence
 		/// </summary>
 		public string CompanyName { get; private set; }
 
+		/// <summary>
+		///   The version of the process for which this persistence provider works. When null, all versions are targeted by default.
+        ///   Version numbers do not need to be complete; 'underlying' versions are also targeted.
+		/// </summary>
+		public string TargetVersion { get; private set; }
+
 
 		/// <summary>
 		///   Instantiate a new plugin which can persisted a specified application process.
 		/// </summary>
 		/// <param name = "processName">The name of the process this persistence provider can persist.</param>
 		/// <param name = "companyName">The name of the company that produced the application process, as specified in <see cref="FileVersionInfo" />.</param>
-		protected AbstractApplicationPersistence( string processName, string companyName )
+		/// <param name = "targetVersion">
+		///   The version of the process for which this persistence provider works. When null, all versions are targeted by default.
+		///   Version numbers do not need to be complete; 'underlying' versions are also targeted.
+		/// </param>
+		protected AbstractApplicationPersistence( string processName, string companyName, string targetVersion = null )
 		{
 			ProcessName = processName;
 			CompanyName = companyName;
+			TargetVersion = targetVersion;
 		}
 
 
