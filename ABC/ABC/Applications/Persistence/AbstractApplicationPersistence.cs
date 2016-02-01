@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Reflection;
+using System.Diagnostics;
 using ABC.Plugins;
 
 
@@ -8,26 +8,30 @@ namespace ABC.Applications.Persistence
 	/// <summary>
 	///   Provides a way to persist the state of an application.
 	/// </summary>
-	public abstract class AbstractApplicationPersistence
+	public abstract class AbstractApplicationPersistence : AbstractPlugin
 	{
 		/// <summary>
-		/// Default constructor.
+		///   The name of the process this persistence provider can persist.
 		/// </summary>
-		/// <param name="assembly">In order to identify plug-in, AssemblyTargetProcess, GUID, 
-		/// AssemblyVersion have to be included as assembly attributes.</param>
-		protected AbstractApplicationPersistence( Assembly assembly )
-		{
-			AssemblyInfo = new AssemblyInfo( assembly );
-			if ( Guid.Empty == AssemblyInfo.Guid || String.IsNullOrEmpty( AssemblyInfo.TargetProcessName ) )
-			{
-				throw new ArgumentException("Plug-in GUID and target process name have to be provided in assembly info.");
-			}
-		}
+		public string ProcessName { get; private set; }
 
 		/// <summary>
-		/// Provides information about assembly and its requirements.
+		///   The name of the company that produced the application process, as specified in <see cref="FileVersionInfo" />.
 		/// </summary>
-		public AssemblyInfo AssemblyInfo { get; private set; }
+		public string CompanyName { get; private set; }
+
+
+		/// <summary>
+		///   Instantiate a new plugin which can persisted a specified application process.
+		/// </summary>
+		/// <param name = "processName">The name of the process this persistence provider can persist.</param>
+		/// <param name = "companyName">The name of the company that produced the application process, as specified in <see cref="FileVersionInfo" />.</param>
+		protected AbstractApplicationPersistence( string processName, string companyName )
+		{
+			ProcessName = processName;
+			CompanyName = companyName;
+		}
+
 
 		/// <summary>
 		///   Persists the current state of the application, and then suspends it.

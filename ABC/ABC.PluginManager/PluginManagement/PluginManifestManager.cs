@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 using PluginManager.Model;
 
 
-namespace PluginManager.PluginManagment
+namespace PluginManager.PluginManagement
 {
 	public class PluginManifestManager
 	{

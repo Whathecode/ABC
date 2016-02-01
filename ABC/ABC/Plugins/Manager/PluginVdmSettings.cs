@@ -6,7 +6,7 @@ using ABC.Workspaces.Windows;
 using ABC.Workspaces.Windows.Settings;
 
 
-namespace ABC.Plugins
+namespace ABC.Plugins.Manager
 {
 	/// <summary>
 	///   Contains settings for the VDM manager which are loaded and managed by the plugin manager.

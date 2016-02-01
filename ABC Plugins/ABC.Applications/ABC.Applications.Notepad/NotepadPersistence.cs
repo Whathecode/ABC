@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using ABC.Applications.Persistence;
 using Whathecode.System.Diagnostics;
@@ -8,11 +8,15 @@ using Whathecode.System.Diagnostics;
 
 namespace ABC.Applications.Notepad
 {
+	[Guid( "EA671367-2C10-4DA1-8757-E2D753001812" )]
 	[Export( typeof( AbstractApplicationPersistence ) )]
 	public class NotepadPersistence : AbstractApplicationPersistence
 	{
 		public NotepadPersistence()
-			: base( Assembly.GetExecutingAssembly() ) {}
+			: base( "notepad", "Microsoft Corporation" )
+		{
+		}
+
 
 		public override object Suspend( SuspendInformation toSuspend )
 		{

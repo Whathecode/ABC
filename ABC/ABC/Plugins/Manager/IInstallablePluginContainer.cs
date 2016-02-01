@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ABC.Plugins
+namespace ABC.Plugins.Manager
 {
 	public interface IInstallablePluginContainer
 	{

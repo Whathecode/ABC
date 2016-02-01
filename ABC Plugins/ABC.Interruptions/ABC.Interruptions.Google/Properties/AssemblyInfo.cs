@@ -11,7 +11,6 @@ using ABC.Plugins;
 [assembly: AssemblyCompany( "IT University of Copenhagen" )]
 [assembly: AssemblyProduct( "ABC.Interruptions.Gmail" )]
 [assembly: AssemblyCopyright( "Copyright © Steven Jeuris 2013" )]
-[assembly: AssemblyTargetProcess( "Gmail", "Google Inc.", "1.0" )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

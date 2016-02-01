@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using PluginManager.PluginManagment;
+using PluginManager.PluginManagement;
 using PluginManager.View.AppOverview;
 using PluginManager.ViewModel.AppOverview;
 
@@ -34,7 +34,17 @@ namespace PluginManager
 		{
 			base.OnStartup( e );
 
+			// Get plugin folder from command line parameter, or use debug folder when running in debug. 
+#if DEBUG
+			const string pluginDirectory = "Plugins";
+			if ( !Directory.Exists( pluginDirectory ) )
+			{
+				Directory.CreateDirectory( pluginDirectory );
+			}
+			PluginManagerDirectory = pluginDirectory;
+#else
 			PluginManagerDirectory = e.Args.ElementAtOrDefault( 0 );
+#endif
 			if ( string.IsNullOrEmpty( PluginManagerDirectory ) || !Directory.Exists( PluginManagerDirectory ) )
 			{
 				MessageBox.Show( "Plug-in installation directory has to be passed as a command line parameter." );

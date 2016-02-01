@@ -11,7 +11,6 @@ using ABC.Plugins;
 [assembly: AssemblyCompany( "IT University of Copenhagen" )]
 [assembly: AssemblyProduct("ABC.Applications.Notepad")]
 [assembly: AssemblyCopyright("Copyright © Steven Jeuris 2014")]
-[assembly: AssemblyTargetProcess( "notepad", "Microsoft Corporation", "6.1" )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

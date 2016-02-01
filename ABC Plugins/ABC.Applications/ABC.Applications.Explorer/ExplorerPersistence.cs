@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using ABC.Applications.Persistence;
 using SHDocVw;
@@ -21,11 +20,15 @@ namespace ABC.Applications.Explorer
 	}
 
 
+	[Guid( "80BF1763-EA30-4C26-BE68-D6D3D3CA6556" )]
 	[Export( typeof( AbstractApplicationPersistence ) )]
 	public class ExplorerPersistence : AbstractApplicationPersistence
 	{
 		public ExplorerPersistence()
-			: base( Assembly.GetExecutingAssembly() ) {}
+			: base( "explorer", "Microsoft Corporation" )
+		{	
+		}
+
 
 		public override object Suspend( SuspendInformation toSuspend )
 		{

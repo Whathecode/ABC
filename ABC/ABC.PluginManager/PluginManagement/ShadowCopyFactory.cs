@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 
 
-namespace ABC.Plugins
+namespace PluginManager.PluginManagement
 {
 	public class ShadowCopyFactory<T>
 	{

@@ -1,11 +1,12 @@
-﻿namespace ABC.Plugins
+﻿namespace ABC.Plugins.Manager
 {
 	/// <summary>
 	/// Interface should be implemented by plug-ins that require additional custom installation steps.
 	/// </summary>
 	public interface IInstallable
 	{
-		AssemblyInfo AssemblyInfo { get; }
+		PluginInfo PluginInfo { get; }
+
 
 		/// <summary>
 		/// Performs all actions that are necessary to make plug-in installed on user's system.

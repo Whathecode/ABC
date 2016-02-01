@@ -2,7 +2,7 @@
 using System.Linq;
 using PluginManager.Common;
 using PluginManager.Model;
-using PluginManager.PluginManagment;
+using PluginManager.PluginManagement;
 using PluginManager.ViewModel.Plugin.Binding;
 using Whathecode.System.ComponentModel.NotifyPropertyFactory.Attributes;
 using Whathecode.System.Extensions;

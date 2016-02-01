@@ -72,6 +72,7 @@
       <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -95,7 +96,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Common\PluginConfiguration.cs" />
     <Compile Include="Common\PluginState.cs" />
     <Compile Include="Model\PluginManifest.cs" />
     <Compile Include="Model\PluginManifestGenerated.cs">
@@ -105,11 +105,13 @@
       <DependentUpon>PluginManifest.cs</DependentUpon>
     </Compile>
     <Compile Include="PluginManagerController.cs" />
-    <Compile Include="PluginManagment\PluginErrorEventArgs.cs" />
-    <Compile Include="PluginManagment\PluginEventArgs.cs" />
-    <Compile Include="PluginManagment\PluginManifestManager.cs" />
-    <Compile Include="PluginManagment\PluginFileManager.cs" />
-    <Compile Include="PluginManagment\PluginProvider.cs" />
+    <Compile Include="PluginManagement\PluginErrorEventArgs.cs" />
+    <Compile Include="PluginManagement\PluginEventArgs.cs" />
+    <Compile Include="PluginManagement\PluginManifestManager.cs" />
+    <Compile Include="PluginManagement\PluginFileManager.cs" />
+    <Compile Include="PluginManagement\PluginProvider.cs" />
+    <Compile Include="PluginManagement\PluginWatcher.cs" />
+    <Compile Include="PluginManagement\ShadowCopyFactory.cs" />
     <Compile Include="ViewModel\AppOverview\ApplicationViewModel.cs" />
     <Compile Include="ViewModel\PluginOverview\PluginOverviewViewModel.cs" />
     <Compile Include="ViewModel\PluginOverview\Binding\Binding.cs" />

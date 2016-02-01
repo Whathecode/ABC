@@ -18,7 +18,7 @@ namespace ABC.Plugins
 			}
 			catch ( Exception ex )
 			{
-				string message = String.Format( "The plugin \"{0}\" threw an exception.", plugin.GetType() );
+				string message = $"The plugin \"{plugin.GetType()}\" threw an exception.";
 
 				throw new PluginException<TPlugin>( message, plugin, ex );
 			}
@@ -37,7 +37,7 @@ namespace ABC.Plugins
 			}
 			catch ( Exception ex )
 			{
-				string message = String.Format( "The interruption trigger plugin \"{0}\" threw an exception.", plugin.GetType() );
+				string message = $"The plugin \"{plugin.GetType()}\" threw an exception.";
 
 				throw new PluginException<TPlugin>( message, plugin, ex );
 			}

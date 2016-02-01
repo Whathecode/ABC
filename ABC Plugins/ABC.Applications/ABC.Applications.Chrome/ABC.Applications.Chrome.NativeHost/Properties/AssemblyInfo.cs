@@ -10,8 +10,7 @@ using ABC.Plugins;
 [assembly: AssemblyTitle( "ABC.Applications.Chrome.NativeHost" )]
 [assembly: AssemblyCompany( "IT University of Copenhagen" )]
 [assembly: AssemblyProduct( "ABC.Applications.Chrome.NativeHost" )]
-[assembly: AssemblyCopyright( "Copyright © Steven Jeuris  2014" )]
-[assembly: AssemblyTargetProcess( "chrome", "Google Inc.", "41.0.0.0" )]
+[assembly: AssemblyCopyright( "Copyright © Steven Jeuris 2014" )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

@@ -58,33 +58,26 @@
     <Compile Include="Applications\Persistence\AbstractApplicationPersistence.cs" />
     <Compile Include="Applications\Persistence\AbstractPersistenceProvider.cs" />
     <Compile Include="Applications\Persistence\CollectionPersistenceProvider.cs" />
-    <Compile Include="Applications\Persistence\IApplicationPersistanceInfo.cs" />
-    <Compile Include="Applications\Persistence\IPersistence.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Applications\Persistence\PersistedApplication.cs" />
     <Compile Include="Applications\Persistence\PersistenceInformation.cs" />
-    <Compile Include="Applications\Persistence\PersistenceMarshalWrapper.cs" />
-    <Compile Include="Applications\Persistence\PersistenceProvider.cs" />
+    <Compile Include="Applications\Persistence\FolderPersistenceProvider.cs" />
     <Compile Include="Applications\Services\AbstractService.cs" />
     <Compile Include="Applications\Services\Browser.cs" />
     <Compile Include="Applications\Services\ServiceProvider.cs" />
-    <Compile Include="Interruptions\AbstractInterruptionAggregator.cs" />
     <Compile Include="Interruptions\AbstractInterruption.cs" />
     <Compile Include="Interruptions\AbstractInterruptionTrigger.cs" />
     <Compile Include="Interruptions\AbstractIntervalInterruptionTrigger.cs" />
-    <Compile Include="Interruptions\ImportanceLevel.cs" />
-    <Compile Include="Interruptions\InterruptionAggregator.cs" />
-    <Compile Include="Plugins\AssemblyInfo.cs" />
-    <Compile Include="Plugins\CompositionHelper.cs" />
-    <Compile Include="Plugins\IInstallable.cs" />
-    <Compile Include="Plugins\IInstallablePluginContainer.cs" />
+    <Compile Include="Interruptions\FolderInterruptionTrigger.cs" />
+    <Compile Include="Plugins\AbstractPlugin.cs" />
+    <Compile Include="Plugins\FolderPluginComposition.cs" />
+    <Compile Include="Plugins\Manager\IInstallable.cs" />
+    <Compile Include="Plugins\Manager\IInstallablePluginContainer.cs" />
+    <Compile Include="Plugins\Manager\PluginInfo.cs" />
+    <Compile Include="Plugins\Manager\PluginInterruptionTrigger.cs" />
+    <Compile Include="Plugins\Manager\PluginPersistenceProvider.cs" />
+    <Compile Include="Plugins\Manager\PluginVdmSettings.cs" />
     <Compile Include="Plugins\PluginException.cs" />
     <Compile Include="Plugins\PluginHelper.cs" />
-    <Compile Include="Plugins\AssemblyTargetProcess.cs" />
-    <Compile Include="Plugins\PluginVdmSettings.cs" />
-    <Compile Include="Plugins\PluginWatcher.cs" />
-    <Compile Include="Plugins\ShadowCopyFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Workspaces\AbstractWorkspace.cs" />
@@ -136,7 +129,6 @@
     <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\windows.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Workspaces\Windows\Settings\ApplicationBehavior\windows_photo_viewer.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

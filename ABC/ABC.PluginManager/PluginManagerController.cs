@@ -4,7 +4,7 @@ using System.Security.Permissions;
 using System.Windows;
 using ABC.Plugins;
 using PluginManager.Model;
-using PluginManager.PluginManagment;
+using PluginManager.PluginManagement;
 
 
 namespace PluginManager

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Permissions;
 using PluginManager.Common;
-using PluginManager.PluginManagment;
+using PluginManager.PluginManagement;
 using Whathecode.System.Extensions;
 
 
@@ -28,9 +28,11 @@ namespace PluginManager.Model
 			// Check which plug-ins, applications are installed.
 			Plugin.ForEach( plugin =>
 			{
-				var provider = providers[ plugin.Type ];
+				PluginProvider provider = providers[ plugin.Type ];
 				if ( provider == null )
+				{
 					return;
+				}
 
 				// Check if all ABC plug-ins are installed to indicate manager plug-in state.
 				var installed = plugin.AbcPlugins.Where( abcPlugin => provider.IsInstalled( new Guid( abcPlugin.Guid ) ) ).ToList();

@@ -4,7 +4,7 @@ using System.Net;
 using PluginManager.Model;
 
 
-namespace PluginManager.PluginManagment
+namespace PluginManager.PluginManagement
 {
 	class PluginFileManager
 	{

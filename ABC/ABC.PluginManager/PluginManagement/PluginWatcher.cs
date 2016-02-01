@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ABC.Plugins
+namespace PluginManager.PluginManagement
 {
 	public class PluginWatcher
 	{

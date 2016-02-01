@@ -13,8 +13,7 @@ namespace ABC.Interruptions
 		DateTime? _lastUpdate;
 
 
-		protected AbstractIntervalInterruptionTrigger( TimeSpan interval, Assembly assembly )
-			: base( assembly )
+		protected AbstractIntervalInterruptionTrigger( TimeSpan interval )
 		{
 			_interval = interval;
 		}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
@@ -13,6 +13,7 @@ using Whathecode.System.Windows;
 
 namespace ABC.Applications.Chrome
 {
+	[Guid( "C0A311FF-364E-4D4B-A9A4-75736FBF922C" )]
 	[Export( typeof( AbstractApplicationPersistence ) )]
 	public class ChromePersistence : AbstractApplicationPersistence
 	{
@@ -21,7 +22,7 @@ namespace ABC.Applications.Chrome
 
 
 		public ChromePersistence()
-			: base( Assembly.GetExecutingAssembly() )
+			: base ( "chrome", "Google Inc." )
 		{
 			// Set up communication with the Chrome ABC extension.
 			_channel = new IpcClientChannel();

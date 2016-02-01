@@ -7,12 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Threading;
 using System.Xml;
-using ABC.Plugins;
 using Whathecode.System.Extensions;
 using Whathecode.System.Windows.Threading;
 
@@ -22,45 +22,54 @@ namespace ABC.Interruptions.Google
 	/// <summary>
 	///   Receives unread emails from the currently logged in gmail account and introduces them as interruptions.
 	/// </summary>
+	[Guid( "518F5F33-DC65-4B10-A6EF-7CA5B8485A35" )]
 	[Export( typeof( AbstractInterruptionTrigger ) )]
-	public class GmailInterruptionTrigger : AbstractIntervalInterruptionTrigger, IInstallable
+	public class GmailInterruptionTrigger : AbstractIntervalInterruptionTrigger
 	{
 		const string GmailAtomFeed = "https://mail.google.com/mail/feed/atom";
 
 		readonly Dispatcher _dispatcher;
 
-		Configuration _config;
-		GoogleConfiguration _settings;
+		readonly Configuration _config;
+		readonly GoogleConfiguration _settings;
 		const string GmailSection = "GmailSettings";
 		static readonly byte[] Entropy = Encoding.Unicode.GetBytes( "Gmail user settings should be saved securely!" );
 		SecureString _password;
 
+
 		public GmailInterruptionTrigger()
-			: base( TimeSpan.FromMinutes( 1 ), Assembly.GetExecutingAssembly() )
+			: base( TimeSpan.FromMinutes( 1 ) )
 		{
 			_dispatcher = Dispatcher.CurrentDispatcher;
 
-			// In Plug-in Manager .dll shadow copy is used, thus configuration can be null (file location is different).
+			// Recover settings, or ask for them if not asked before.
 			_config = ConfigurationManager.OpenExeConfiguration( Assembly.GetExecutingAssembly().Location );
-			if ( _config == null )
-			{
-				return;
-			}
-
 			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
-			if ( _settings != null && _settings.IsEnabled )
+			if ( _settings != null )
 			{
+				if ( _settings.Password.Length == 0 )
+				{
+					return;
+				}
+
 				byte[] decryptedData = ProtectedData.Unprotect(
 					Convert.FromBase64String( _settings.Password ),
 					Entropy,
 					DataProtectionScope.CurrentUser );
 				_password = Encoding.Unicode.GetString( decryptedData ).ToSecureString();
 			}
+			else
+			{
+				_settings = new GoogleConfiguration();
+				_config.Sections.Add( GmailSection, _settings );
+				AskSettings();
+			}
 		}
 
-		public void AskSettings()
+
+		void AskSettings()
 		{
-			var askForCredentials = new CredentialsDialog( _settings.Username );
+			var askForCredentials = new CredentialsDialog();
 			bool? result = askForCredentials.ShowDialog();
 			if ( result != null && result.Value )
 			{
@@ -72,13 +81,6 @@ namespace ABC.Interruptions.Google
 					Entropy,
 					DataProtectionScope.CurrentUser );
 				_settings.Password = Convert.ToBase64String( encryptedPassword );
-
-				// Check if the login and password are incorrect, if not ask for the setting again.
-				var mailStream = GetEmailFeed();
-				if ( mailStream == null )
-				{
-					AskSettings();
-				}
 			}
 			else
 			{
@@ -106,16 +108,28 @@ namespace ABC.Interruptions.Google
 
 		protected override void IntervalUpdate( DateTime now )
 		{
-			if ( !HasInternetConnection() || !_settings.IsEnabled )
+			if ( !HasInternetConnection() )
 			{
 				return;
 			}
 
-			// Try retrieving the unread email stream.
-			var mailStream = GetEmailFeed();
+			// Try retrieving the unread email stream until the correct login is specified, or decided not to log in.
+			Stream mailStream = null;
+			while ( _settings.IsEnabled && mailStream == null )
+			{
+				var client = new WebClient { Credentials = new NetworkCredential( _settings.Username, _password ) };
+				try
+				{
+					mailStream = client.OpenRead( GmailAtomFeed );
+				}
+				catch ( WebException )
+				{
+					DispatcherHelper.SafeDispatch( _dispatcher, AskSettings );
+				}
+			}
 
-			// Early out when a email stream cannot be downloaded.
-			if ( mailStream == null )
+			// Early out when the user does not want to receive email interruptions.
+			if ( !_settings.IsEnabled || mailStream == null )
 			{
 				return;
 			}
@@ -135,60 +149,32 @@ namespace ABC.Interruptions.Google
 			}
 			foreach ( XmlNode entry in entries )
 			{
-				string title = "", link ="" , id = "", summary ="", issued = "";
-				var collaborators = new List<string>();
-
 				XmlNode titleNode = entry[ "title" ];
-				if ( titleNode != null )
+				if ( titleNode == null )
 				{
-					title = titleNode.InnerText;
+					break;
 				}
+				string title = titleNode.InnerText;
 
 				XmlNode linkNode = entry[ "link" ];
-				if ( linkNode != null && linkNode.Attributes != null )
+				if ( linkNode == null || linkNode.Attributes == null )
 				{
-					link = linkNode.Attributes[ "href" ].InnerText;
+					break;
 				}
+				string link = linkNode.Attributes[ "href" ].InnerText;
 
 				XmlNode idNode = entry[ "id" ];
-				if ( idNode != null )
+				if ( idNode == null )
 				{
-					id = idNode.InnerText;
-					idsInFeed.Add( id );
+					break;
 				}
-
-				XmlNode summaryNode = entry[ "summary" ];
-				if ( summaryNode != null )
-				{
-					summary = summaryNode.InnerText;
-				}
-
-				XmlNode issuedNode = entry[ "issued" ];
-				if ( issuedNode != null )
-				{
-					issued = issuedNode.InnerText;
-				}
-
-				XmlNode authorNode = entry[ "author" ];
-				if ( authorNode != null )
-				{
-					XmlNode nameNode = authorNode[ "name" ];
-					if ( nameNode != null )
-					{
-						collaborators.Add( nameNode.InnerText );
-					}
-
-					XmlNode emailNode = authorNode[ "email" ];
-					if ( emailNode != null )
-					{
-						collaborators.Add( emailNode.InnerText );
-					}
-				}
+				string id = idNode.InnerText;
+				idsInFeed.Add( id );
 
 				if ( !_settings.ProcessedEmails.Cast<ProcessedEmail>().Select( e => e.Id ).Contains( id ) )
 				{
 					_settings.ProcessedEmails.Add( id );
-					TriggerInterruption( new GmailInterruption( title, summary, link, issued, collaborators, null ) );
+					TriggerInterruption( new GmailInterruption( title, link ) );
 				}
 			}
 
@@ -197,21 +183,6 @@ namespace ABC.Interruptions.Google
 			toRemove.ForEach( r => _settings.ProcessedEmails.Remove( r ) );
 
 			_config.Save();
-		}
-
-		Stream GetEmailFeed()
-		{
-			Stream mailStream = null;
-			var client = new WebClient { Credentials = new NetworkCredential( _settings.Username, _password ) };
-			try
-			{
-				mailStream = client.OpenRead( GmailAtomFeed );
-			}
-			catch ( WebException )
-			{
-				DispatcherHelper.SafeDispatch( _dispatcher, AskSettings );
-			}
-			return mailStream;
 		}
 
 		/// <summary>
@@ -234,51 +205,6 @@ namespace ABC.Interruptions.Google
 		public override List<Type> GetInterruptionTypes()
 		{
 			return new List<Type> { typeof( GmailInterruption ) };
-		}
-
-		public bool Install( params object[] args )
-		{
-			var pluginPath = args[ 0 ].ToString();
-			if ( String.IsNullOrEmpty( pluginPath ) )
-			{
-				return false;
-			}
-
-			_config = ConfigurationManager.OpenExeConfiguration( pluginPath );
-			if ( _config == null )
-			{
-				return false;
-			}
-
-			_settings = _config.Sections.Get( GmailSection ) as GoogleConfiguration;
-			if ( _settings == null )
-			{
-				_settings = new GoogleConfiguration();
-				_config.Sections.Add( GmailSection, _settings );
-			}
-
-			AskSettings();
-			return true;
-		}
-
-		public bool Unistall( params object[] args )
-		{
-			var pluginPath = args[ 0 ].ToString();
-			if ( String.IsNullOrEmpty( pluginPath ) )
-			{
-				return false;
-			}
-
-			try
-			{
-				File.Delete( pluginPath + ".config" );
-				return true;
-			}
-			catch ( Exception exception )
-			{
-				Console.WriteLine( "Gmail plug-in uninstallation failure. " + exception.Message );
-				return false;
-			}
 		}
 	}
 }

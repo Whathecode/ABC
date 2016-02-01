@@ -7,11 +7,12 @@ using System.Threading;
 using ABC.Applications.Persistence;
 using ABC.Interruptions;
 using ABC.Plugins;
+using ABC.Plugins.Manager;
 using ABC.Workspaces.Windows.Settings;
 using PluginManager.Model;
 
 
-namespace PluginManager.PluginManagment
+namespace PluginManager.PluginManagement
 {
 	public class PluginProvider : MarshalByRefObject, IDisposable
 	{
@@ -20,19 +21,19 @@ namespace PluginManager.PluginManagment
 		const string WatcherErrorMessage = "Plug-in directory watcher encountered a problem.";
 		const string CannotExtractFromAssembly = "Cannot extract GUID from an assembly";
 
-		//<summary>
-		//  Event which is triggered when a plug-in was installed.
-		//</summary>
+		///<summary>
+		///  Event which is triggered when a plug-in was installed.
+		///</summary>
 		public event EventHandler Installed;
 
-		//<summary>
-		//  Event which is triggered when a plug-in was uninstalled.
-		//</summary>
+		///<summary>
+		///  Event which is triggered when a plug-in was uninstalled.
+		///</summary>
 		public event EventHandler Uninstalled;
 
-		//<summary>
-		//  Event which is triggered when an error is thrown during the plug-in manipulation (installation, uninstallation).
-		//</summary>
+		///<summary>
+		///  Event which is triggered when an error is thrown during the plug-in manipulation (installation, uninstallation).
+		///</summary>
 		public event EventHandler<PluginErrorEventArgs> Error;
 
 		IInstallablePluginContainer _pluginContainer;
@@ -43,13 +44,13 @@ namespace PluginManager.PluginManagment
 			switch ( pluginType )
 			{
 				case PluginType.Persistence:
-					SafeContainerCreation( () => _pluginContainer = new PersistenceProvider( pluginFolderPath ) );
+					SafeContainerCreation( () => _pluginContainer = new PluginPersistenceProvider( pluginFolderPath ) );
 					break;
 				case PluginType.Interruption:
-					SafeContainerCreation( () => _pluginContainer = new InterruptionAggregator( pluginFolderPath ) );
+					SafeContainerCreation( () => _pluginContainer = new PluginInterruptionTrigger( pluginFolderPath ) );
 					break;
 				case PluginType.Vdm:
-					SafeContainerCreation( () => _pluginContainer = new LoadedSettings( pluginFolderPath ) );
+					SafeContainerCreation( () => _pluginContainer = new PluginVdmSettings( pluginFolderPath ) );
 					break;
 			}
 
@@ -89,7 +90,7 @@ namespace PluginManager.PluginManagment
 			try
 			{
 				var assembly = Assembly.LoadFrom( path );
-				return new AssemblyInfo( assembly ).Guid;
+				return new PluginInfo( assembly ).Guid;
 			}
 			catch ( Exception exception )
 			{
@@ -137,7 +138,7 @@ namespace PluginManager.PluginManagment
 				}
 				else
 				{
-					Error( this, new PluginErrorEventArgs( new Exception( InstalledErrorMessage ), installablePlugin.AssemblyInfo ) );
+					Error( this, new PluginErrorEventArgs( new Exception( InstalledErrorMessage ), installablePlugin.PluginInfo ) );
 				}
 			}
 			else
@@ -158,7 +159,7 @@ namespace PluginManager.PluginManagment
 				}
 				else
 				{
-					Error( this, new PluginErrorEventArgs( new Exception( UninstalledErrorMessage ), installablePlugin.AssemblyInfo ) );
+					Error( this, new PluginErrorEventArgs( new Exception( UninstalledErrorMessage ), installablePlugin.PluginInfo ) );
 				}
 			}
 			else
@@ -186,7 +187,7 @@ namespace PluginManager.PluginManagment
 
 		public void Dispose()
 		{
-			var provider = _pluginContainer as PersistenceProvider;
+			var provider = _pluginContainer as FolderPersistenceProvider;
 			if ( provider != null )
 			{
 				provider.Dispose();
