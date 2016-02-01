@@ -196,14 +196,14 @@ namespace ABC.Workspaces.Windows.Settings
 
 			// Get settings.
 			Process process = window.GetProcess();
-
 			try
 			{
-				// Find matching settings based on file version.
+				// Find matching settings based on file info.
 				FileVersionInfo info = process.MainModule.FileVersionInfo;
 				Version fileVersion = new Version( info.FileMajorPart, info.FileMinorPart, info.FileBuildPart, info.FilePrivatePart );
 				var matches = _settings.Process.Where( p =>
 					p.Name == process.ProcessName &&
+					p.CompanyName == info.CompanyName &&
 					( p.Version == null || fileVersion.Matches( p.Version ) ) )
 					.ToList();
 

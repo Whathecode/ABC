@@ -22,12 +22,12 @@
   </Process>
 
   <!-- Asus touchpad driver. -->
-  <Process Name="ETDCtrl" CompanyName="ELAN Microelectronics">
+  <Process Name="ETDCtrl" CompanyName="ELAN Microelectronics Corp.">
     <IgnoreWindows>
       <Window ClassName="#32770" />
     </IgnoreWindows>
   </Process>
-  <Process Name="ETDCtrlHelper" CompanyName="ELAN Microelectronics">
+  <Process Name="ETDCtrlHelper" CompanyName="ELAN Microelectronics Corp.">
     <IgnoreWindows>
       <Window ClassName="#32770" />
     </IgnoreWindows>

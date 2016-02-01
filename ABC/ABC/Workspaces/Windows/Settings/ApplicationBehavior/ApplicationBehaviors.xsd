@@ -170,7 +170,13 @@
               </xs:sequence>
 
               <xs:attribute name="Name" type="xs:string" use="required" />
-              <xs:attribute name="CompanyName" type="xs:string" use="required"/>
+              <xs:attribute name="CompanyName" type="xs:string" use="required">
+                <xs:annotation>
+                  <xs:documentation>
+                    The name of the company that produced the application process, as specified in the file version info.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:attribute>
               <xs:attribute name="Version" type="ProcessVersion">
                 <xs:annotation>
                   <xs:documentation>
