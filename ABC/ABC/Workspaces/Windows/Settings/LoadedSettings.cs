@@ -200,7 +200,7 @@ namespace ABC.Workspaces.Windows.Settings
 			try
 			{
 				// Find matching settings based on process file info.
-				var matches = _settings.Process.Where( p => PluginHelper.TargetsProcess( p.Name, p.CompanyName, p.Version, process ) ).ToList();
+				var matches = _settings.Process.Where( p => new TargetProcess( p.Name, p.CompanyName, p.Version ).Matches( process ) ).ToList();
 
 				// Select the most optimal match, or handle the process by default when no match found.
 				ApplicationBehaviorsProcess processBehavior = matches.Count == 0

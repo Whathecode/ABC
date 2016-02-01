@@ -58,6 +58,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Plugins\TargetProcessTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workspaces\AbstractWorkspaceManagerTest.cs" />
     <Compile Include="Workspaces\AbstractWorkspaceTest.cs" />

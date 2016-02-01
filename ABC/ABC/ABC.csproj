@@ -78,6 +78,7 @@
     <Compile Include="Plugins\Manager\PluginVdmSettings.cs" />
     <Compile Include="Plugins\PluginException.cs" />
     <Compile Include="Plugins\PluginHelper.cs" />
+    <Compile Include="Plugins\TargetProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Workspaces\AbstractWorkspace.cs" />
