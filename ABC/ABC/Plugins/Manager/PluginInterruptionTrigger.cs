@@ -49,8 +49,7 @@ namespace ABC.Plugins.Manager
 				return;
 			}
 
-			_interruptionTriggers.ForEach( trigger =>
-				PluginHelper<AbstractInterruptionTrigger>.SafePluginInvoke( trigger, t => t.Update( now ) ) );
+			_interruptionTriggers.ForEach( trigger => PluginHelper.SafePluginInvoke( trigger, t => t.Update( now ) ) );
 
 			Monitor.Exit( this );
 		}
@@ -64,7 +63,7 @@ namespace ABC.Plugins.Manager
 		public override List<Type> GetInterruptionTypes()
 		{
 			return _interruptionTriggers
-				.SelectMany( h => PluginHelper<AbstractInterruptionTrigger>.SafePluginInvoke( h, t => t.GetInterruptionTypes() ) )
+				.SelectMany( h => PluginHelper.SafePluginInvoke( h, t => t.GetInterruptionTypes() ) )
 				.ToList();
 		}
 

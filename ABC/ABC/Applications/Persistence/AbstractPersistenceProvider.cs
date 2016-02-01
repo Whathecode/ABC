@@ -44,7 +44,7 @@ namespace ABC.Applications.Persistence
 				let applicationPath = process.Modules[ 0 ].FileName
 				let persistor = GetPersistenceProviders().FirstOrDefault( p => p.ProcessName == process.ProcessName && p.CompanyName == process.MainModule.FileVersionInfo.CompanyName )
 				where persistor != null
-				let persistedData = PluginHelper<AbstractApplicationPersistence>.SafePluginInvoke( persistor, p => p.Suspend(
+				let persistedData = PluginHelper.SafePluginInvoke( persistor, p => p.Suspend(
 					new SuspendInformation
 					{
 						Process = process,
@@ -72,7 +72,7 @@ namespace ABC.Applications.Persistence
 				if ( persistor != null )
 				{
 					PersistedApplication s = persistedState;
-					PluginHelper<AbstractApplicationPersistence>.SafePluginInvoke( persistor, p => p.Resume( s.ApplicationPath, s.Data ) );
+					PluginHelper.SafePluginInvoke( persistor, p => p.Resume( s.ApplicationPath, s.Data ) );
 				}
 			}
 		}
@@ -93,7 +93,7 @@ namespace ABC.Applications.Persistence
 		public List<Type> GetPersistedDataTypes()
 		{
 			return GetPersistenceProviders()
-				.Select( p => PluginHelper<AbstractApplicationPersistence>.SafePluginInvoke( p, pi => pi.GetPersistedDataType() ) )
+				.Select( p => PluginHelper.SafePluginInvoke( p, pi => pi.GetPersistedDataType() ) )
 				.ToList();
 		}
 

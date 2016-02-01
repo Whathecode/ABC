@@ -3,14 +3,14 @@
 
 namespace ABC.Plugins
 {
-	public static class PluginHelper<TPlugin>
+	public static class PluginHelper
 	{
 		/// <summary>
 		///   Safely invoke an action on a plugin, catching any exceptions which occur and redirecting it to <see cref="PluginException{T}" />.
 		/// </summary>
 		/// <param name = "plugin">The trigger to invoke the action on.</param>
 		/// <param name = "invocation">The action which needs to be invoked.</param>
-		public static void SafePluginInvoke( TPlugin plugin, Action<TPlugin> invocation )
+		public static void SafePluginInvoke<TPlugin>( TPlugin plugin, Action<TPlugin> invocation )
 		{
 			try
 			{
@@ -29,7 +29,7 @@ namespace ABC.Plugins
 		/// </summary>
 		/// <param name = "plugin">The trigger to invoke the function on.</param>
 		/// <param name = "invocation">The function which needs to be invoked.</param>
-		public static TReturn SafePluginInvoke<TReturn>( TPlugin plugin, Func<TPlugin, TReturn> invocation )
+		public static TReturn SafePluginInvoke<TPlugin, TReturn>( TPlugin plugin, Func<TPlugin, TReturn> invocation )
 		{
 			try
 			{
